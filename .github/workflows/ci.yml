@@ -1,0 +1,172 @@
+name: CI
+
+on:
+  push:
+    branches-ignore:
+      - "no-ga/**"
+  pull_request:
+    branches-ignore:
+      - "no-ga/**"
+
+env:
+  MIRROR_SSH_URL: ${{ vars.MIRROR_SSH_URL }}
+  EXECUTABLES: ${{ vars.EXECUTABLES }}
+  # PRIVATE_SSH_KEY: ${{ secrets.PRIVATE_SSH_KEY }}
+  CC: epiclang
+
+jobs:
+  check_mirror:
+    environment: production
+    runs-on: ubuntu-latest
+
+    outputs:
+      is_mirror: ${{ steps.check.outputs.is_mirror }}
+
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - id: check
+        run: |
+          ORIGIN=$(git remote get-url origin)
+          ORIGIN=$(echo $ORIGIN | sed 's|https://github.com|git@github.com:|; s|$|.git|')
+          ORIGIN=$(echo $ORIGIN | sed 's/com:\//com:/')
+
+          echo "is_mirror=$( [ "$ORIGIN" = "$MIRROR_SSH_URL" ] && echo true || echo false )" >> $GITHUB_OUTPUT
+
+  check_compilation_and_coding_style:
+    needs: check_mirror
+    if:
+      needs.check_mirror.outputs.is_mirror == 'false'
+    environment: production
+    runs-on: ubuntu-latest
+    container:
+      image: epitechcontent/epitest-docker
+
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Check Repository Structure
+        continue-on-error: true
+        run: banana-check-repo > banana-check-repo.log || true
+
+      - name: Annotate Coding Style Infractions Repository
+        run: |
+          if [ -s banana-check-repo.log ]; then
+            grep "\[Banana\]" banana-check-repo.log | while IFS= read -r line; do
+              FILE=$(echo "$line" | cut -d':' -f1 | sed 's|^\./||')
+              LINE=$(echo "$line" | cut -d':' -f2)
+              
+              if [ "$LINE" -eq "$LINE" ] 2>/dev/null; then
+                  [ "$LINE" -le 0 ] && LINE=1
+              else
+                  LINE=1
+              fi
+
+              LEVEL=$(echo "$line" | sed -n 's/.*\[Banana\] \[\([^]]*\)\].*/\1/p')
+              CODE=$(echo "$line" | sed -n 's/.*(\([^)]*\)).*/\1/p')
+              MSG=$(echo "$line" | sed -E 's/.*\] (.*) \(.*\)/\1/')
+
+              echo "::error file=$FILE,line=$LINE,title=$LEVEL coding style error::$CODE - $MSG"
+            done
+          fi
+
+      - name: build
+        run: make 2>&1 | tee build.log
+
+        timeout-minutes: 2
+
+      - name: check_coding_style
+        run: |
+          if [ -s build.log ]; then
+            grep -E "error:|warning:" build.log | while IFS= read -r line; do
+              FILE=$(echo "$line" | cut -d':' -f1)
+              LINE=$(echo "$line" | cut -d':' -f2)
+              MSG=$(echo "$line" | sed -E 's/^[^:]+:[0-9]+:[0-9]+:[[:space:]]*(error|warning):[[:space:]]*//; s/^\[Banana\][[:space:]]*//; s/^\[[^]]+\][[:space:]]*//; s/[[:space:]]*\([^()]*\)[[:space:]]*$//')
+
+              if [ "$LINE" -eq "$LINE" ] 2>/dev/null; then
+                  [ "$LINE" -le 0 ] && LINE=1
+              else
+                  LINE=1
+              fi
+
+              LEVEL=$(echo "$line" | sed -nE 's/.*\[Banana\][[:space:]]*\[([^]]+)\].*/\1/p')
+              CODE=$(echo "$line" | sed -nE 's/.*\(([^()]*)\)[[:space:]]*$/\1/p')
+
+              [ -z "$LEVEL" ] && LEVEL=$(echo "$line" | sed -nE 's/.*\b(error|warning):.*/\1/p')
+              [ -z "$CODE" ] && CODE=compiler
+
+              echo "::error file=$FILE,line=$LINE,title=$LEVEL coding style error::$CODE - $MSG"
+            done
+            
+            if grep -Eq "error:|warning:" build.log; then
+              exit 1
+            fi
+          fi
+      
+      - name: Cleanup
+        run: make clean
+
+      - name: Check Executables
+        run: |
+          list="$EXECUTABLES"
+
+          while :; do
+            case "$list" in
+              *,*)
+                exe="${list%%,*}"
+                list="${list#*,}"
+                ;;
+              *)
+                exe="$list"
+                list=""
+                ;;
+            esac
+
+            exe="$(echo "$exe" | xargs)"
+            if [ -z "$exe" ]; then
+              [ -z "$list" ] && break
+              continue
+            fi
+            if [ ! -f "$exe" ]; then
+              echo "::error file=$exe,title=Missing Executable::$exe is missing after build"
+              exit 1
+            fi
+            [ -z "$list" ] && break
+          done
+        
+  run_tests:
+    environment: production
+    runs-on: ubuntu-latest
+    container:
+      image: epitechcontent/epitest-docker
+    needs:
+      - check_mirror
+      - check_compilation_and_coding_style
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - name: testers
+        run: make tests_run
+        timeout-minutes: 2
+  
+  # push_to_mirror:
+  #   if: github.event_name == 'push'
+  #   needs:
+  #     - check_mirror
+  #     - run_tests
+  #   environment: production
+  #   runs-on: ubuntu-latest
+
+  #   steps:
+  #     - uses: actions/checkout@v6
+  #       with:
+  #         fetch-depth: 0
+  #     - uses: pixta-dev/repository-mirroring-action@v1
+  #       with:
+  #         target_repo_url: ${{ vars.MIRROR_SSH_URL }}
+  #         ssh_private_key: ${{ secrets.PRIVATE_SSH_KEY }}
+  #         ssh_username: git
