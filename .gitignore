@@ -1,0 +1,6 @@
+*.o
+mysh
+.claude
+*.a
+*.gcno
+*.gdna
