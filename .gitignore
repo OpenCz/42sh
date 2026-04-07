@@ -1,8 +1,8 @@
 *.o
-mysh
 .claude
 *.a
 *.gcno
 *.gcda
 unit_tests
-
+*.log
+42sh
