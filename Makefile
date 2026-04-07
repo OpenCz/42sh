@@ -9,7 +9,7 @@ MAKEFLAGS += --no-print-directory
 
 # ─── Project Info ────────────────────────────────────────────────────────
 PROJECT  = 42sh
-NAME     = mysh
+NAME     = 42sh
 
 # ─── Sources ─────────────────────────────────────────────────────────────
 SRC_CORE = \
