@@ -258,14 +258,43 @@ jobs:
       - name: Auto-approve PR
         if: steps.verify_authors.outputs.approved == 'true'
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.AUTO_APPROVE_TOKEN || secrets.GITHUB_TOKEN }}
           REPO: ${{ github.repository }}
         run: |
           set -e
-          gh pr review ${{ steps.verify_authors.outputs.pr_number }} \
+
+          PR_NUMBER="${{ steps.verify_authors.outputs.pr_number }}"
+          PR_AUTHOR=$(gh pr view "$PR_NUMBER" --repo "$REPO" --json author --jq '.author.login // ""')
+          REVIEWER=$(gh api user --jq '.login // ""')
+
+          if [ -z "$REVIEWER" ]; then
+            echo "Unable to resolve reviewer identity from token. Skipping auto-approve."
+            exit 0
+          fi
+
+          if [ "$PR_AUTHOR" = "$REVIEWER" ]; then
+            echo "Cannot approve own PR ($REVIEWER). Skipping auto-approve."
+            exit 0
+          fi
+
+          gh pr review "$PR_NUMBER" \
             --repo "$REPO" \
             --approve \
             --body "Auto-approved: all commits are authored by lukas-sgx or Celz-Pch."
+
+      - name: Merge PR to main
+        if: steps.verify_authors.outputs.approved == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.AUTO_APPROVE_TOKEN || secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -e
+
+          PR_NUMBER="${{ steps.verify_authors.outputs.pr_number }}"
+          gh pr merge "$PR_NUMBER" \
+            --repo "$REPO" \
+            --merge \
+            --auto
 
   
   push_to_mirror:
