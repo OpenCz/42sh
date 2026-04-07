@@ -153,6 +153,42 @@ jobs:
         run: make tests_run
         timeout-minutes: 2
   
+  merge_to_main:
+    if: github.ref == 'refs/heads/dev'
+    needs:
+      - check_mirror
+      - run_tests
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+
+      - name: Get body content
+        id: pr_body
+        run: |
+          echo "COMMITS_LIST<<EOF" >> $GITHUB_ENV
+          echo "### List of changements: " >> $GITHUB_ENV
+          git log origin/main..HEAD --oneline --pretty=format:"- %s (%h)" >> $GITHUB_ENV
+          echo "" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+
+      - name: Create PR dev -> main
+        run: |
+          gh pr create \
+            --title "Update: ${{ github.ref_name }}" \
+            --body "$COMMITS_LIST" \
+            --reviewer "lukas-sgx,copilot" \
+            --base main \
+            --head ${{ github.ref_name }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    
+  
   push_to_mirror:
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     needs:
