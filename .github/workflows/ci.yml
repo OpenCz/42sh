@@ -187,61 +187,61 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    auto_approve_trusted_authors:
-      if:
-        github.event_name == 'pull_request'
-      needs:
-        - check_mirror
-        - merge_to_main
-      runs-on: ubuntu-latest
-      permissions:
-        pull-requests: write
-        contents: read
-      steps:
-        - name: Verify commit authors
-          id: verify_authors
-          env:
-            GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-            PR_NUMBER: ${{ github.event.pull_request.number }}
-          run: |
-            set -e
+  auto_approve_trusted_authors:
+    if:
+      github.event_name == 'pull_request' && needs.check_mirror.outputs.is_mirror == 'false'
+    needs:
+      - check_mirror
+      - run_tests
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      contents: read
+    steps:
+      - name: Verify commit authors
+        id: verify_authors
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          set -e
 
-            ALLOWED_AUTHORS="lukas-sgx Celz-Pch"
-            AUTHORS=$(gh api \
-              repos/${{ github.repository }}/pulls/$PR_NUMBER/commits \
-              --paginate \
-              --jq '.[].author.login // ""')
+          ALLOWED_AUTHORS="lukas-sgx Celz-Pch"
+          AUTHORS=$(gh api \
+            repos/${{ github.repository }}/pulls/$PR_NUMBER/commits \
+            --paginate \
+            --jq '.[].author.login // ""')
 
-            if [ -z "$AUTHORS" ]; then
-              echo "approved=false" >> "$GITHUB_OUTPUT"
-              exit 0
-            fi
+          if [ -z "$AUTHORS" ]; then
+            echo "approved=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
 
-            INVALID=0
-            for author in $AUTHORS; do
-              case " $ALLOWED_AUTHORS " in
-                *" $author "*) ;;
-                *)
-                  INVALID=1
-                  break
-                  ;;
-              esac
-            done
+          INVALID=0
+          for author in $AUTHORS; do
+            case " $ALLOWED_AUTHORS " in
+              *" $author "*) ;;
+              *)
+                INVALID=1
+                break
+                ;;
+            esac
+          done
 
-            if [ "$INVALID" -eq 0 ]; then
-              echo "approved=true" >> "$GITHUB_OUTPUT"
-            else
-              echo "approved=false" >> "$GITHUB_OUTPUT"
-            fi
+          if [ "$INVALID" -eq 0 ]; then
+            echo "approved=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "approved=false" >> "$GITHUB_OUTPUT"
+          fi
 
-        - name: Auto-approve PR
-          if: steps.verify_authors.outputs.approved == 'true'
-          env:
-            GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          run: |
-            gh pr review ${{ github.event.pull_request.number }} \
-              --approve \
-              --body "Auto-approved: all commits are authored by lukas-sgx or Celz-Pch."
+      - name: Auto-approve PR
+        if: steps.verify_authors.outputs.approved == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh pr review ${{ github.event.pull_request.number }} \
+            --approve \
+            --body "Auto-approved: all commits are authored by lukas-sgx or Celz-Pch."
 
   
   push_to_mirror:
