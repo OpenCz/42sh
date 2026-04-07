@@ -192,6 +192,7 @@ jobs:
       github.ref == 'refs/heads/dev' && github.event_name == 'push'
     needs:
       - merge_to_main
+    environment: production
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
@@ -200,18 +201,22 @@ jobs:
       - name: Verify commit authors
         id: verify_authors
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.AUTO_APPROVE_TOKEN || secrets.GITHUB_TOKEN }}
           REPO: ${{ github.repository }}
         run: |
           set -e
 
-          PR_NUMBER=$(gh pr list \
+          if ! PR_NUMBER=$(gh pr list \
             --repo "$REPO" \
             --state open \
             --base main \
             --head dev \
             --json number \
-            --jq '.[0].number // ""')
+            --jq '.[0].number // ""'); then
+            echo "Unable to list PRs (likely HTTP 403 with current token). Skipping auto-approve."
+            echo "approved=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
 
           if [ -z "$PR_NUMBER" ]; then
             echo "No open PR found for dev -> main."
@@ -222,11 +227,15 @@ jobs:
           echo "pr_number=$PR_NUMBER" >> "$GITHUB_OUTPUT"
 
           ALLOWED_AUTHORS="lukas-sgx celz-pch"
-          AUTHORS=$(gh api \
+          if ! AUTHORS=$(gh api \
             repos/$REPO/pulls/$PR_NUMBER/commits \
             --paginate \
             --jq '.[] | (.author.login // .committer.login // "")' | \
-            sed '/^[[:space:]]*$/d' | tr '[:upper:]' '[:lower:]' | sort -u)
+            sed '/^[[:space:]]*$/d' | tr '[:upper:]' '[:lower:]' | sort -u); then
+            echo "Unable to read PR commits (likely HTTP 403 with current token). Skipping auto-approve."
+            echo "approved=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
 
           echo "Resolved commit authors:"
           echo "$AUTHORS"
