@@ -3,7 +3,8 @@ name: CI
 on:
   push:
     branches-ignore:
-      - ["no-ga/**", "main"]
+      - "no-ga/**"
+      - "main"
   pull_request:
     branches-ignore:
       - "no-ga/**"
