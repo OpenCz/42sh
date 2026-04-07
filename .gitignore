@@ -3,4 +3,5 @@ mysh
 .claude
 *.a
 *.gcno
-*.gdna
+*.gcda
+unit_tests
