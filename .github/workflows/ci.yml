@@ -11,7 +11,7 @@ on:
 env:
   MIRROR_SSH_URL: ${{ vars.MIRROR_SSH_URL }}
   EXECUTABLES: ${{ vars.EXECUTABLES }}
-  # PRIVATE_SSH_KEY: ${{ secrets.PRIVATE_SSH_KEY }}
+  PRIVATE_SSH_KEY: ${{ secrets.PRIVATE_SSH_KEY }}
   CC: epiclang
 
 jobs:
@@ -153,22 +153,22 @@ jobs:
         run: make tests_run
         timeout-minutes: 2
   
-  # push_to_mirror:
-  #   if: github.event_name == 'push'
-  #   needs:
-  #     - check_mirror
-  #     - run_tests
-  #   environment: production
-  #   runs-on: ubuntu-latest
+  push_to_mirror:
+    if: github.event_name == 'push'
+    needs:
+      - check_mirror
+      - run_tests
+    environment: production
+    runs-on: ubuntu-latest
 
-  #   steps:
-  #     - uses: actions/checkout@v6
-  #       with:
-  #         fetch-depth: 0
-  #     - uses: pixta-dev/repository-mirroring-action@v1
-  #       with:
-  #         target_repo_url: ${{ vars.MIRROR_SSH_URL }}
-  #         ssh_private_key: ${{ secrets.PRIVATE_SSH_KEY }}
-  #         ssh_username: git
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - uses: pixta-dev/repository-mirroring-action@v1
+        with:
+          target_repo_url: ${{ vars.MIRROR_SSH_URL }}
+          ssh_private_key: ${{ secrets.PRIVATE_SSH_KEY }}
+          ssh_username: git
 
   
