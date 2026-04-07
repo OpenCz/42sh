@@ -30,15 +30,14 @@ int get_seg(int status)
     int exit_value = 0;
 
     if (sig == SIGFPE) {
-        write(1, "Floating exception", 18);
+        write(1, "Floating exception\n", 19);
         exit_value = 136;
     }
     if (sig == SIGSEGV) {
-        write(1, "Segmentation fault", 18);
+        write(1, "Segmentation fault\n", 19);
         exit_value = 139;
     }
     if (WCOREDUMP(status))
-        write(1, " (core dumped)", 14);
-    write(1, "\n", 1);
+        write(1, " (core dumped)\n", 15);
     return exit_value;
 }
