@@ -195,7 +195,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
-      contents: read
+      contents: write
     steps:
       - name: Verify commit authors
         id: verify_authors
@@ -277,10 +277,13 @@ jobs:
             exit 0
           fi
 
-          gh pr review "$PR_NUMBER" \
+          if ! gh pr review "$PR_NUMBER" \
             --repo "$REPO" \
             --approve \
-            --body "Auto-approved: all commits are authored by lukas-sgx or Celz-Pch."
+            --body "Auto-approved: all commits are authored by lukas-sgx or Celz-Pch."; then
+            echo "Auto-approve skipped: token lacks permission (HTTP 403) or cannot approve this PR."
+            exit 0
+          fi
 
       - name: Merge PR to main
         if: steps.verify_authors.outputs.approved == 'true'
@@ -291,10 +294,13 @@ jobs:
           set -e
 
           PR_NUMBER="${{ steps.verify_authors.outputs.pr_number }}"
-          gh pr merge "$PR_NUMBER" \
+          if ! gh pr merge "$PR_NUMBER" \
             --repo "$REPO" \
             --merge \
-            --auto
+            --auto; then
+            echo "Auto-merge skipped: token lacks permission (HTTP 403) or branch protection blocks merge."
+            exit 0
+          fi
 
   
   push_to_mirror:
