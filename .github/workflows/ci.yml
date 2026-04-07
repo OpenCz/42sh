@@ -153,7 +153,7 @@ jobs:
         run: make tests_run
         timeout-minutes: 2
   
-  merge_to_main:
+  open_pull_request:
     if: github.ref == 'refs/heads/dev' && github.event_name == 'push'
     needs:
       - check_mirror
@@ -179,14 +179,14 @@ jobs:
       - name: Create PR dev -> main
         run: |
           gh pr create \
-            --title "Update: ${{ github.ref_name }}" \
+            --title "merge: ${{ github.ref_name }} -> main" \
             --body "$COMMITS_LIST" \
             --reviewer "lukas-sgx,copilot" \
             --base main \
             --head dev || echo "PR already exists or could not be created"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    
+
   
   push_to_mirror:
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
