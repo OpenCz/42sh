@@ -189,9 +189,8 @@ jobs:
 
   auto_approve_trusted_authors:
     if:
-      github.event_name == 'push'
+      github.ref == 'refs/heads/dev' && github.event_name == 'push'
     needs:
-      - check_mirror
       - merge_to_main
     runs-on: ubuntu-latest
     permissions:
@@ -202,33 +201,45 @@ jobs:
         id: verify_authors
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-          COMMITS_URL: ${{ github.event.pull_request.commits_url }}
+          REPO: ${{ github.repository }}
         run: |
           set -e
 
-          if [ -z "$PR_NUMBER" ] || [ -z "$COMMITS_URL" ]; then
+          PR_NUMBER=$(gh pr list \
+            --repo "$REPO" \
+            --state open \
+            --base main \
+            --head dev \
+            --json number \
+            --jq '.[0].number // ""')
+
+          if [ -z "$PR_NUMBER" ]; then
+            echo "No open PR found for dev -> main."
             echo "approved=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
 
-          ALLOWED_AUTHORS="lukas-sgx Celz-Pch"
+          echo "pr_number=$PR_NUMBER" >> "$GITHUB_OUTPUT"
+
+          ALLOWED_AUTHORS="lukas-sgx celz-pch"
           AUTHORS=$(gh api \
-            "$COMMITS_URL" \
+            repos/$REPO/pulls/$PR_NUMBER/commits \
             --paginate \
             --jq '.[] | (.author.login // .committer.login // "")' | \
-            sed '/^[[:space:]]*$/d' | sort -u)
+            sed '/^[[:space:]]*$/d' | tr '[:upper:]' '[:lower:]' | sort -u)
 
           echo "Resolved commit authors:"
           echo "$AUTHORS"
 
           if [ -z "$AUTHORS" ]; then
+            echo "No GitHub logins resolved from commits."
             echo "approved=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
 
           INVALID=0
           for author in $AUTHORS; do
+            author="$(printf '%s' "$author" | tr '[:upper:]' '[:lower:]')"
             case " $ALLOWED_AUTHORS " in
               *" $author "*) ;;
               *)
@@ -249,7 +260,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh pr review ${{ github.event.pull_request.number }} \
+          gh pr review ${{ steps.verify_authors.outputs.pr_number }} \
             --approve \
             --body "Auto-approved: all commits are authored by lukas-sgx or Celz-Pch."
 
