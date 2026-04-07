@@ -154,7 +154,7 @@ jobs:
         timeout-minutes: 2
   
   push_to_mirror:
-    if: github.event_name == 'push'
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     needs:
       - check_mirror
       - run_tests
