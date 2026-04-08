@@ -48,7 +48,7 @@ static int is_direct_path(char *cmd)
     for (int i = 0; cmd[i]; i++)
         if (cmd[i] == '/')
             return 1;
-    return 0;
+    return SUCCESS;
 }
 
 static char *get_exec_path(main_t *main_stock, command_ctx_t *ctx)

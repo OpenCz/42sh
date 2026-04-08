@@ -12,7 +12,7 @@ static int run_pipeline_segments(pipeline_state_t *state, int count)
     for (int i = 0; i < count; i++)
         if (push_segment(state, i))
             return close_and_free(state);
-    return 0;
+    return SUCCESS;
 }
 
 int execute_pipeline(main_t *stock_main, char *command)

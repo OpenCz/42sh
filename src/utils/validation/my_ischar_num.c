@@ -13,5 +13,5 @@ int my_char_isnum(char *str)
 
     if (str[i] >= 48 && str[i] <= 57)
         return 1;
-    return 0;
+    return SUCCESS;
 }

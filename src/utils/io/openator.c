@@ -15,9 +15,9 @@ int check_open(int fd)
     if (fd < 0) {
         write(2, "FAILURE IN OPEN : FILE NOT FOUND OR DOESN'T EXIST\n",
             50);
-        return 84;
+        return FAILURE;
     }
-    return 0;
+    return SUCCESS;
 }
 
 int check_read(char *buffer, int bytes_read)
@@ -25,23 +25,23 @@ int check_read(char *buffer, int bytes_read)
     if (bytes_read < 0) {
         write(2, "READ FAILURE\n", 13);
         free(buffer);
-        return 84;
+        return FAILURE;
     }
     if (bytes_read == 0) {
         write(2, "FILE IS EMPTY\n", 14);
         free(buffer);
-        return 84;
+        return FAILURE;
     }
-    return 0;
+    return SUCCESS;
 }
 
 int check_buffer(char *buffer)
 {
     if (!buffer) {
         write(2, "BUFFER MEMORY ALLOCATION FAILURE\n", 34);
-        return 84;
+        return FAILURE;
     }
-    return 0;
+    return SUCCESS;
 }
 
 static char *read_content(int fd, int size)

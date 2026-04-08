@@ -13,7 +13,7 @@ static int is_separator(char c, char *separator)
         if (separator[i] == c)
             return 1;
     }
-    return 0;
+    return SUCCESS;
 }
 
 static int my_strlen_word_array(char *str, char *separator)
@@ -46,7 +46,7 @@ static int count_word(char *str, char *separator)
     int count = 0;
 
     if (str == NULL)
-        return 0;
+        return SUCCESS;
     for (int i = 0; str[i] != '\0'; i++) {
         update_word_state(str[i], separator, &in_word, &count);
     }

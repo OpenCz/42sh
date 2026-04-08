@@ -27,7 +27,7 @@ int parse_pipeline(char *command, pipeline_segment_t **segments, int *count)
     for (int i = 0; i < *count; i++)
         (*segments)[i].command = commands[i];
     free(commands);
-    return 0;
+    return SUCCESS;
 }
 
 int init_pipeline_state(pipeline_state_t *state,

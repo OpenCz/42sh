@@ -14,7 +14,7 @@ int my_chdir_call(char *path)
         my_putstrerror(": Permission denied.\n");
         return 1;
     }
-    return 0;
+    return SUCCESS;
 }
 
 static char *resolve_path(main_t *main_stock, command_ctx_t *ctx)
@@ -45,7 +45,7 @@ static int check_path(char *path)
         my_putstrerror(": Not a directory.\n");
         return 1;
     }
-    return 0;
+    return SUCCESS;
 }
 
 static void save_old_path(main_t *main_stock)
@@ -73,7 +73,7 @@ int builtin_cd(main_t *main_stock, command_ctx_t *ctx)
         return 1;
     }
     free(path);
-    return 0;
+    return SUCCESS;
 }
 
 int my_chdir(main_t *main_stock)

@@ -21,7 +21,7 @@ int child_exec(command_ctx_t *ctx, char *path, char **env)
             return 126;
         }
     }
-    return 0;
+    return SUCCESS;
 }
 
 int get_seg(int status)

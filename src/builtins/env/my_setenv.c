@@ -13,7 +13,7 @@ static int update_env_node(env_t *node, char *value)
     node->value = value ? my_strdup(value) : NULL;
     if (value && !node->value)
         return 1;
-    return 0;
+    return SUCCESS;
 }
 
 static env_t *create_new_node(char *key, char *value)
@@ -58,7 +58,7 @@ static int error_handling(char *key, char *value, command_ctx_t *ctx)
         my_putstrerror("contain alphanumeric characters.\n");
         return 1;
     }
-    return 0;
+    return SUCCESS;
 }
 
 int builtin_setenv(main_t *main_stock, command_ctx_t *ctx)
@@ -79,7 +79,7 @@ int builtin_setenv(main_t *main_stock, command_ctx_t *ctx)
     if (!curr)
         return 1;
     push_back(&main_stock->stock_env, curr);
-    return 0;
+    return SUCCESS;
 }
 
 int my_setenv(main_t *main_stock)

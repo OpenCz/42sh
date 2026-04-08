@@ -7,6 +7,7 @@
 
 #include <sys/stat.h>
 #include <unistd.h>
+#include "minishell.h"
 
 int get_file_size_stat(char const *filepath)
 {
@@ -14,11 +15,11 @@ int get_file_size_stat(char const *filepath)
 
     if (filepath == NULL) {
         write(2, "NULL FILEPATH\n", 14);
-        return 84;
+        return FAILURE;
     }
     if (stat(filepath, &statstruct) == -1) {
         write(2, "STAT FAILURE\n", 13);
-        return 84;
+        return FAILURE;
     }
     return statstruct.st_size;
 }

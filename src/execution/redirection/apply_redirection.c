@@ -24,7 +24,7 @@ static int write_heredoc_line(int fd, char *line)
         return 1;
     if (write(fd, "\n", 1) == -1)
         return 1;
-    return 0;
+    return SUCCESS;
 }
 
 static int write_heredoc_content(int fd, const char *delimiter)
@@ -48,7 +48,7 @@ static int write_heredoc_content(int fd, const char *delimiter)
         }
     }
     free(line);
-    return 0;
+    return SUCCESS;
 }
 
 static int open_heredoc_fd(command_ctx_t *ctx, int index)
@@ -106,7 +106,7 @@ int apply_redirection(command_ctx_t *ctx)
     int fd = -1;
 
     if (!ctx->redirection)
-        return 0;
+        return SUCCESS;
     index = find_redirection_index(ctx);
     if (index < 0 || !ctx->argv[index + 1]) {
         my_putstrerror("Invalid null command.\n");
@@ -121,5 +121,5 @@ int apply_redirection(command_ctx_t *ctx)
     }
     close(fd);
     ctx->argv[index] = NULL;
-    return 0;
+    return SUCCESS;
 }

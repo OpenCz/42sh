@@ -13,7 +13,7 @@ int my_strncmp(char *s1, char *s2, int n)
 
     while (s1[i] == s2[i]) {
         if (s1[i] == '\0' || i == n - 1)
-            return 0;
+            return SUCCESS;
         i++;
     }
     return s1[i] - s2[i];

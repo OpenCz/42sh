@@ -17,7 +17,7 @@ int execute_single_command(main_t *stock_main,
     if (parse_status == 1)
         return 1;
     if (parse_status == 2)
-        return 0;
+        return SUCCESS;
     if (allow_builtin) {
         builtin_status = execute_builtin(stock_main, &ctx);
         if (builtin_status != -1) {

@@ -12,7 +12,7 @@ int create_pipe(int segment_count, int i, int pipefd[2])
     pipefd[0] = -1;
     pipefd[1] = -1;
     if (i + 1 >= segment_count)
-        return 0;
+        return SUCCESS;
     return pipe(pipefd) == -1;
 }
 
@@ -52,5 +52,5 @@ int push_segment(pipeline_state_t *state, int i)
     if (pipefd[1] != -1)
         close(pipefd[1]);
     state->prev_read = pipefd[0];
-    return 0;
+    return SUCCESS;
 }

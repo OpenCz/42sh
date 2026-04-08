@@ -53,7 +53,7 @@ int parse_command_context(char *command, command_ctx_t *ctx)
     ctx->argv = command_with_arg;
     ctx->arg_command = &command_with_arg[1];
     set_redirection(ctx, command);
-    return 0;
+    return SUCCESS;
 }
 
 int bind_command_context(main_t *stock_main, command_ctx_t *ctx)
@@ -73,7 +73,7 @@ int bind_command_context(main_t *stock_main, command_ctx_t *ctx)
     ctx->argv = NULL;
     ctx->arg_command = NULL;
     ctx->redirection = NULL;
-    return 0;
+    return SUCCESS;
 }
 
 int set_command_context(main_t *stock_main, char *command)

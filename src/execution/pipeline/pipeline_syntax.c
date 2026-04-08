@@ -36,5 +36,5 @@ int has_pipe_syntax_error(char *command)
         if (!has_left_command(command, i) || !has_right_command(command, i))
             return 1;
     }
-    return 0;
+    return SUCCESS;
 }

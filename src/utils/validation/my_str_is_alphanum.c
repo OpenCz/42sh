@@ -19,5 +19,5 @@ int my_str_is_alphanum(char *key)
         }
         i++;
     }
-    return 0;
+    return SUCCESS;
 }
