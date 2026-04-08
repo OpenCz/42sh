@@ -74,8 +74,10 @@ char *openator(char const *filepath)
         return NULL;
     }
     fd = open(filepath, O_RDONLY);
-    if (check_open(fd) == 84)
+    if (check_open(fd) == FAILURE)
         return NULL;
     size = get_file_size_stat(filepath);
+    if (size < 0)
+        return NULL;
     return read_content(fd, size);
 }
