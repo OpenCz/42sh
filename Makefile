@@ -97,7 +97,7 @@ TO_RM = *.gcda *.gcno unit_tests *.html *.css *.log $(LOGS_DIR)
 # ─── Per-file compilation ─────────────────────────────────────────────────
 %.o: %.c
 	@printf "$(H_CYAN)Compiling$(END) $(BOLD)$<$(END) ...\n"
-	@$(ECC) $(CFLAGS) -Wno-unused-command-line-argument -c $< -o $@ 2>/dev/null && \
+	@$(ECC) $(CFLAGS) -Wno-unused-command-line-argument -c $< -o $@ && \
 		printf "%b\n" "$(BOLD)$(H_GREEN)[ OK ]$(END)" || \
 		(printf "%b\n" "$(BOLD)$(H_RED)[ FAIL ]$(END)" && $(ECC) $(CFLAGS) -c $< -o $@ && exit 1)
 
@@ -178,8 +178,7 @@ tests_run: re
 	@$(MAKE) -C tests tests_run
 
 coverage: re
-	@$(MAKE) -C tests coverage
-
+	@$(MAKE) -C tests coverage src/execution/redirection/apply_redirection.c
 functional_tests: all
 	$(call pretty_header, Running Functional Tests)
 	@mkdir -p $(LOGS_DIR)/functional_tests
