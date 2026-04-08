@@ -20,5 +20,10 @@ char **my_str_to_word_array(char *str, char *separator);
 int my_wordarray_len(char **word_array);
 int my_char_isnum(char *str);
 int my_str_is_alphanum(char *key);
+int get_file_size_stat(char const *filepath);
+char *openator(char const *filepath);
+char *get_folder(void);
+char *get_branch_git(void);
+void display_prompt(void);
 
 #endif

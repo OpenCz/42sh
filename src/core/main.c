@@ -5,12 +5,12 @@
 ** main
 */
 
-#include "minishell.h"
+#include "../../include/minishell.h"
 
 static void write_print(void)
 {
     if (isatty(0))
-        my_putstr("$> ");
+        display_prompt();
 }
 
 int main(int argc, char **argv, char **env)
