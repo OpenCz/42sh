@@ -51,6 +51,17 @@ static int is_direct_path(char *cmd)
     return 0;
 }
 
+static int is_directory(char *cmd)
+{
+    struct stat st;
+
+    if (!cmd)
+        return 0;
+    if (stat(cmd, &st) == -1)
+        return 0;
+    return S_ISDIR(st.st_mode);
+}
+
 static char *get_exec_path(main_t *main_stock, command_ctx_t *ctx)
 {
     if (is_direct_path(ctx->command))
@@ -64,6 +75,12 @@ int exec_any(main_t *main_stock, command_ctx_t *ctx)
     char *path = get_exec_path(main_stock, ctx);
     char **env = build_env(main_stock->stock_env);
     int status;
+
+    if (is_directory(ctx->command)) {
+        my_putstrerror(ctx->command);
+        my_putstrerror(": Permission denied.\n");
+        return 1;
+    }
 
     if (!env)
         return 1;

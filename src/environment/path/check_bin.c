@@ -48,27 +48,11 @@ static char *build_path(char *path, char *name)
     return full_path;
 }
 
-int check_is_dir(char *command)
-{
-    struct stat st;
-
-    if (command == NULL)
-        return 0;
-    if (stat(command, &st) == 0 && S_ISDIR(st.st_mode)) {
-        my_putstrerror(command);
-        my_putstrerror(": Permission denied.");
-        return 1;
-    }
-    return 0;
-}
-
 char *check_bin(char *command, char *path)
 {
     char *full_path = NULL;
 
     if (command == NULL || path == NULL)
-        return NULL;
-    if (check_is_dir(command) == 1)
         return NULL;
     full_path = build_path(path, command);
     if (!full_path)
