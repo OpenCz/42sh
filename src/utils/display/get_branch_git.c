@@ -17,6 +17,8 @@ char *get_branch_git(void)
     char *new_str = NULL;
     char *str = openator(".git/HEAD");
 
+    if (!str)
+        return NULL;
     if (my_strncmp(str, "ref: refs/heads/", 16) == 0)
         new_str = my_strdup(str + 16);
     if (!new_str) {

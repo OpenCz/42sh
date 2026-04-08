@@ -19,8 +19,11 @@ char *get_folder(void)
     char *folder = NULL;
     char **array = my_str_to_word_array(pwd, "/");
 
-    if (!array) {
-        free(pwd);
+    if (!array || !pwd) {
+        if (pwd)
+            free(pwd);
+        if (array)
+            free_array(array);
         return NULL;
     }
     folder = my_strdup(array[my_wordarray_len(array) - 1]);
