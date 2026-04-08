@@ -60,16 +60,22 @@ static char *get_exec_path(main_t *main_stock, command_ctx_t *ctx)
 
 int exec_any(main_t *main_stock, command_ctx_t *ctx)
 {
+    int direct = is_direct_path(ctx->command);
     char *path = get_exec_path(main_stock, ctx);
     char **env = build_env(main_stock->stock_env);
     int status;
 
+    if (!env)
+        return 1;
     if (!path) {
         my_putstrerror(ctx->command);
         my_putstrerror(": Command not found.\n");
+        free_env(env);
         return 1;
     }
     status = run_fork(main_stock, ctx, path, env);
+    if (!direct)
+        free(path);
     free_env(env);
     return status;
 }
