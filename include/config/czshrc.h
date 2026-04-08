@@ -5,7 +5,7 @@
 ** czshrc
 */
 
-#ifndef __CZ_SHRT_H__
-    #define __CZ_SHRT_H__
+#ifndef CZ_SHRT_H
+    #define CZ_SHRT_H
 
 #endif
