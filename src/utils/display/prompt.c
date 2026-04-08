@@ -37,7 +37,10 @@ void display_prompt(void)
     char *git_branch = get_branch_git();
     char *pwd_folder = get_folder();
 
-    my_putstr("\033[90m╭─\033[0m ");
+    my_putstr("\033[");
+    my_putnbr(90);
+    my_putstr("m");
+    my_putstr("╭─\033[0m ");
     pwd(pwd_folder);
     git(git_branch);
     my_putstr("\n\033[90m╰─❯\033[0m ");
