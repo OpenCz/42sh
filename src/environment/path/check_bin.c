@@ -8,6 +8,19 @@
 #include <stdlib.h>
 #include <string.h>
 
+static int is_executable_file(char *full_path)
+{
+    struct stat st;
+
+    if (!full_path)
+        return 0;
+    if (stat(full_path, &st) == -1)
+        return 0;
+    if (S_ISDIR(st.st_mode))
+        return 0;
+    return access(full_path, X_OK) == 0;
+}
+
 char *loop_bin(main_t *main_stock, char *command)
 {
     int i = 0;
@@ -51,21 +64,18 @@ int check_is_dir(char *command)
 
 char *check_bin(char *command, char *path)
 {
-    DIR *dir = opendir(path);
-    struct dirent *dr;
+    char *full_path = NULL;
 
-    if (command == NULL || path == NULL || dir == NULL)
+    if (command == NULL || path == NULL)
         return NULL;
     if (check_is_dir(command) == 1)
         return NULL;
-    dr = readdir(dir);
-    while (dr != NULL) {
-        if (my_strcmp(dr->d_name, command) == 0) {
-            closedir(dir);
-            return build_path(path, dr->d_name);
-        }
-        dr = readdir(dir);
+    full_path = build_path(path, command);
+    if (!full_path)
+        return NULL;
+    if (!is_executable_file(full_path)) {
+        free(full_path);
+        return NULL;
     }
-    closedir(dir);
-    return NULL;
+    return full_path;
 }
