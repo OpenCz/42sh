@@ -7,10 +7,10 @@
 
 #include "../../include/minishell.h"
 
-static void write_print(void)
+static void write_print(char *user)
 {
     if (isatty(0))
-        display_prompt();
+        display_prompt(user);
 }
 
 int main(int argc, char **argv, char **env)
@@ -19,9 +19,10 @@ int main(int argc, char **argv, char **env)
     size_t buffer_size = 0;
     char *buffer = NULL;
     int last_exit = 0;
+    char *user = get_user(stock->stock_env);
 
     while (my_strcmp(buffer, "exit") != 0) {
-        write_print();
+        write_print(user);
         if (getline(&buffer, &buffer_size, stdin) == -1)
             break;
         if (buffer[my_strlen(buffer) - 1] == '\n')
