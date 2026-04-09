@@ -6,3 +6,5 @@
 unit_tests
 *.log
 42sh
+Logs
+.idea
