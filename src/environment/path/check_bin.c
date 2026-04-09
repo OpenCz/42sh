@@ -21,12 +21,32 @@ static int is_executable_file(char *full_path)
     return access(full_path, X_OK) == 0;
 }
 
+static int init_default_path_array(main_t *main_stock)
+{
+    main_stock->path = malloc(sizeof(char *) * 3);
+    if (!main_stock->path)
+        return 1;
+    main_stock->path[0] = my_strdup("/bin");
+    main_stock->path[1] = my_strdup("/usr/bin");
+    main_stock->path[2] = NULL;
+    if (!main_stock->path[0] || !main_stock->path[1]) {
+        free(main_stock->path[0]);
+        free(main_stock->path[1]);
+        free(main_stock->path);
+        main_stock->path = NULL;
+        return 1;
+    }
+    return 0;
+}
+
 char *loop_bin(main_t *main_stock, char *command)
 {
     int i = 0;
     char *path_bin = NULL;
 
-    if (main_stock == NULL || main_stock->path == NULL)
+    if (main_stock == NULL)
+        return NULL;
+    if (main_stock->path == NULL && init_default_path_array(main_stock))
         return NULL;
     for (; main_stock->path[i] != NULL; i++) {
         path_bin = check_bin(command, main_stock->path[i]);
