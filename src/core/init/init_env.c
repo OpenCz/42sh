@@ -78,10 +78,17 @@ static void append_env_node(env_t **head, env_t **current, env_t *node)
 static int init_default_env(env_t **head, env_t **current, char **env)
 {
     env_t *node;
+    bool has_path = false;
 
-    if (env[0] != NULL)
+    for (int i = 0; env[i] != NULL; i++) {
+        if (my_strncmp(env[i], "PATH=", 5) == 0) {
+            has_path = true;
+            break;
+        }
+    }
+    if (has_path)
         return 0;
-    node = create_env_node("PATH=/bin/:/usr/bin");
+    node = create_env_node("PATH=/bin:/usr/bin");
     if (!node)
         return 1;
     append_env_node(head, current, node);
