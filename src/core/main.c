@@ -16,7 +16,7 @@ static void write_print(void)
 int main(int argc, char **argv, char **env)
 {
     main_t *stock = init_main(env);
-    size_t buffer_size = 64;
+    size_t buffer_size = 0;
     char *buffer = NULL;
     int last_exit = 0;
 
