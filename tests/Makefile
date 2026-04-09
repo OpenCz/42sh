@@ -21,7 +21,10 @@ SRC_BUILTINS = \
 	../src/builtins/env/my_env.c \
 	../src/builtins/env/my_setenv.c \
 	../src/builtins/env/my_unsetenv.c \
-	../src/builtins/fs/my_chdir.c
+	../src/builtins/fs/my_chdir.c \
+	../src/builtins/jobs/my_jobs.c \
+	../src/builtins/jobs/my_foreground.c \
+	../src/builtins/jobs/my_background.c \
 
 SRC_EXEC = \
 	../src/execution/dispatch/execute_builtin.c \
