@@ -5,7 +5,7 @@
 ** context
 */
 
-#include "minishell.h"
+#include "../../../include/minishell.h"
 
 static void init_command_ctx(command_ctx_t *ctx)
 {
@@ -36,7 +36,7 @@ void clear_command_ctx(command_ctx_t *ctx)
     ctx->arg_command = NULL;
 }
 
-int parse_command_context(char *command, command_ctx_t *ctx)
+int parse_command_context(char *command, command_ctx_t *ctx, main_t *stock_main)
 {
     char **command_with_arg = my_str_to_word_array(command, " \t");
 
@@ -49,6 +49,7 @@ int parse_command_context(char *command, command_ctx_t *ctx)
         free_array(command_with_arg);
         return 2;
     }
+    command_with_arg = replace_env_vars(command_with_arg, stock_main);
     ctx->command = command_with_arg[0];
     ctx->argv = command_with_arg;
     ctx->arg_command = &command_with_arg[1];
@@ -79,7 +80,7 @@ int bind_command_context(main_t *stock_main, command_ctx_t *ctx)
 int set_command_context(main_t *stock_main, char *command)
 {
     command_ctx_t ctx;
-    int status = parse_command_context(command, &ctx);
+    int status = parse_command_context(command, &ctx, stock_main);
 
     if (status != 0)
         return status;
