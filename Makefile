@@ -17,6 +17,7 @@ SRC_CORE = \
 	src/core/init/init_env.c \
 	src/core/init/init_main.c \
 	src/core/context/get_command.c \
+	src/core/context/arrow_handling.c \
 	src/core/context/command_context.c
 
 SRC_BUILTINS = \

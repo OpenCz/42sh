@@ -10,7 +10,9 @@
 
     #include "core/types.h"
     #define BUFFER_SIZE 128
+    #define ARROW_START '\x1b'
 
+int arrow_handling(char ch);
 int get_command(char **buffer);
 env_t *init_env(char **env);
 main_t *init_main(char **env);

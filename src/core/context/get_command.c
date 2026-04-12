@@ -45,10 +45,10 @@ static int append_char(char **buffer, char ch, int *len)
 
 static int specific_char(char ch, char **buffer, int *len)
 {
-    if (ch == 37 || ch == 38 || ch == 39 || ch == 40)
+    if (arrow_handling(ch) == 1)
         return 1;
     if (ch == 127) {
-        *len -= 1;
+        *len -= (*len > 0 ? 1 : 0);
         return 1;
     }
     return 0;
