@@ -51,9 +51,9 @@ static int check_char(char **buffer, int *repeat, int *len)
         return -1;
     if (ch == 37 || ch == 38 || ch == 39 || ch == 40)
         return 0;
+    append_char(buffer, ch, len);
     if (ch == '\n')
         return write(1, "\n\x1b[2K", 5);
-    append_char(buffer, ch, len);
     if (realloc_buffer(buffer, *len, repeat) == -1)
         return -1;
     return 0;
@@ -75,16 +75,19 @@ static int create_command(char **buffer)
         status = check_char(buffer, &repeat, &len);
     }
     tcsetattr(STDIN_FILENO, TCSANOW, &old);
-    return 0;
+    return status;
 }
 
 int get_command(char **buffer)
 {
     size_t buffer_size = BUFFER_SIZE;
 
+    if ((*buffer))
+        free(*buffer);
     if (isatty(0)) {
-        if (create_command(buffer) == -1)
+        if (create_command(buffer) == -1) {
             return -1;
+        }
     } else {
         if (getline(buffer, &buffer_size, stdin) == -1)
             return -1;
