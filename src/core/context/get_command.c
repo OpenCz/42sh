@@ -43,13 +43,24 @@ static int append_char(char **buffer, char ch, int *len)
     return 0;
 }
 
+static int specific_char(char ch, char **buffer, int *len)
+{
+    if (ch == 37 || ch == 38 || ch == 39 || ch == 40)
+        return 1;
+    if (ch == 127) {
+        *len -= 1;
+        return 1;
+    }
+    return 0;
+}
+
 static int check_char(char **buffer, int *repeat, int *len)
 {
     char ch;
 
     if (read(STDIN_FILENO, &ch, 1) == -1)
         return -1;
-    if (ch == 37 || ch == 38 || ch == 39 || ch == 40)
+    if (specific_char(ch, buffer, len) == 1)
         return 0;
     append_char(buffer, ch, len);
     if (ch == '\n')
