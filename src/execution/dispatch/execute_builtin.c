@@ -12,6 +12,7 @@ const builtin_command_t command_shell[] = {
     {"setenv", builtin_setenv},
     {"unsetenv", builtin_unsetenv},
     {"cd", builtin_cd},
+    {"history", builtin_history},
     {NULL, NULL}
 };
 

@@ -21,7 +21,7 @@ int main(int argc, char **argv, char **env)
 
     while (my_strcmp(buffer, "exit") != 0) {
         write_print();
-        if (get_command(&buffer) == -1)
+        if (get_command(&buffer, stock->history) == -1)
             break;
         if (buffer[my_strlen(buffer) - 1] == '\n')
             buffer[my_strlen(buffer) - 1] = '\0';

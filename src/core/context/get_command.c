@@ -91,7 +91,7 @@ static int create_command(char **buffer)
     return status;
 }
 
-int get_command(char **buffer)
+int get_command(char **buffer, history_t *history)
 {
     size_t buffer_size = BUFFER_SIZE;
 
@@ -100,6 +100,7 @@ int get_command(char **buffer)
     if (isatty(0)) {
         if (create_command(buffer) == -1)
             return -1;
+        manage_history(history, *buffer);
     } else {
         if (getline(buffer, &buffer_size, stdin) == -1)
             return -1;
