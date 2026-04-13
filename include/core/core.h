@@ -9,10 +9,18 @@
     #define CORE_H
 
     #include "core/types.h"
-    #define BUFFER_SIZE 128
+    #define BUFFER_SIZE 4096
     #define ARROW_START '\x1b'
 
-int arrow_handling(char ch);
+typedef struct history_s {
+    int id;
+    char *date;
+    char *cmd;
+    struct history_s *prev;
+    struct history_s *next;
+} history_t;
+
+int arrow_handling(char ch, int *cursor, int len);
 int get_command(char **buffer);
 env_t *init_env(char **env);
 main_t *init_main(char **env);
