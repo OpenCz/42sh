@@ -10,6 +10,19 @@
 
     #include <sys/types.h>
 
+typedef struct history_cmd_s {
+    int id;
+    char *date;
+    char *cmd;
+    struct history_cmd_s *prev;
+    struct history_cmd_s *next;
+} history_cmd_t;
+
+typedef struct history_s {
+    history_cmd_t *history_cmd;
+    int id;
+} history_t;
+
 typedef struct env_s {
     char *key;
     char *value;
@@ -25,6 +38,7 @@ typedef struct main_s {
     char **argv;
     char **arg_command;
     char *redirection;
+    history_t *history;
     struct env_s *stock_env;
 } main_t;
 

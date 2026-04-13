@@ -12,16 +12,9 @@
     #define BUFFER_SIZE 4096
     #define ARROW_START '\x1b'
 
-typedef struct history_s {
-    int id;
-    char *date;
-    char *cmd;
-    struct history_s *prev;
-    struct history_s *next;
-} history_t;
-
+int manage_history(history_t *history, char *cmd);
 int arrow_handling(char ch, int *cursor, int len);
-int get_command(char **buffer);
+int get_command(char **buffer, history_t *history);
 env_t *init_env(char **env);
 main_t *init_main(char **env);
 int set_command_context(main_t *stock_main, char *command);

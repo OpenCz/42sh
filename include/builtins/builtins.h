@@ -17,6 +17,7 @@ typedef struct builtin_command_s {
     builtin_handler_t func;
 } builtin_command_t;
 
+int builtin_history(main_t *main_stock, command_ctx_t *ctx);
 int execute_builtin(main_t *main_stock, command_ctx_t *ctx);
 int builtin_env(main_t *main_stock, command_ctx_t *ctx);
 int builtin_setenv(main_t *main_stock, command_ctx_t *ctx);
