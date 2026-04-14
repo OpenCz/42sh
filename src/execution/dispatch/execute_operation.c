@@ -7,36 +7,67 @@
 
 #include "42sh.h"
 
-int execute_double_and(main_t *stock_main, char *command)
+static int get_count_operator(char **commands)
 {
-    char **commands = my_str_to_word_array(command, "&&");
-    int commands_len = my_wordarray_len(commands);
-    int single_status = 0;
+    int i = 0;
+    int count = 0;
 
-    for (int i = 0; i < commands_len; i++) {
-        if (single_status == 0)
-            single_status = execute_single_command(
-                stock_main, commands[i], true);
-        else
-            return -1;
+    for (; commands[i] != NULL; i++) {
+        if (my_strcmp(commands[i], "&&") == 0 ||
+            my_strcmp(commands[i], "||") == 0) {
+            count++;
+        }
     }
-    return 0;
+    return count;
 }
 
-int execute_double_pipe(main_t *stock_main, char *command)
+static char **get_operator_array(char *command)
 {
-    char **commands = my_str_to_word_array(command, "||");
-    int commands_len = my_wordarray_len(commands);
-    int single_status = 0;
+    char **commands = my_str_to_word_array(command, " ");
+    int count = get_count_operator(commands);
+    char **op_array = malloc(sizeof(char *) * (count + 1));
+    int i = 0;
+    int k = 0;
 
-    single_status = execute_single_command(
-        stock_main, commands[0], true);
-    for (int i = 1; i < commands_len; i++) {
-        if (single_status != 0)
-            single_status = execute_single_command(
-                stock_main, commands[i], true);
-        else
-            return -1;
+    for (; commands[i] != NULL; i++) {
+        if (my_strcmp(commands[i], "&&") == 0 ||
+            my_strcmp(commands[i], "||") == 0) {
+            op_array[k] = my_strdup(commands[i]);
+            k++;
+        }
     }
-    return 0;
+    return op_array;
+}
+
+int execute_operator_loop(main_t *stock_main, char **commands,
+    char **operator_array, int status_exec)
+{
+    int i = 1;
+    int k = 0;
+
+    for (; commands[i] != NULL; i++) {
+        if (my_strcmp(operator_array[k], "&&") == 0 && status_exec == 0) {
+            status_exec = execute_single_command(
+                stock_main, commands[i], true);
+        }
+        if (my_strcmp(operator_array[k], "||") == 0 && status_exec != 0) {
+            status_exec = execute_single_command(
+                stock_main, commands[i], true);
+        }
+        k++;
+    }
+    return status_exec;
+}
+
+int execute_operator(main_t *stock_main, char *command)
+{
+    char **commands = my_str_to_word_array(command, "&&||");
+    char **operator_array = get_operator_array(command);
+    int status_exec = 0;
+    int i = 0;
+
+    status_exec = execute_single_command(
+        stock_main, commands[i], true);
+    return execute_operator_loop(stock_main, commands,
+        operator_array, status_exec);
 }
