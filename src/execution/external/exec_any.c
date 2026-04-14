@@ -53,8 +53,10 @@ static int is_direct_path(char *cmd)
 
 static char *get_exec_path(main_t *main_stock, command_ctx_t *ctx)
 {
-    if (is_direct_path(ctx->command))
+    if (is_direct_path(ctx->command) && check_bin(ctx->command, ctx->command))
         return ctx->command;
+    if (is_direct_path(ctx->command) && !check_bin(ctx->command, ctx->command))
+        return NULL;
     return loop_bin(main_stock, ctx->command);
 }
 
