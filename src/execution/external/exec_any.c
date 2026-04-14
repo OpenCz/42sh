@@ -51,12 +51,22 @@ static int is_direct_path(char *cmd)
     return SUCCESS;
 }
 
+static int direct_path_exists(char *path)
+{
+    struct stat st;
+
+    if (!path)
+        return 0;
+    return stat(path, &st) == 0;
+}
+
 static char *get_exec_path(main_t *main_stock, command_ctx_t *ctx)
 {
-    if (is_direct_path(ctx->command) && check_bin(ctx->command, ctx->command))
-        return ctx->command;
-    if (is_direct_path(ctx->command) && !check_bin(ctx->command, ctx->command))
+    if (is_direct_path(ctx->command)) {
+        if (direct_path_exists(ctx->command))
+            return ctx->command;
         return NULL;
+    }
     return loop_bin(main_stock, ctx->command);
 }
 
