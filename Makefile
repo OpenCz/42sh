@@ -66,6 +66,7 @@ SRC_UTILS = \
 	src/utils/strings/my_strncmp.c \
 	src/utils/strings/my_strstr.c \
 	src/utils/strings/my_str_to_word_array.c \
+	src/utils/strings/my_str_to_word_array_quotes.c \
 	src/utils/strings/my_wordarraylen.c \
 	src/utils/validation/my_ischar_num.c \
 	src/utils/validation/my_str_is_alphanum.c
