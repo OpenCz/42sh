@@ -44,7 +44,8 @@ SRC_ENV = \
 	src/environment/query/get_path.c
 
 SRC_PARSING = \
-	src/parsing/redirection/get_redirection.c
+	src/parsing/redirection/get_redirection.c \
+	src/parsing/quotes_management/manage_quotes.c \
 
 SRC_UTILS = \
 	src/utils/io/my_putstr.c \
