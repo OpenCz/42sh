@@ -15,6 +15,7 @@ const builtin_command_t command_shell[] = {
     {"jobs", builtin_jobs},
     {"fg", builtin_foreground},
     {"bg", builtin_background},
+    {"repeat", builtin_repeat},
     {NULL, NULL}
 };
 

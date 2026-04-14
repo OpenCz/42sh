@@ -25,6 +25,7 @@ int builtin_cd(main_t *main_stock, command_ctx_t *ctx);
 int builtin_jobs(main_t *main_stock, command_ctx_t *ctx);
 int builtin_foreground(main_t *main_stock, command_ctx_t *ctx);
 int builtin_background(main_t *main_stock, command_ctx_t *ctx);
+int builtin_repeat(main_t *main_stock, command_ctx_t *ctx);
 
 int my_env(main_t *main_stock);
 int my_setenv(main_t *main_stock);
