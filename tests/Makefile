@@ -13,57 +13,34 @@ SRC_TESTS = \
 
 # ─── Project sources (no main.c) ─────────────────────────────────────────
 SRC_CORE = \
-	../src/core/init/init_env.c \
-	../src/core/init/init_main.c \
-	../src/core/context/command_context.c
+	$(wildcard ../src/core/init/*.c) \
+	$(wildcard ../src/core/context/*.c)
 
 SRC_BUILTINS = \
-	../src/builtins/env/my_env.c \
-	../src/builtins/env/my_setenv.c \
-	../src/builtins/env/my_unsetenv.c \
-	../src/builtins/fs/my_chdir.c \
-	../src/builtins/jobs/my_jobs.c \
-	../src/builtins/jobs/my_foreground.c \
-	../src/builtins/jobs/my_background.c \
-	../src/builtins/repeat/repeat.c
+	$(wildcard ../src/builtins/env/*.c) \
+	$(wildcard ../src/builtins/fs/*.c) \
+	$(wildcard ../src/builtins/jobs/*.c) \
 
 SRC_EXEC = \
-	../src/execution/dispatch/execute_builtin.c \
-	../src/execution/dispatch/execute_command.c \
-	../src/execution/dispatch/execute_single_command.c \
-	../src/execution/external/exec_any.c \
-	../src/execution/external/exec_error_case.c \
-	../src/execution/external/run_fork.c \
-	../src/execution/pipeline/pipeline_execute.c \
-	../src/execution/pipeline/pipeline_parse.c \
-	../src/execution/pipeline/pipeline_spawn.c \
-	../src/execution/pipeline/pipeline_syntax.c \
-	../src/execution/pipeline/pipeline_wait.c \
-	../src/execution/redirection/apply_redirection.c
+	$(wildcard ../src/execution/dispatch/*.c) \
+	$(wildcard ../src/execution/external/*.c) \
+	$(wildcard ../src/execution/pipeline/*.c) \
+	$(wildcard ../src/execution/redirection/*.c)
 
 SRC_ENV = \
-	../src/environment/path/check_bin.c \
-	../src/environment/query/get_home.c \
-	../src/environment/query/get_path.c
+	$(wildcard ../src/environment/path/*.c) \
+	$(wildcard ../src/environment/query/*.c)
 
 SRC_PARSING = \
-	../src/parsing/redirection/get_redirection.c
+	$(wildcard ../src/parsing/redirection/*.c)
 
 SRC_UTILS = \
-	../src/utils/io/my_putstr.c \
-	../src/utils/strings/my_strcmp.c \
-	../src/utils/strings/my_strconcat.c \
-	../src/utils/strings/my_strdup.c \
-	../src/utils/strings/my_strlen.c \
-	../src/utils/strings/my_strncmp.c \
-	../src/utils/strings/my_strstr.c \
-	../src/utils/strings/my_str_to_word_array.c \
-	../src/utils/strings/my_wordarraylen.c \
-	../src/utils/validation/my_ischar_num.c \
-	../src/utils/validation/my_str_is_alphanum.c
+	$(wildcard ../src/utils/io/*.c) \
+	$(wildcard ../src/utils/strings/*.c) \
+	$(wildcard ../src/utils/validation/*.c)
 
 SRC_MEMORY = \
-	../src/memory/free/free_function.c
+	$(wildcard ../src/memory/free/*.c)
 
 SRC_PROJECT = \
 	$(SRC_CORE) \
