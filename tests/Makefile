@@ -20,6 +20,7 @@ SRC_BUILTINS = \
 	$(wildcard ../src/builtins/env/*.c) \
 	$(wildcard ../src/builtins/fs/*.c) \
 	$(wildcard ../src/builtins/jobs/*.c) \
+	$(wildcard ../src/builtins/repeat/*.c) \
 
 SRC_EXEC = \
 	$(wildcard ../src/execution/dispatch/*.c) \
