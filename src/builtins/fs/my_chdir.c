@@ -5,7 +5,11 @@
 ** mycd
 */
 
-#include "c_zsh.h"
+#include <stdlib.h>
+#include <string.h>
+
+#include "42sh.h"
+#include "../../../include/utils/defines.h"
 
 int my_chdir_call(char *path)
 {
@@ -58,6 +62,34 @@ static void save_old_path(main_t *main_stock)
     main_stock->old_path = cwd;
 }
 
+static int change_pwd(env_t *tmp, main_t *main_stock, char *path)
+{
+    if (strcmp(tmp->key, "OLDPWD") == 0) {
+        free(tmp->value);
+        tmp->value = strdup(main_stock->old_path);
+        if (!tmp->value)
+            return FAILURE;
+    }
+    if (strcmp(tmp->key, "PWD") == 0) {
+        free(tmp->value);
+        tmp->value = strdup(path);
+        if (!tmp->value)
+            return FAILURE;
+    }
+    return SUCCESS;
+}
+
+static int change_env(env_t **env, main_t *main_stock)
+{
+    char *path = getcwd(NULL, 0);
+
+    for (env_t *tmp = *env; tmp; tmp = tmp->next)
+        if (change_pwd(tmp, main_stock, path) == FAILURE)
+            return FAILURE;
+    free(path);
+    return SUCCESS;
+}
+
 int builtin_cd(main_t *main_stock, command_ctx_t *ctx)
 {
     char *path = resolve_path(main_stock, ctx);
@@ -73,6 +105,7 @@ int builtin_cd(main_t *main_stock, command_ctx_t *ctx)
         return 1;
     }
     free(path);
+    change_env(&main_stock->stock_env, main_stock);
     return SUCCESS;
 }
 
