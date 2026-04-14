@@ -5,7 +5,7 @@
 ** my_env
 */
 
-#include "minishell.h"
+#include "42sh.h"
 
 int my_env(main_t *main_stock)
 {

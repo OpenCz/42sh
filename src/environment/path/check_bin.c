@@ -4,7 +4,7 @@
 ** File description:
 ** bin
 */
-#include "minishell.h"
+#include "42sh.h"
 #include <stdlib.h>
 #include <string.h>
 

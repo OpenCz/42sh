@@ -5,7 +5,7 @@
 ** pipe syntax
 */
 
-#include "minishell.h"
+#include "42sh.h"
 
 static int is_blank(char c)
 {

@@ -5,7 +5,7 @@
 ** redirection
 */
 
-#include "minishell.h"
+#include "42sh.h"
 
 char *get_redirection(const char *command)
 {

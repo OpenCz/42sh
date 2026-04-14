@@ -5,7 +5,7 @@
 ** exec
 */
 
-#include "minishell.h"
+#include "42sh.h"
 
 static char *make_env_entry(char *key, char *value)
 {

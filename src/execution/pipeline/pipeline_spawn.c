@@ -5,7 +5,7 @@
 ** pipeline spawn
 */
 
-#include "minishell.h"
+#include "42sh.h"
 
 int create_pipe(int segment_count, int i, int pipefd[2])
 {

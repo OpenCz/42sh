@@ -7,7 +7,7 @@
 
 #include <sys/stat.h>
 #include <unistd.h>
-#include "minishell.h"
+#include "42sh.h"
 
 int get_file_size_stat(char const *filepath)
 {

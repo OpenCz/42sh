@@ -5,7 +5,7 @@
 ** pipeline
 */
 
-#include "minishell.h"
+#include "42sh.h"
 
 static int run_pipeline_segments(pipeline_state_t *state, int count)
 {

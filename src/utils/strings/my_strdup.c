@@ -5,7 +5,7 @@
 ** recode
 */
 
-#include "minishell.h"
+#include "42sh.h"
 
 char *my_strdup(char *str)
 {

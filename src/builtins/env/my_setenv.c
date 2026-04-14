@@ -5,7 +5,7 @@
 ** setenv
 */
 
-#include "minishell.h"
+#include "42sh.h"
 
 static int update_env_node(env_t *node, char *value)
 {

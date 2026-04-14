@@ -5,7 +5,7 @@
 ** main
 */
 
-#include "../../include/minishell.h"
+#include "42sh.h"
 
 static void write_print(void)
 {

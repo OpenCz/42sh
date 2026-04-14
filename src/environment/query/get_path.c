@@ -5,7 +5,7 @@
 ** path
 */
 
-#include "minishell.h"
+#include "42sh.h"
 
 char *get_path(env_t *stock_env)
 {

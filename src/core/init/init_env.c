@@ -5,7 +5,7 @@
 ** env
 */
 
-#include "minishell.h"
+#include "42sh.h"
 
 static char *dup_n(char *src, int n)
 {

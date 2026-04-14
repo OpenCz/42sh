@@ -5,7 +5,7 @@
 ** pipeline parse
 */
 
-#include "minishell.h"
+#include "42sh.h"
 
 int parse_pipeline(char *command, pipeline_segment_t **segments, int *count)
 {
