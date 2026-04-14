@@ -8,7 +8,7 @@
 #include <fcntl.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include "42sh.h"
+#include "c_zsh.h"
 
 int check_open(int fd)
 {

@@ -5,7 +5,7 @@
 ** context
 */
 
-#include "42sh.h"
+#include "c_zsh.h"
 
 static void init_command_ctx(command_ctx_t *ctx)
 {

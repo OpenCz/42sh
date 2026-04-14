@@ -5,7 +5,7 @@
 ** command
 */
 
-#include "42sh.h"
+#include "c_zsh.h"
 
 static int execute_compound_command(main_t *stock_main, char *command)
 {

@@ -5,7 +5,7 @@
 ** function
 */
 
-#include "42sh.h"
+#include "c_zsh.h"
 
 void free_linked_list(env_t *env)
 {

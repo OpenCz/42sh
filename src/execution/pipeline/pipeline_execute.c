@@ -5,7 +5,7 @@
 ** pipeline
 */
 
-#include "42sh.h"
+#include "c_zsh.h"
 
 static int run_pipeline_segments(pipeline_state_t *state, int count)
 {

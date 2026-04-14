@@ -5,7 +5,7 @@
 ** str
 */
 
-#include "42sh.h"
+#include "c_zsh.h"
 
 const char *my_strstr(const char *str, const char *to_f)
 {

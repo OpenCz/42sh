@@ -5,7 +5,7 @@
 ** my_strlne
 */
 
-#include "42sh.h"
+#include "c_zsh.h"
 
 int my_strlen(char *str)
 {

@@ -5,7 +5,7 @@
 ** run
 */
 
-#include "42sh.h"
+#include "c_zsh.h"
 
 int run_fork(main_t *main_stock, command_ctx_t *ctx, char *path, char **env)
 {

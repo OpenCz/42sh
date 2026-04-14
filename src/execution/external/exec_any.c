@@ -5,7 +5,7 @@
 ** exec
 */
 
-#include "42sh.h"
+#include "c_zsh.h"
 
 static char *make_env_entry(char *key, char *value)
 {

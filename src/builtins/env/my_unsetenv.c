@@ -5,7 +5,7 @@
 ** unenvset
 */
 
-#include "42sh.h"
+#include "c_zsh.h"
 
 env_t *find_env_node(env_t *env, char *key, env_t **prev)
 {

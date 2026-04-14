@@ -5,7 +5,7 @@
 ** home
 */
 
-#include "42sh.h"
+#include "c_zsh.h"
 
 char *get_home(env_t *stock_env)
 {

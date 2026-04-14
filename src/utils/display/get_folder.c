@@ -5,7 +5,7 @@
 ** The get_folder.c
 */
 
-#include "42sh.h"
+#include "c_zsh.h"
 #include <unistd.h>
 
 char *get_folder(void)

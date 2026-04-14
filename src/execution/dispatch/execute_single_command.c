@@ -5,7 +5,7 @@
 ** single command
 */
 
-#include "42sh.h"
+#include "c_zsh.h"
 
 int execute_single_command(main_t *stock_main,
     char *command, bool allow_builtin)

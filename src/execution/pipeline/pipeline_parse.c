@@ -5,7 +5,7 @@
 ** pipeline parse
 */
 
-#include "42sh.h"
+#include "c_zsh.h"
 
 int parse_pipeline(char *command, pipeline_segment_t **segments, int *count)
 {

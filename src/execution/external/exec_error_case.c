@@ -5,7 +5,7 @@
 ** error
 */
 
-#include "42sh.h"
+#include "c_zsh.h"
 
 int child_exec(command_ctx_t *ctx, char *path, char **env)
 {

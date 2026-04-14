@@ -5,7 +5,7 @@
 ** my_jobs
 */
 
-#include "42sh.h"
+#include "c_zsh.h"
 
 int builtin_jobs(main_t *main_stock, command_ctx_t *ctx)
 {

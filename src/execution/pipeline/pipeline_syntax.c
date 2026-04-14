@@ -5,7 +5,7 @@
 ** pipe syntax
 */
 
-#include "42sh.h"
+#include "c_zsh.h"
 
 static int is_blank(char c)
 {

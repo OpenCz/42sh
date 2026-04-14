@@ -5,7 +5,7 @@
 ** mycd
 */
 
-#include "42sh.h"
+#include "c_zsh.h"
 
 int my_chdir_call(char *path)
 {

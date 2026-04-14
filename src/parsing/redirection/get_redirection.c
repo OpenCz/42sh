@@ -5,7 +5,7 @@
 ** redirection
 */
 
-#include "42sh.h"
+#include "c_zsh.h"
 
 char *get_redirection(const char *command)
 {

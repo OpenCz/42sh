@@ -10,7 +10,7 @@
  * @author Erwan Lo Presti
  */
 
-#include "../../../include/42sh.h"
+#include "../../../include/c_zsh.h"
 
 int repeat(main_t *main_stock, command_ctx_t *ctx)
 {

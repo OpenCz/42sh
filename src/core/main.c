@@ -5,7 +5,7 @@
 ** main
 */
 
-#include "42sh.h"
+#include "c_zsh.h"
 
 static void write_print(void)
 {
