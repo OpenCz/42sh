@@ -4,13 +4,8 @@
 ** File description:
 ** The get_branch_git.c
 */
-/**
- * @file get_branch_git.c
- * @brief The get_branch_git.c
- * @author Erwan Lo Presti
- */
 
-#include "../../../include/42sh.h"
+#include "42sh.h"
 
 char *get_branch_git(void)
 {

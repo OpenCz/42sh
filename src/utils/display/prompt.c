@@ -4,13 +4,8 @@
 ** File description:
 ** The prompt.c
 */
-/**
- * @file prompt.c
- * @brief The prompt.c
- * @author Erwan Lo Presti
- */
 
-#include "../../../include/42sh.h"
+#include "42sh.h"
 
 static void pwd(char *pwd_folder)
 {

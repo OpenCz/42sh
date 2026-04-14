@@ -8,7 +8,11 @@
 #include <fcntl.h>
 #include <stdlib.h>
 #include <unistd.h>
+<<<<<<< HEAD
 #include "../../../include/42sh.h"
+=======
+#include "42sh.h"
+>>>>>>> 6733c5299a4d506a5f15a3dee09f47b6cdad7f87
 
 int check_open(int fd)
 {
