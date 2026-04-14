@@ -5,7 +5,7 @@
 ** num
 */
 
-#include "minishell.h"
+#include "c_zsh.h"
 
 int my_str_is_alphanum(char *key)
 {
@@ -19,5 +19,5 @@ int my_str_is_alphanum(char *key)
         }
         i++;
     }
-    return 0;
+    return SUCCESS;
 }

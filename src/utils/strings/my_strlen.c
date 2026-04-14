@@ -5,7 +5,7 @@
 ** my_strlne
 */
 
-#include "minishell.h"
+#include "c_zsh.h"
 
 int my_strlen(char *str)
 {

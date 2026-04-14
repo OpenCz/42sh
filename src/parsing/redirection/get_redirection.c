@@ -5,7 +5,7 @@
 ** redirection
 */
 
-#include "minishell.h"
+#include "c_zsh.h"
 
 char *get_redirection(const char *command)
 {

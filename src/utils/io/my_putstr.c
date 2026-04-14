@@ -5,7 +5,7 @@
 ** my_putstr
 */
 
-#include "minishell.h"
+#include "c_zsh.h"
 
 void my_putchar(char c, int sortie)
 {

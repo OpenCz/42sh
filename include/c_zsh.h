@@ -24,6 +24,7 @@
     #include "core/types.h"
     #include "core/core.h"
     #include "utils/utils.h"
+    #include "utils/defines.h"
     #include "environment/environment.h"
     #include "environment/env_var_management/en_var_management.h"
     #include "parsing/parsing.h"

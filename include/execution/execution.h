@@ -36,4 +36,6 @@ int get_seg(int status);
 
 int apply_redirection(command_ctx_t *ctx);
 
+int execute_operator(main_t *stock_main, char *command);
+
 #endif

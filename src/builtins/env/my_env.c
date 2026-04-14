@@ -5,7 +5,7 @@
 ** my_env
 */
 
-#include "minishell.h"
+#include "c_zsh.h"
 
 int my_env(main_t *main_stock)
 {
@@ -16,7 +16,7 @@ int my_env(main_t *main_stock)
             my_putstr(tmp->value);
         my_putstr("\n");
     }
-    return 0;
+    return SUCCESS;
 }
 
 int builtin_env(main_t *main_stock, command_ctx_t *ctx)

@@ -5,7 +5,7 @@
 ** env
 */
 
-#include "minishell.h"
+#include "c_zsh.h"
 
 static char *dup_n(char *src, int n)
 {
@@ -23,7 +23,7 @@ static int set_env_value(env_t *node, char *env_string, int sep)
 {
     if (env_string[sep] != '=') {
         node->value = NULL;
-        return 0;
+        return SUCCESS;
     }
     node->value = my_strdup(env_string + sep + 1);
     return node->value == NULL;
@@ -64,6 +64,37 @@ static env_t *create_env_node(char *env_string)
     return node;
 }
 
+static void append_env_node(env_t **head, env_t **current, env_t *node)
+{
+    if (*head == NULL) {
+        *head = node;
+        *current = node;
+    } else {
+        (*current)->next = node;
+        *current = node;
+    }
+}
+
+static int init_default_env(env_t **head, env_t **current, char **env)
+{
+    env_t *node;
+    bool has_path = false;
+
+    for (int i = 0; env[i] != NULL; i++) {
+        if (my_strncmp(env[i], "PATH=", 5) == 0) {
+            has_path = true;
+            break;
+        }
+    }
+    if (has_path)
+        return 0;
+    node = create_env_node("PATH=/bin:/usr/bin");
+    if (!node)
+        return 1;
+    append_env_node(head, current, node);
+    return 0;
+}
+
 env_t *init_env(char **env)
 {
     env_t *head = NULL;
@@ -71,17 +102,13 @@ env_t *init_env(char **env)
     env_t *node;
     int i;
 
+    if (init_default_env(&head, &current, env))
+        return NULL;
     for (i = 0; env[i] != NULL; i++) {
         node = create_env_node(env[i]);
         if (!node)
             return NULL;
-        if (head == NULL) {
-            head = node;
-            current = node;
-        } else {
-            current->next = node;
-            current = node;
-        }
+        append_env_node(&head, &current, node);
     }
     return head;
 }

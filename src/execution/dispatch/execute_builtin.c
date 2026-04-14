@@ -5,13 +5,17 @@
 ** builtin
 */
 
-#include "minishell.h"
+#include "c_zsh.h"
 
 const builtin_command_t command_shell[] = {
     {"env", builtin_env},
     {"setenv", builtin_setenv},
     {"unsetenv", builtin_unsetenv},
     {"cd", builtin_cd},
+    {"jobs", builtin_jobs},
+    {"fg", builtin_foreground},
+    {"bg", builtin_background},
+    {"repeat", builtin_repeat},
     {NULL, NULL}
 };
 

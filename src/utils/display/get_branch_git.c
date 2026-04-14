@@ -4,13 +4,8 @@
 ** File description:
 ** The get_branch_git.c
 */
-/**
- * @file get_branch_git.c
- * @brief The get_branch_git.c
- * @author Erwan Lo Presti
- */
 
-#include "../../../include/minishell.h"
+#include "c_zsh.h"
 
 char *get_branch_git(void)
 {

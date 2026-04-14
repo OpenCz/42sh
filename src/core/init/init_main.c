@@ -5,7 +5,7 @@
 ** main
 */
 
-#include "minishell.h"
+#include "c_zsh.h"
 
 main_t *init_main(char **env)
 {

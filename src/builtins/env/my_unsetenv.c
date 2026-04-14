@@ -5,7 +5,7 @@
 ** unenvset
 */
 
-#include "minishell.h"
+#include "c_zsh.h"
 
 env_t *find_env_node(env_t *env, char *key, env_t **prev)
 {
@@ -39,9 +39,9 @@ int builtin_unsetenv(main_t *main_stock, command_ctx_t *ctx)
         return 1;
     curr = find_env_node(main_stock->stock_env, key, &prev);
     if (!curr)
-        return 0;
+        return SUCCESS;
     remove_env_node(&main_stock->stock_env, curr, prev);
-    return 0;
+    return SUCCESS;
 }
 
 int my_unsetenv(main_t *main_stock)

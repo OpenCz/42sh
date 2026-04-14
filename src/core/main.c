@@ -5,7 +5,7 @@
 ** main
 */
 
-#include "../../include/minishell.h"
+#include "c_zsh.h"
 
 static void write_print(void)
 {
@@ -26,6 +26,8 @@ int main(int argc, char **argv, char **env)
             break;
         if (buffer[my_strlen(buffer) - 1] == '\n')
             buffer[my_strlen(buffer) - 1] = '\0';
+        if (my_strcmp(buffer, "exit") == 0)
+            break;
         last_exit = execute_command(stock, buffer);
     }
     if (isatty(0))
