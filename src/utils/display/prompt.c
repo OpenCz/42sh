@@ -10,7 +10,7 @@
  * @author Erwan Lo Presti
  */
 
-#include "../../../include/minishell.h"
+#include "42sh.h"
 
 static void pwd(char *pwd_folder)
 {
