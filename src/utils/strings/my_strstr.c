@@ -5,7 +5,7 @@
 ** str
 */
 
-#include "minishell.h"
+#include "42sh.h"
 
 const char *my_strstr(const char *str, const char *to_f)
 {

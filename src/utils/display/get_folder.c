@@ -10,7 +10,7 @@
  * @author Erwan Lo Presti
  */
 
-#include "../../../include/minishell.h"
+#include "../../../include/42sh.h"
 #include <unistd.h>
 
 char *get_folder(void)

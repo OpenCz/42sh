@@ -5,7 +5,7 @@
 ** num
 */
 
-#include "minishell.h"
+#include "42sh.h"
 
 int my_str_is_alphanum(char *key)
 {

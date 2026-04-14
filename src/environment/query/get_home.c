@@ -5,7 +5,7 @@
 ** home
 */
 
-#include "minishell.h"
+#include "42sh.h"
 
 char *get_home(env_t *stock_env)
 {

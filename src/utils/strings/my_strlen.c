@@ -5,7 +5,7 @@
 ** my_strlne
 */
 
-#include "minishell.h"
+#include "42sh.h"
 
 int my_strlen(char *str)
 {

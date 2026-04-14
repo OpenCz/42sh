@@ -5,7 +5,7 @@
 ** my_foreground
 */
 
-#include "minishell.h"
+#include "42sh.h"
 
 int builtin_foreground(main_t *main_stock, command_ctx_t *ctx)
 {

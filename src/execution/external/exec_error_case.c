@@ -5,7 +5,7 @@
 ** error
 */
 
-#include "minishell.h"
+#include "42sh.h"
 
 int child_exec(command_ctx_t *ctx, char *path, char **env)
 {

@@ -5,7 +5,7 @@
 ** pipeline wait
 */
 
-#include "minishell.h"
+#include "42sh.h"
 
 int normalize_status(int status)
 {

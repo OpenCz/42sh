@@ -5,7 +5,7 @@
 ** main
 */
 
-#include "minishell.h"
+#include "42sh.h"
 
 main_t *init_main(char **env)
 {

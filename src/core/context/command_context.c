@@ -5,7 +5,7 @@
 ** context
 */
 
-#include "minishell.h"
+#include "42sh.h"
 
 static void init_command_ctx(command_ctx_t *ctx)
 {

@@ -5,7 +5,7 @@
 ** my_strcmp
 */
 
-#include "minishell.h"
+#include "42sh.h"
 
 int my_strcmp(char *s1, char *s2)
 {

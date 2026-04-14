@@ -5,7 +5,7 @@
 ** strconcat
 */
 
-#include "minishell.h"
+#include "42sh.h"
 
 char *my_strconcat(char *str1, char *str2)
 {

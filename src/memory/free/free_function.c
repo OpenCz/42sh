@@ -5,7 +5,7 @@
 ** function
 */
 
-#include "minishell.h"
+#include "42sh.h"
 
 void free_linked_list(env_t *env)
 {

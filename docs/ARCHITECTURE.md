@@ -108,7 +108,7 @@ Les points d entree publics sont separes:
 - `include/utils/utils.h`
 - `include/memory/memory.h`
 
-Le fichier `include/minishell.h` sert de facade agregatrice pour compatibilite.
+Le fichier `include/42sh.h` sert de facade agregatrice pour compatibilite.
 
 ## 7. Evolutions Recommandees
 

@@ -5,7 +5,7 @@
 ** builtin
 */
 
-#include "minishell.h"
+#include "42sh.h"
 
 const builtin_command_t command_shell[] = {
     {"env", builtin_env},

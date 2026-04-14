@@ -5,7 +5,7 @@
 ** sandbox
 */
 
-#include "minishell.h"
+#include "42sh.h"
 
 static int is_separator(char c, char *separator)
 {

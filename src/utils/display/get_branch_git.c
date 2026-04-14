@@ -10,7 +10,7 @@
  * @author Erwan Lo Presti
  */
 
-#include "../../../include/minishell.h"
+#include "../../../include/42sh.h"
 
 char *get_branch_git(void)
 {
