@@ -60,6 +60,17 @@ static int direct_path_exists(char *path)
     return stat(path, &st) == 0;
 }
 
+static int command_is_directory(char *command)
+{
+    struct stat st;
+
+    if (!command)
+        return 0;
+    if (stat(command, &st) != 0)
+        return 0;
+    return S_ISDIR(st.st_mode);
+}
+
 static char *get_exec_path(main_t *main_stock, command_ctx_t *ctx)
 {
     if (is_direct_path(ctx->command)) {
@@ -70,21 +81,40 @@ static char *get_exec_path(main_t *main_stock, command_ctx_t *ctx)
     return loop_bin(main_stock, ctx->command);
 }
 
-int exec_any(main_t *main_stock, command_ctx_t *ctx)
+static int is_directory(command_ctx_t *ctx)
 {
-    int direct = is_direct_path(ctx->command);
-    char *path = get_exec_path(main_stock, ctx);
-    char **env = build_env(main_stock->stock_env);
-    int status;
-
-    if (!env)
+    if (command_is_directory(ctx->command)) {
+        my_putstrerror(ctx->command);
+        my_putstrerror(": Permission denied.\n");
         return 1;
+    }
+    return 0;
+}
+
+static int is_command_not_found(char *path, char **env, command_ctx_t *ctx)
+{
     if (!path) {
         my_putstrerror(ctx->command);
         my_putstrerror(": Command not found.\n");
         free_env(env);
         return 1;
     }
+    return 0;
+}
+
+int exec_any(main_t *main_stock, command_ctx_t *ctx)
+{
+    int direct = is_direct_path(ctx->command);
+    char *path = NULL;
+    char **env = NULL;
+    int status = 0;
+
+    if (is_directory(ctx))
+        return 1;
+    path = get_exec_path(main_stock, ctx);
+    env = build_env(main_stock->stock_env);
+    if (!env || is_command_not_found(path, env, ctx))
+        return 1;
     status = run_fork(main_stock, ctx, path, env);
     if (!direct)
         free(path);
