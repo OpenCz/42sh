@@ -11,11 +11,10 @@
 
 static char get_escape(char c)
 {
-    char escapes[] = "ntrабfv\\\"";
-    char values[] = "\n\t\r\a\b\f\v\\\"";
-    int i;
+    char escapes[] = {'n', 't', 'r', 'a', 'b', 'f', 'v', '\\', '"', '\0'};
+    char values[] = {'\n', '\t', '\r', '\a', '\b', '\f', '\v', '\\', '"', '\0'};
+    int i = 0;
 
-    i = 0;
     while (escapes[i]) {
         if (escapes[i] == c)
             return values[i];
@@ -24,10 +23,9 @@ static char get_escape(char c)
     return c;
 }
 
-static char **get_result(char *cmd, char *result)
+static char *get_result(char *cmd, char *result, int *j)
 {
     int in_quotes = 0;
-    int j = 0;
 
     for (int i = 0; cmd[i]; i++) {
         if (cmd[i] == '"') {
@@ -35,24 +33,26 @@ static char **get_result(char *cmd, char *result)
             continue;
         }
         if (in_quotes && cmd[i] == '\\' && cmd[i + 1]) {
-            result[j] = get_escape(cmd[i + 1]);
-            j++;
+            result[*j] = get_escape(cmd[i + 1]);
+            (*j)++;
             i++;
         } else {
-            result[j] = cmd[i];
-            j++;
+            result[*j] = cmd[i];
+            (*j)++;
         }
     }
-    result[j] = '\0';
-    return my_str_to_word_array(result, ";");
+    return result;
 }
 
-char **convert_quotes(char *cmd)
+char *convert_quotes(char *cmd)
 {
     char *result = NULL;
+    int j = 0;
 
     result = malloc(strlen(cmd) + 1);
     if (!result)
         return NULL;
-    return get_result(cmd, result);
+    result = get_result(cmd, result, &j);
+    result[j] = '\0';
+    return result;
 }
