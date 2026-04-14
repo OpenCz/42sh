@@ -8,8 +8,7 @@
 MAKEFLAGS += --no-print-directory
 
 # ─── Test sources ─────────────────────────────────────────────────────────
-SRC_TESTS = \
-	test_minishell_unit.c
+SRC_TESTS = $(wildcard test_*.c)
 
 # ─── Project sources (no main.c) ─────────────────────────────────────────
 SRC_CORE = \
@@ -64,8 +63,8 @@ LOGS_DIR    = ../Logs
 COVERAGE_DIR     = $(LOGS_DIR)/coverage
 COVERAGE_RAW_DIR = $(COVERAGE_DIR)/raw
 COVERAGE_HTML    = $(COVERAGE_DIR)/index.html
-WEBGCOVRFLAGS    = --html-theme $(GCOVRSTYLE) --html --html-nested -o $(COVERAGE_HTML)
-GCOVRFLAGS  = --gcov-executable "llvm-cov-20 gcov" --exclude tests/ --root ..
+WEBGCOVRFLAGS    = --html-theme $(GCOVRSTYLE) --html -o $(COVERAGE_HTML)
+GCOVRFLAGS  = --gcov-executable "llvm-cov-20 gcov" --filter ".*src/.*" --exclude ".*tests/.*" --exclude-directories "tests" --root ..
 VALGRIND_LOG  = $(LOGS_DIR)/valgrind.log
 VALGRIND_HTML = $(LOGS_DIR)/valgrind.html
 
@@ -101,13 +100,19 @@ tests_run: unit_tests
 	printf "%b\n" "$(BOLD)$(H_GREEN)Done! Logs: $(LOGS_DIR)/test_output.log | $(LOGS_DIR)/coverage_report.log$(END)"
 
 coverage: unit_tests
-	@mkdir -p $(LOGS_DIR) $(COVERAGE_RAW_DIR)
-	@./unit_tests
-	@gcovr $(GCOVRFLAGS) $(WEBGCOVRFLAGS)
-	@gcovr $(GCOVRFLAGS) --txt-metric branch
+	@mkdir -p $(LOGS_DIR) $(COVERAGE_DIR) $(COVERAGE_RAW_DIR)
+	@CRITERION_SHOW_STDOUT=1 ./unit_tests > $(LOGS_DIR)/test_output.log 2>&1; EXIT_CODE=$$?; \
+	if [ $$EXIT_CODE -ne 0 ]; then \
+	    printf "%b\n" "$(BOLD)$(H_YELLOW)Some tests failed! Check $(LOGS_DIR)/test_output.log$(END)"; \
+	    cat $(LOGS_DIR)/test_output.log; \
+	    exit $$EXIT_CODE; \
+	fi
+	@printf "%b\n" "$(BOLD)$(H_GREEN)All tests passed! Generating coverage report...$(END)"
+	@gcovr $(GCOVRFLAGS) $(WEBGCOVRFLAGS) > $(LOGS_DIR)/coverage_report.log 2>&1
+	@gcovr $(GCOVRFLAGS) --txt-metric branch >> $(LOGS_DIR)/coverage_report.log 2>&1
 	@printf "%b\n" "$(BOLD)$(H_CYAN)Running Valgrind...$(END)"
 	@valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes \
-	    --log-file=$(VALGRIND_LOG) ./unit_tests 2>/dev/null; \
+	    --log-file=$(VALGRIND_LOG) ./unit_tests >/dev/null 2>&1; \
 	{ echo '<!DOCTYPE html><html><head><meta charset="utf-8">'; \
 	  echo '<title>Valgrind Report</title>'; \
 	  echo '<style>'; \
@@ -119,9 +124,12 @@ coverage: unit_tests
 	  echo '<h1>Valgrind Report — unit_tests</h1><pre>'; \
 	  cat $(VALGRIND_LOG); \
 	  echo '</pre></body></html>'; } > $(VALGRIND_HTML)
-	@printf "%b\n" "$(BOLD)$(H_GREEN)Valgrind report: $(VALGRIND_HTML)$(END)"
-	@xdg-open $(COVERAGE_HTML)
-	@xdg-open $(VALGRIND_HTML)
+	@printf "%b\n" "$(BOLD)$(H_GREEN)Done! Logs: $(LOGS_DIR)/test_output.log | $(LOGS_DIR)/coverage_report.log$(END)"
+	@printf "%b\n" "$(BOLD)$(H_GREEN)Reports: $(COVERAGE_HTML) | $(VALGRIND_HTML)$(END)"
+	@if command -v xdg-open >/dev/null 2>&1; then \
+		xdg-open $(COVERAGE_HTML) >/dev/null 2>&1 || true; \
+		xdg-open $(VALGRIND_HTML) >/dev/null 2>&1 || true; \
+	fi
 
 clean:
 	@$(RM) unit_tests *.gcda *.gcno
