@@ -187,7 +187,7 @@ tests_run: re
 	@$(MAKE) -C tests tests_run
 
 coverage: re
-	@$(MAKE) -C tests coverage src/execution/redirection/apply_redirection.c
+	@$(MAKE) -C tests coverage
 functional_tests: all
 	$(call pretty_header, Running Functional Tests)
 	@mkdir -p $(LOGS_DIR)/functional_tests
