@@ -9,6 +9,10 @@
 
 static int execute_compound_command(main_t *stock_main, char *command)
 {
+    if (my_strstr(command, "||") != NULL)
+        return execute_double_pipe(stock_main, command);
+    if (my_strstr(command, "&&") != NULL)
+        return execute_double_and(stock_main, command);
     if (my_strstr(command, "|") != NULL)
         return execute_pipeline(stock_main, command);
     return execute_single_command(stock_main, command, true);
