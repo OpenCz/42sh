@@ -6,37 +6,46 @@
 */
 
 #include "../../../include/minishell.h"
+#include <time.h>
 
-static void add_to_history(history_cmd_t *history)
+static void add_to_history(history_t *his, history_cmd_t *history)
 {
     FILE *file = fopen("history.txt", "a+");
+    time_t curr_time = time(NULL);
+    struct tm *t = localtime(&curr_time);
 
     if (!file)
         return;
-    fprintf(file, "%6d\t00:00\t%s", history->id, history->cmd);
+    fprintf(file, "%6d\t%.2d:%.2d\t%s", his->id, t->tm_hour,
+        t->tm_min, history->cmd);
     fclose(file);
 }
 
-static void push_front(history_t *his, history_cmd_t **history, char *cmd)
+static history_cmd_t *push_front(history_t *his,
+    history_cmd_t **history, char *cmd)
 {
     history_cmd_t *new = malloc(sizeof(history_cmd_t));
 
     if (!new)
-        return;
+        return NULL;
     new->cmd = strdup(cmd);
-    new->date = NULL;
     new->id = his->id;
     his->id += 1;
-    new->prev = *history;
-    new->next = NULL;
+    new->next = *history;
+    new->prev = NULL;
+    if (*history != NULL)
+        (*history)->prev = new;
     *history = new;
+    return new;
 }
 
 int manage_history(history_t *history, char *cmd)
 {
+    history_cmd_t *history_cmd = NULL;
+
     if (cmd[0] == '\n' || !cmd)
         return 1;
-    push_front(history, &history->history_cmd, cmd);
-    add_to_history(history->history_cmd);
+    history_cmd = push_front(history, &history->history_cmd, cmd);
+    add_to_history(history, history_cmd);
     return 0;
 }

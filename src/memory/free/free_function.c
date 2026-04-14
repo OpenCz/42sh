@@ -31,6 +31,18 @@ void free_array(char **array)
     free(array);
 }
 
+static void free_history(history_t *his, history_cmd_t *history)
+{
+    history_cmd_t *next = NULL;
+
+    for (history_cmd_t *curr = history; curr; curr = next) {
+        next = curr->next;
+        free(curr->cmd);
+        free(curr);
+    }
+    free(his);
+}
+
 void free_main(main_t *stock)
 {
     if (!stock)
@@ -42,6 +54,7 @@ void free_main(main_t *stock)
     if (stock->old_path)
         free(stock->old_path);
     free_linked_list(stock->stock_env);
+    free_history(stock->history, stock->history->history_cmd);
     free(stock);
 }
 

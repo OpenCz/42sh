@@ -14,5 +14,6 @@ int builtin_history(main_t *main_stock, command_ctx_t *ctx)
     if (!file)
         return 1;
     printf("%s", file);
+    free(file);
     return 0;
 }

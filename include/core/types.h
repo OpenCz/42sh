@@ -12,7 +12,6 @@
 
 typedef struct history_cmd_s {
     int id;
-    char *date;
     char *cmd;
     struct history_cmd_s *prev;
     struct history_cmd_s *next;
@@ -21,6 +20,7 @@ typedef struct history_cmd_s {
 typedef struct history_s {
     history_cmd_t *history_cmd;
     int id;
+    char *curr;
 } history_t;
 
 typedef struct env_s {
