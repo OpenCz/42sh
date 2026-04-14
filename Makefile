@@ -26,6 +26,7 @@ SRC_BUILTINS = \
 	src/builtins/jobs/my_jobs.c \
 	src/builtins/jobs/my_foreground.c \
 	src/builtins/jobs/my_background.c \
+	src/builtins/repeat/repeat.c
 
 SRC_EXEC = \
 	src/execution/dispatch/execute_builtin.c \
