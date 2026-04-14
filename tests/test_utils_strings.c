@@ -6,7 +6,7 @@
 */
 
 #include <criterion/criterion.h>
-#include "42sh.h"
+#include "c_zsh.h"
 
 Test(my_strlen, returns_correct_length)
 {

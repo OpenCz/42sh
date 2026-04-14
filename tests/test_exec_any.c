@@ -6,7 +6,7 @@
 */
 
 #include <criterion/criterion.h>
-#include "../include/42sh.h"
+#include "../include/c_zsh.h"
 
 static env_t *node_new(const char *key, const char *value)
 {

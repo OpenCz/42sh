@@ -7,7 +7,7 @@
 
 #include <criterion/criterion.h>
 #include <criterion/redirect.h>
-#include "42sh.h"
+#include "c_zsh.h"
 
 static env_t *node_new(const char *key, const char *value)
 {

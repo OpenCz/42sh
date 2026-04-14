@@ -6,7 +6,7 @@
 */
 
 #include <criterion/criterion.h>
-#include "42sh.h"
+#include "c_zsh.h"
 
 Test(execute_builtin, resolves_known_and_unknown_commands)
 {

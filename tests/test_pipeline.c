@@ -8,7 +8,7 @@
 #include <criterion/criterion.h>
 #include <fcntl.h>
 #include <unistd.h>
-#include "../include/42sh.h"
+#include "../include/c_zsh.h"
 
 Test(pipeline_syntax, detects_invalid_and_valid_pipes)
 {

@@ -6,7 +6,7 @@
 */
 
 #include <criterion/criterion.h>
-#include "42sh.h"
+#include "c_zsh.h"
 
 Test(command_context, parse_empty_command_returns_2)
 {

@@ -7,7 +7,7 @@
 
 #include <criterion/criterion.h>
 #include <criterion/redirect.h>
-#include "42sh.h"
+#include "c_zsh.h"
 
 static void redirect_all(void)
 {

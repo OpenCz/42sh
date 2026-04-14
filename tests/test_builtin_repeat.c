@@ -6,7 +6,7 @@
 */
 
 #include <criterion/criterion.h>
-#include "42sh.h"
+#include "c_zsh.h"
 
 Test(builtin_repeat, zero_count_returns_success_without_mutating_ctx)
 {

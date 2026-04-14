@@ -6,7 +6,7 @@
 */
 
 #include <criterion/criterion.h>
-#include "42sh.h"
+#include "c_zsh.h"
 
 Test(get_redirection, finds_double_out)
 {

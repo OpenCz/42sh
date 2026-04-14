@@ -9,7 +9,7 @@
 #include <criterion/redirect.h>
 #include <fcntl.h>
 #include <unistd.h>
-#include "../include/42sh.h"
+#include "../include/c_zsh.h"
 
 static char *create_temp_file(const char *content, mode_t mode)
 {
