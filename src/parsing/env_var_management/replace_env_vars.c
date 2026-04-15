@@ -48,4 +48,5 @@ char **replace_env_vars(char **args, main_t *stock_main)
         free(args[i]);
         args[i] = my_strdup(env_var);
     }
+    return args;
 }
