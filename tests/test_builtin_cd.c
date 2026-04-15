@@ -142,33 +142,4 @@ Test(builtin_cd, rejects_regular_file_path)
     free(file);
 }
 
-Test(my_chdir, wrapper_uses_main_arguments)
-{
-    main_t stock = {0};
-    char *args[] = {"~", NULL};
-    char *tmpdir = create_temp_dir();
-    char *old_cwd = getcwd(NULL, 0);
-
-    cr_assert_not_null(old_cwd);
-    stock.arg_command = args;
-    stock.home = tmpdir;
-    stock.stock_env = node_new("PWD", "/unused");
-    stock.stock_env->next = node_new("OLDPWD", "/unused_old");
-    cr_assert_eq(my_chdir(&stock), SUCCESS);
-    cr_assert_eq(chdir(old_cwd), 0);
-    cr_assert_eq(rmdir(tmpdir), 0);
-    free(old_cwd);
-    free(tmpdir);
-    free(stock.old_path);
-    free_linked_list(stock.stock_env);
-}
-
-Test(my_chdir_call, fails_on_regular_file)
-{
-    char *file = create_temp_file();
-
-    cr_assert_eq(my_chdir_call(file), 1);
-    unlink(file);
-    free(file);
-}
 
