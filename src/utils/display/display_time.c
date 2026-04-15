@@ -44,19 +44,26 @@ static void iso_date_format(struct tm *tm)
 
 void display_time(void)
 {
-    time_t now = time(&now);
+    time_t now = time(NULL);
     struct tm *tm = localtime(&now);
     struct winsize w;
     char time_str[9];
     int col = 0;
+    int has_win = 0;
 
-    ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
+    has_win = (ioctl(STDOUT_FILENO, TIOCGWINSZ, &w) == 0);
     strftime(time_str, sizeof(time_str), "%H:%M:%S", tm);
-    col = w.ws_col - 8;
+    if (has_win) {
+        col = w.ws_col - 8;
+        if (col < 1)
+            col = 1;
+    }
     long_date_format(tm);
     european_date_format(tm);
     us_date_format(tm);
     iso_date_format(tm);
-    printf("\033[%dG", col);
+    if (has_win)
+        printf("\033[%dG", col);
     printf("%s\n", time_str);
+
 }
