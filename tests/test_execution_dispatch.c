@@ -75,3 +75,41 @@ Test(execute_command, rejects_null_command)
     cr_assert_eq(execute_command(&stock, NULL), 1);
 }
 
+// Tests for execute_operator - AND/OR operators
+Test(execute_operator, handles_and_operator_both_success)
+{
+    main_t stock = {0};
+
+    cr_assert_eq(execute_operator(&stock, "env && env"), SUCCESS);
+}
+
+Test(execute_operator, handles_or_operator_first_true)
+{
+    main_t stock = {0};
+
+    cr_assert_eq(execute_operator(&stock, "env || env"), SUCCESS);
+}
+
+Test(execute_operator, handles_multiple_operators)
+{
+    main_t stock = {0};
+
+    cr_assert_eq(execute_operator(&stock, "true && true && true"), SUCCESS);
+}
+
+Test(execute_operator, handles_and_operator_first_fails)
+{
+    main_t stock = {0};
+
+    // Test with a command that fails
+    int result = execute_operator(&stock, "nonexistent && true");
+    cr_assert_neq(result, SUCCESS);
+}
+
+Test(execute_operator, handles_or_operator_first_fails_second_succeeds)
+{
+    main_t stock = {0};
+
+    // This will execute nonexistent (fails), then run env via OR
+    cr_assert_eq(execute_operator(&stock, "nonexistent || env"), SUCCESS);
+}
