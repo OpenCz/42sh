@@ -24,6 +24,8 @@ int get_file_size_stat(char const *filepath);
 char *openator(char const *filepath);
 char *get_folder(void);
 char *get_branch_git(void);
-void display_prompt(void);
+void display_prompt(char *user);
+int my_putnbr(int nb);
+void display_time(void);
 
 #endif
