@@ -15,7 +15,7 @@ int parse_pipeline(char *command, pipeline_segment_t **segments, int *count)
         my_putstrerror("Invalid null command.\n");
         return 1;
     }
-    commands = my_str_to_word_array(command, "|");
+    commands = my_str_to_word_array_quote(command, "|");
     if (!commands)
         return 1;
     *count = my_wordarray_len(commands);

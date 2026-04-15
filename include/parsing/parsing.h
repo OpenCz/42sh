@@ -9,5 +9,6 @@
     #define PARSING_H
 
 char *get_redirection(const char *command);
+char *convert_quotes(char *cmd);
 
 #endif

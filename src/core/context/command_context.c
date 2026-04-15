@@ -38,7 +38,7 @@ void clear_command_ctx(command_ctx_t *ctx)
 
 int parse_command_context(char *command, command_ctx_t *ctx)
 {
-    char **command_with_arg = my_str_to_word_array(command, " \t");
+    char **command_with_arg = my_str_to_word_array_quote(command, " \t");
 
     if (!ctx)
         return 1;
@@ -49,6 +49,8 @@ int parse_command_context(char *command, command_ctx_t *ctx)
         free_array(command_with_arg);
         return 2;
     }
+    for (int i = 0; command_with_arg[i]; i++)
+        command_with_arg[i] = convert_quotes(command_with_arg[i]);
     ctx->command = command_with_arg[0];
     ctx->argv = command_with_arg;
     ctx->arg_command = &command_with_arg[1];
