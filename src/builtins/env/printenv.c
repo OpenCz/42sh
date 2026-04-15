@@ -10,12 +10,12 @@
  * @author Erwan Lo Presti
  */
 
-#include "../../../include/c_zsh.h"
+#include "c_zsh.h"
 
 int printenv(main_t *main_stock, command_ctx_t *ctx)
 {
     if (my_wordarray_len(ctx->arg_command) != 1) {
-        my_putstr("printenv: Too many arguments.\n");
+        my_putstrerror("printenv: Too many arguments.\n");
         return 1;
     }
     for (env_t *tmp = main_stock->stock_env; tmp != NULL; tmp = tmp->next) {
