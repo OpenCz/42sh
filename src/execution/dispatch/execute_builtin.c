@@ -16,6 +16,7 @@ const builtin_command_t command_shell[] = {
     {"fg", builtin_foreground},
     {"bg", builtin_background},
     {"repeat", builtin_repeat},
+    {"printenv", builtin_printenv},
     {NULL, NULL}
 };
 
