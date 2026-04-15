@@ -10,10 +10,11 @@
 char *get_branch_git(void)
 {
     char *new_str = NULL;
-    char *str = openator(".git/HEAD");
+    char *str = NULL;
 
-    if (!str)
-        return NULL;
+    if (access(".git/HEAD", F_OK) == -1)
+        return str;
+    str = openator(".git/HEAD");
     if (my_strncmp(str, "ref: refs/heads/", 16) == 0)
         new_str = my_strdup(str + 16);
     if (!new_str) {
