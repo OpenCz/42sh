@@ -24,15 +24,6 @@ static char *find_value(char *key, main_t *stock_main)
     return NULL;
 }
 
-static int is_there_env_vars(char **args)
-{
-    for (int i= 0; args[i]; i++) {
-        if (args[i][0] == '$')
-            return i;
-    }
-    return -1;
-}
-
 char **replace_env_vars(char **args, main_t *stock_main)
 {
     char *env_var = NULL;
