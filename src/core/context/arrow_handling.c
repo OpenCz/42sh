@@ -24,7 +24,7 @@ static int up_arrow(history_t *history, char **buffer, int *len, char arrow)
         history->curr_cmd = history->history_cmd;
     } else if (history->curr_cmd->next != NULL)
         history->curr_cmd = history->curr_cmd->next;
-    *buffer = history->curr_cmd->cmd;
+    *buffer = strcpy(*buffer, history->curr_cmd->cmd);
     *len = strlen(*buffer);
     return 1;
 }

@@ -14,7 +14,7 @@ static history_t *init_history(main_t *main)
     main->history = calloc(1, sizeof(history_t));
     if (!main->history)
         free(main);
-    file = fopen("history.txt", "w+");
+    file = fopen(".history.txt", "w+");
     if (file)
         fclose(file);
     return main->history;

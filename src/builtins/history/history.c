@@ -9,7 +9,7 @@
 
 int builtin_history(main_t *main_stock, command_ctx_t *ctx)
 {
-    char *file = openator("history.txt");
+    char *file = openator(".history.txt");
 
     if (!file)
         return 1;

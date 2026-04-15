@@ -10,7 +10,7 @@
 
 static void add_to_history(history_t *his, history_cmd_t *history)
 {
-    FILE *file = fopen("history.txt", "a+");
+    FILE *file = fopen(".history.txt", "a+");
     time_t curr_time = time(NULL);
     struct tm *t = localtime(&curr_time);
 
