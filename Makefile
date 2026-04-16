@@ -29,6 +29,7 @@ SRC_BUILTINS = \
 	src/builtins/repeat/repeat.c \
 	src/builtins/fs/my_which.c \
 	src/builtins/fs/my_where.c 
+	src/builtins/env/printenv.c
 
 SRC_EXEC = \
 	src/execution/dispatch/execute_builtin.c \
@@ -48,7 +49,8 @@ SRC_EXEC = \
 SRC_ENV = \
 	src/environment/path/check_bin.c \
 	src/environment/query/get_home.c \
-	src/environment/query/get_path.c
+	src/environment/query/get_path.c \
+	src/environment/query/get_user.c
 
 SRC_PARSING = \
 	src/parsing/redirection/get_redirection.c \
@@ -57,6 +59,8 @@ SRC_PARSING = \
 SRC_UTILS = \
 	src/utils/io/my_putstr.c \
 	src/utils/io/get_file_size_stat.c \
+	src/utils/io/my_putnbr.c \
+	src/utils/display/display_time.c \
 	src/utils/io/openator.c \
 	src/utils/display/get_branch_git.c \
 	src/utils/display/get_folder.c \

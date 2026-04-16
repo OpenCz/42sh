@@ -18,6 +18,7 @@ const builtin_command_t command_shell[] = {
     {"repeat", builtin_repeat},
     {"which", builtin_which},
     {"where", builtin_where},
+    {"printenv", builtin_printenv},
     {NULL, NULL}
 };
 
