@@ -54,6 +54,7 @@ SRC_ENV = \
 
 SRC_PARSING = \
 	src/parsing/redirection/get_redirection.c \
+	src/parsing/env_var_management/replace_env_vars.c \
 	src/parsing/quotes_management/manage_quotes.c \
 
 SRC_UTILS = \

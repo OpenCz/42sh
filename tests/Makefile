@@ -33,6 +33,7 @@ SRC_ENV = \
 
 SRC_PARSING = \
 	$(wildcard ../src/parsing/redirection/*.c) \
+	$(wildcard ../src/parsing/env_var_management/*.c) \
 	$(wildcard ../src/parsing/quotes_management/*.c)
 
 SRC_UTILS = \
