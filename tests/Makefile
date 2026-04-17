@@ -40,7 +40,8 @@ SRC_PARSING = \
 SRC_UTILS = \
 	$(wildcard ../src/utils/io/*.c) \
 	$(wildcard ../src/utils/strings/*.c) \
-	$(wildcard ../src/utils/validation/*.c)
+	$(wildcard ../src/utils/validation/*.c) \
+	$(wildcard ../src/utils/display/*.c)
 
 SRC_MEMORY = \
 	$(wildcard ../src/memory/free/*.c)
