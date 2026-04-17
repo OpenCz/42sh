@@ -120,7 +120,6 @@ static int foreach(command_ctx_t *ctx)
 
     if (!arg)
         return FAILURE;
-
     return SUCCESS;
 }
 
