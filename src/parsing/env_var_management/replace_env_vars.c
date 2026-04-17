@@ -5,7 +5,7 @@
 ** replace_env_vars
 */
 
-#include "../../../include/c_zsh.h"
+#include "c_zsh.h"
 
 static size_t get_var_name_len(const char *name)
 {
@@ -51,7 +51,7 @@ static void replace_single_arg(char **args, int i, main_t *stock_main)
         return;
     strcpy(new_val, env_var);
     strcat(new_val, suffix);
-    free(args[i]);
+    free_alloc(args[i]);
     args[i] = new_val;
 }
 
