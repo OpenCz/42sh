@@ -21,26 +21,31 @@ static void write_tty(char *buffer)
         my_putstr(buffer);
 }
 
-static void serialize(char *buffer)
+static char *serialize(char *buffer)
 {
-    if (buffer[my_strlen(buffer) - 1] == '\n')
-        buffer[my_strlen(buffer) - 1] = '\0';
+    size_t len = 0;
+
+    if (!buffer)
+        return NULL;
+    len = my_strlen(buffer);
+    if (len > 0 && buffer[len - 1] == '\n')
+        buffer[len - 1] = '\0';
+    return buffer;
 }
 
 int main(int argc, char **argv, char **env)
 {
     main_t *stock = init_main(env);
-    size_t buffer_size = 0;
     char *buffer = NULL;
     int last_exit = 0;
     int cmd = 0;
 
     while (my_strcmp(buffer, "exit") != 0) {
         write_print(stock);
-        cmd = get_command(&buffer, stock->history);
+        cmd = get_command(&buffer, stock->history, get_user(stock->stock_env));
         if (cmd == CONTINUE)
             continue;
-        serialize(buffer);
+        buffer = serialize(buffer);
         if (my_strcmp(buffer, "exit") == 0 || cmd == -1)
             break;
         last_exit = execute_command(stock, buffer);
