@@ -31,5 +31,6 @@
     #include "builtins/builtins.h"
     #include "execution/execution.h"
     #include "memory/memory.h"
+    #include "config/czshrc.h"
 
 #endif
