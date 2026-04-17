@@ -13,6 +13,6 @@
 void free_linked_list(env_t *env);
 void free_array(char **array);
 void free_main(main_t *stock);
-void free_shell_state(main_t *stock);
+void free_alloc(void *object);
 
 #endif

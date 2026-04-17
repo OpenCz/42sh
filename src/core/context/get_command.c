@@ -11,7 +11,7 @@ static void init_termios(struct termios *tr, struct termios *old)
 {
     tcgetattr(STDIN_FILENO, old);
     tcgetattr(STDIN_FILENO, tr);
-    tr->c_lflag &= ~(ICANON | ECHO);
+    tr->c_lflag &= ~(ICANON | ECHO | ISIG);
     tr->c_cc[VMIN] = 1;
     tr->c_cc[VTIME] = 0;
     tcsetattr(STDIN_FILENO, TCSANOW, tr);
@@ -54,12 +54,25 @@ static int specific_char(char ch, char **buffer, int *len, int *cursor)
     return 0;
 }
 
+static int handle_ctrl_d(int *len)
+{
+    if (*len == 0)
+        return -1;
+    write(1, "\n", 1);
+    display_prompt();
+    return 2;
+}
+
 static int check_char(history_t *history, char **buffer, int *len, int *cursor)
 {
-    char ch;
+    char ch = 0;
 
     if (read(STDIN_FILENO, &ch, 1) == -1)
         return -1;
+    if (ch == 3)
+        return 0;
+    if (ch == 4)
+        return handle_ctrl_d(len);
     if (ch == ARROW_START)
         return arrow_handling(history, buffer, cursor, len);
     if (specific_char(ch, buffer, len, cursor) == 1)
@@ -84,6 +97,10 @@ static int create_command(history_t *history, char **buffer)
     for (int cursor = 0; status == 0;) {
         print_command(*buffer, len, cursor);
         status = check_char(history, buffer, &len, &cursor);
+        if (status == 2) {
+            status = 0;
+            cursor = len;
+        }
     }
     tcsetattr(STDIN_FILENO, TCSANOW, &old);
     return status;
@@ -92,10 +109,14 @@ static int create_command(history_t *history, char **buffer)
 int get_command(char **buffer, history_t *history)
 {
     size_t buffer_size = BUFFER_SIZE;
+    int create_cmd = 0;
 
     if (isatty(0)) {
-        if (create_command(history, buffer) == -1)
+        create_cmd = create_command(history, buffer);
+        if (create_cmd == -1)
             return -1;
+        if (create_cmd == CONTINUE)
+            return CONTINUE;
         manage_history(history, *buffer);
     } else {
         if (getline(buffer, &buffer_size, stdin) == -1)

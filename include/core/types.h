@@ -10,6 +10,8 @@
 
     #include <sys/types.h>
 
+    #define CONTINUE -5
+
 typedef struct history_cmd_s {
     int id;
     char *cmd;
