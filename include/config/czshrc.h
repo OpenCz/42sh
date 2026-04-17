@@ -7,7 +7,7 @@
 
 #ifndef CZ_SHRT_H
     #define CZ_SHRT_H
-    
+
     #include <stdbool.h>
 
 typedef enum date_format_e {
