@@ -17,6 +17,7 @@
 #include <unistd.h>
 #include <errno.h>
 #include <signal.h>
+#include <ctype.h>
 
 #ifndef MINISHELL_H
     #define MINISHELL_H
