@@ -82,11 +82,20 @@ static int handle_ctrl_d(int *len)
     return 2;
 }
 
+static int handle_ctrl_c(char ch)
+{
+    if (ch == 3) {
+        write(1, "\n", 1);
+        return -1;
+    }
+    return 0;
+}
+
 static int check_char(history_t *history, char **buffer, int *len, int *cursor)
 {
     char ch = 0;
 
-    if (read(STDIN_FILENO, &ch, 1) == -1)
+    if (read(STDIN_FILENO, &ch, 1) == -1 || handle_ctrl_c(ch) == -1)
         return -1;
     if (ch == 3)
         return 0;

@@ -13,9 +13,9 @@ static void write_print(void)
         display_prompt();
 }
 
-static void write_tty(char *buffer)
+static void write_tty(char *buffer, int cmd)
 {
-    if (isatty(0))
+    if (cmd != -1 && isatty(0))
         my_putstr(buffer);
 }
 
@@ -42,7 +42,7 @@ int main(int argc, char **argv, char **env)
             break;
         last_exit = execute_command(stock, buffer);
     }
-    write_tty("exit\n");
+    write_tty("exit\n", cmd);
     free_main(stock);
     return last_exit;
 }
