@@ -38,7 +38,7 @@ static int append_char(char **buffer, char ch, int *len, int *cursor)
     return 0;
 }
 
-static int handle_ctrl_l(char ch)
+static int handle_ctrl_l(char ch, char *user)
 {
     pid_t pid;
     char *av[] = {"clear", NULL};
@@ -48,7 +48,7 @@ static int handle_ctrl_l(char ch)
         execv("/bin/clear", av);
     } else
         waitpid(pid, NULL, 0);
-    display_prompt();
+    display_prompt(user);
     return 0;
 }
 
@@ -102,7 +102,7 @@ static int check_char(history_t *history, buffer_t *buff,
     if (ch == 3)
         return 0;
     if (ch == 12)
-        return handle_ctrl_l(ch);
+        return handle_ctrl_l(ch, user);
     if (ch == 4)
         return handle_ctrl_d(buff->len, user);
     if (ch == ARROW_START)
