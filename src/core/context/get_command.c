@@ -39,6 +39,10 @@ static int append_char(char **buffer, char ch, int *len, int *cursor)
 
 static int specific_char(char ch, char **buffer, int *len, int *cursor)
 {
+    if (ch == 1) {
+        *cursor = 0;
+        return 1;
+    }
     if (ch == 127) {
         if (*cursor == 0)
             return 1;
