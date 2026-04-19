@@ -4,13 +4,8 @@
 ** File description:
 ** The get_folder.c
 */
-/**
- * @file get_folder.c
- * @brief The get_folder.c
- * @author Erwan Lo Presti
- */
 
-#include "../../../include/minishell.h"
+#include "c_zsh.h"
 #include <unistd.h>
 
 char *get_folder(void)

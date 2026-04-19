@@ -5,7 +5,7 @@
 ** shell
 */
 
-#include "minishell.h"
+#include "c_zsh.h"
 
 int builtin_history(main_t *main_stock, command_ctx_t *ctx)
 {

@@ -4,8 +4,9 @@
 ** File description:
 ** command
 */
+
 #include <termios.h>
-#include "../../../include/minishell.h"
+#include "c_zsh.h"
 
 static void init_termios(struct termios *tr, struct termios *old)
 {
@@ -73,12 +74,12 @@ static int specific_char(char ch, char **buffer, int *len, int *cursor)
     return 0;
 }
 
-static int handle_ctrl_d(int *len)
+static int handle_ctrl_d(int *len, char *user)
 {
     if (*len == 0)
         return -1;
     write(1, "\n", 1);
-    display_prompt();
+    display_prompt(user);
     return 2;
 }
 
@@ -91,7 +92,8 @@ static int handle_ctrl_c(char ch)
     return 0;
 }
 
-static int check_char(history_t *history, char **buffer, int *len, int *cursor)
+static int check_char(history_t *history, buffer_t *buff,
+    int *cursor, char *user)
 {
     char ch = 0;
 
@@ -102,20 +104,20 @@ static int check_char(history_t *history, char **buffer, int *len, int *cursor)
     if (ch == 12)
         return handle_ctrl_l(ch);
     if (ch == 4)
-        return handle_ctrl_d(len);
+        return handle_ctrl_d(buff->len, user);
     if (ch == ARROW_START)
-        return arrow_handling(history, buffer, cursor, len);
-    if (specific_char(ch, buffer, len, cursor) == 1)
+        return arrow_handling(history, buff->buffer, cursor, buff->len);
+    if (specific_char(ch, buff->buffer, buff->len, cursor) == 1)
         return 0;
     if (ch == '\n') {
         write(1, "\n", 1);
         return 1;
     }
-    append_char(buffer, ch, len, cursor);
+    append_char(buff->buffer, ch, buff->len, cursor);
     return 0;
 }
 
-static int create_command(history_t *history, char **buffer)
+static int create_command(history_t *history, char **buffer, char *user)
 {
     int len = 0;
     int status = 0;
@@ -128,7 +130,8 @@ static int create_command(history_t *history, char **buffer)
     init_termios(&tr, &old);
     for (int cursor = 0; status == 0;) {
         print_command(*buffer, len, cursor);
-        status = check_char(history, buffer, &len, &cursor);
+        status = check_char(history,
+            &(buffer_t){.buffer = buffer, .len = &len}, &cursor, user);
         if (status == 2) {
             status = 0;
             cursor = len;
@@ -138,13 +141,13 @@ static int create_command(history_t *history, char **buffer)
     return status;
 }
 
-int get_command(char **buffer, history_t *history)
+int get_command(char **buffer, history_t *history, char *user)
 {
     size_t buffer_size = BUFFER_SIZE;
     int create_cmd = 0;
 
     if (isatty(0)) {
-        create_cmd = create_command(history, buffer);
+        create_cmd = create_command(history, buffer, user);
         if (create_cmd == -1)
             return -1;
         if (create_cmd == CONTINUE)

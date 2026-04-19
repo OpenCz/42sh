@@ -5,7 +5,7 @@
 ** apply redirection
 */
 
-#include "minishell.h"
+#include "c_zsh.h"
 #include <fcntl.h>
 #include <stdio.h>
 #include <unistd.h>

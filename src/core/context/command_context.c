@@ -5,7 +5,7 @@
 ** context
 */
 
-#include "minishell.h"
+#include "c_zsh.h"
 
 static void init_command_ctx(command_ctx_t *ctx)
 {
@@ -23,6 +23,32 @@ static void set_redirection(command_ctx_t *ctx, char *command)
         ctx->redirection = my_strdup(redirection);
 }
 
+static int convert_command_args(char **command_with_arg)
+{
+    char *converted = NULL;
+
+    for (int i = 0; command_with_arg[i]; i++) {
+        converted = convert_quotes(command_with_arg[i]);
+        if (!converted) {
+            free_array(command_with_arg);
+            return 1;
+        }
+        free(command_with_arg[i]);
+        command_with_arg[i] = converted;
+    }
+    return 0;
+}
+
+static int set_command_fields(command_ctx_t *ctx,
+    char **command_with_arg, char *command)
+{
+    ctx->command = command_with_arg[0];
+    ctx->argv = command_with_arg;
+    ctx->arg_command = &command_with_arg[1];
+    set_redirection(ctx, command);
+    return SUCCESS;
+}
+
 void clear_command_ctx(command_ctx_t *ctx)
 {
     if (!ctx)
@@ -36,9 +62,9 @@ void clear_command_ctx(command_ctx_t *ctx)
     ctx->arg_command = NULL;
 }
 
-int parse_command_context(char *command, command_ctx_t *ctx)
+int parse_command_context(char *command, command_ctx_t *ctx, main_t *stock_main)
 {
-    char **command_with_arg = my_str_to_word_array(command, " \t");
+    char **command_with_arg = my_str_to_word_array_quote(command, " \t");
 
     if (!ctx)
         return 1;
@@ -49,11 +75,10 @@ int parse_command_context(char *command, command_ctx_t *ctx)
         free_array(command_with_arg);
         return 2;
     }
-    ctx->command = command_with_arg[0];
-    ctx->argv = command_with_arg;
-    ctx->arg_command = &command_with_arg[1];
-    set_redirection(ctx, command);
-    return SUCCESS;
+    if (convert_command_args(command_with_arg) != 0)
+        return 1;
+    command_with_arg = replace_env_vars(command_with_arg, stock_main);
+    return set_command_fields(ctx, command_with_arg, command);
 }
 
 int bind_command_context(main_t *stock_main, command_ctx_t *ctx)
@@ -79,7 +104,7 @@ int bind_command_context(main_t *stock_main, command_ctx_t *ctx)
 int set_command_context(main_t *stock_main, char *command)
 {
     command_ctx_t ctx;
-    int status = parse_command_context(command, &ctx);
+    int status = parse_command_context(command, &ctx, stock_main);
 
     if (status != 0)
         return status;

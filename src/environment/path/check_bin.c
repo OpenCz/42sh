@@ -4,7 +4,7 @@
 ** File description:
 ** bin
 */
-#include "minishell.h"
+#include "c_zsh.h"
 #include <stdlib.h>
 #include <string.h>
 
@@ -87,8 +87,6 @@ char *check_bin(char *command, char *path)
     char *full_path = NULL;
 
     if (command == NULL || path == NULL)
-        return NULL;
-    if (check_is_dir(command) == 1)
         return NULL;
     full_path = build_path(path, command);
     if (!full_path)

@@ -5,7 +5,7 @@
 ** path
 */
 
-#include "minishell.h"
+#include "c_zsh.h"
 
 char *get_path(env_t *stock_env)
 {

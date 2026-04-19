@@ -5,7 +5,7 @@
 ** my_env
 */
 
-#include "minishell.h"
+#include "c_zsh.h"
 
 int my_env(main_t *main_stock)
 {

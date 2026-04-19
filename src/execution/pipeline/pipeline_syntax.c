@@ -5,7 +5,7 @@
 ** pipe syntax
 */
 
-#include "minishell.h"
+#include "c_zsh.h"
 
 static int is_blank(char c)
 {

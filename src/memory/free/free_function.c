@@ -5,7 +5,7 @@
 ** function
 */
 
-#include "minishell.h"
+#include "c_zsh.h"
 
 void free_alloc(void *object)
 {

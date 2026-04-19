@@ -5,7 +5,7 @@
 ** env
 */
 
-#include "minishell.h"
+#include "c_zsh.h"
 
 static char *dup_n(char *src, int n)
 {

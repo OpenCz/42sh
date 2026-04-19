@@ -5,7 +5,7 @@
 ** recode
 */
 
-#include "minishell.h"
+#include "c_zsh.h"
 
 char *my_strdup(char *str)
 {

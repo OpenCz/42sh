@@ -8,64 +8,43 @@
 MAKEFLAGS += --no-print-directory
 
 # ─── Test sources ─────────────────────────────────────────────────────────
-SRC_TESTS = \
-	test_minishell_unit.c
+SRC_TESTS = $(wildcard test_*.c)
 
 # ─── Project sources (no main.c) ─────────────────────────────────────────
 SRC_CORE = \
-	src/core/main.c \
-	src/core/init/init_env.c \
-	src/core/init/init_main.c \
-	src/core/context/get_command.c \
-	src/core/context/arrow_handling.c \
-	src/core/context/manage_history.c \
-	src/core/context/command_context.c
+	$(wildcard ../src/core/init/*.c) \
+	$(wildcard ../src/core/context/*.c)
 
 SRC_BUILTINS = \
-	../src/builtins/env/my_env.c \
-	../src/builtins/env/my_setenv.c \
-	../src/builtins/env/my_unsetenv.c \
-	../src/builtins/fs/my_chdir.c \
-	../src/builtins/history/history.c
-
+	$(wildcard ../src/builtins/env/*.c) \
+	$(wildcard ../src/builtins/fs/*.c) \
+	$(wildcard ../src/builtins/jobs/*.c) \
+	$(wildcard ../src/builtins/repeat/*.c) \
+	$(wildcard ../src/builtins/history/*.c)
 
 SRC_EXEC = \
-	../src/execution/dispatch/execute_builtin.c \
-	../src/execution/dispatch/execute_command.c \
-	../src/execution/dispatch/execute_single_command.c \
-	../src/execution/external/exec_any.c \
-	../src/execution/external/exec_error_case.c \
-	../src/execution/external/run_fork.c \
-	../src/execution/pipeline/pipeline_execute.c \
-	../src/execution/pipeline/pipeline_parse.c \
-	../src/execution/pipeline/pipeline_spawn.c \
-	../src/execution/pipeline/pipeline_syntax.c \
-	../src/execution/pipeline/pipeline_wait.c \
-	../src/execution/redirection/apply_redirection.c
+	$(wildcard ../src/execution/dispatch/*.c) \
+	$(wildcard ../src/execution/external/*.c) \
+	$(wildcard ../src/execution/pipeline/*.c) \
+	$(wildcard ../src/execution/redirection/*.c)
 
 SRC_ENV = \
-	../src/environment/path/check_bin.c \
-	../src/environment/query/get_home.c \
-	../src/environment/query/get_path.c
+	$(wildcard ../src/environment/path/*.c) \
+	$(wildcard ../src/environment/query/*.c)
 
 SRC_PARSING = \
-	../src/parsing/redirection/get_redirection.c
+	$(wildcard ../src/parsing/redirection/*.c) \
+	$(wildcard ../src/parsing/env_var_management/*.c) \
+	$(wildcard ../src/parsing/quotes_management/*.c)
 
 SRC_UTILS = \
-	../src/utils/io/my_putstr.c \
-	../src/utils/strings/my_strcmp.c \
-	../src/utils/strings/my_strconcat.c \
-	../src/utils/strings/my_strdup.c \
-	../src/utils/strings/my_strlen.c \
-	../src/utils/strings/my_strncmp.c \
-	../src/utils/strings/my_strstr.c \
-	../src/utils/strings/my_str_to_word_array.c \
-	../src/utils/strings/my_wordarraylen.c \
-	../src/utils/validation/my_ischar_num.c \
-	../src/utils/validation/my_str_is_alphanum.c
+	$(wildcard ../src/utils/io/*.c) \
+	$(wildcard ../src/utils/strings/*.c) \
+	$(wildcard ../src/utils/validation/*.c) \
+	$(wildcard ../src/utils/display/*.c)
 
 SRC_MEMORY = \
-	../src/memory/free/free_function.c
+	$(wildcard ../src/memory/free/*.c)
 
 SRC_PROJECT = \
 	$(SRC_CORE) \
@@ -88,8 +67,8 @@ LOGS_DIR    = ../Logs
 COVERAGE_DIR     = $(LOGS_DIR)/coverage
 COVERAGE_RAW_DIR = $(COVERAGE_DIR)/raw
 COVERAGE_HTML    = $(COVERAGE_DIR)/index.html
-WEBGCOVRFLAGS    = --html-theme $(GCOVRSTYLE) --html --html-nested -o $(COVERAGE_HTML)
-GCOVRFLAGS  = --gcov-executable "llvm-cov-20 gcov" --exclude tests/ --root ..
+WEBGCOVRFLAGS    = --html-theme $(GCOVRSTYLE) --html -o $(COVERAGE_HTML)
+GCOVRFLAGS  = --gcov-executable "llvm-cov-20 gcov" --filter ".*src/.*" --exclude ".*tests/.*" --exclude-directories "tests" --root ..
 VALGRIND_LOG  = $(LOGS_DIR)/valgrind.log
 VALGRIND_HTML = $(LOGS_DIR)/valgrind.html
 
@@ -125,13 +104,19 @@ tests_run: unit_tests
 	printf "%b\n" "$(BOLD)$(H_GREEN)Done! Logs: $(LOGS_DIR)/test_output.log | $(LOGS_DIR)/coverage_report.log$(END)"
 
 coverage: unit_tests
-	@mkdir -p $(LOGS_DIR) $(COVERAGE_RAW_DIR)
-	@./unit_tests
-	@gcovr $(GCOVRFLAGS) $(WEBGCOVRFLAGS)
-	@gcovr $(GCOVRFLAGS) --txt-metric branch
+	@mkdir -p $(LOGS_DIR) $(COVERAGE_DIR) $(COVERAGE_RAW_DIR)
+	@CRITERION_SHOW_STDOUT=1 ./unit_tests > $(LOGS_DIR)/test_output.log 2>&1; EXIT_CODE=$$?; \
+	if [ $$EXIT_CODE -ne 0 ]; then \
+	    printf "%b\n" "$(BOLD)$(H_YELLOW)Some tests failed! Check $(LOGS_DIR)/test_output.log$(END)"; \
+	    cat $(LOGS_DIR)/test_output.log; \
+	    exit $$EXIT_CODE; \
+	fi
+	@printf "%b\n" "$(BOLD)$(H_GREEN)All tests passed! Generating coverage report...$(END)"
+	@gcovr $(GCOVRFLAGS) $(WEBGCOVRFLAGS) > $(LOGS_DIR)/coverage_report.log 2>&1
+	@gcovr $(GCOVRFLAGS) --txt-metric branch >> $(LOGS_DIR)/coverage_report.log 2>&1
 	@printf "%b\n" "$(BOLD)$(H_CYAN)Running Valgrind...$(END)"
 	@valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes \
-	    --log-file=$(VALGRIND_LOG) ./unit_tests 2>/dev/null; \
+	    --log-file=$(VALGRIND_LOG) ./unit_tests >/dev/null 2>&1; \
 	{ echo '<!DOCTYPE html><html><head><meta charset="utf-8">'; \
 	  echo '<title>Valgrind Report</title>'; \
 	  echo '<style>'; \
@@ -143,9 +128,12 @@ coverage: unit_tests
 	  echo '<h1>Valgrind Report — unit_tests</h1><pre>'; \
 	  cat $(VALGRIND_LOG); \
 	  echo '</pre></body></html>'; } > $(VALGRIND_HTML)
-	@printf "%b\n" "$(BOLD)$(H_GREEN)Valgrind report: $(VALGRIND_HTML)$(END)"
-	@xdg-open $(COVERAGE_HTML)
-	@xdg-open $(VALGRIND_HTML)
+	@printf "%b\n" "$(BOLD)$(H_GREEN)Done! Logs: $(LOGS_DIR)/test_output.log | $(LOGS_DIR)/coverage_report.log$(END)"
+	@printf "%b\n" "$(BOLD)$(H_GREEN)Reports: $(COVERAGE_HTML) | $(VALGRIND_HTML)$(END)"
+	@if command -v xdg-open >/dev/null 2>&1; then \
+		xdg-open $(COVERAGE_HTML) >/dev/null 2>&1 || true; \
+		xdg-open $(VALGRIND_HTML) >/dev/null 2>&1 || true; \
+	fi
 
 clean:
 	@$(RM) unit_tests *.gcda *.gcno

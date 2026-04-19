@@ -5,7 +5,7 @@
 ** shell
 */
 
-#include "../../../include/minishell.h"
+#include "c_zsh.h"
 #include <time.h>
 
 static void add_to_history(history_t *his, history_cmd_t *history)

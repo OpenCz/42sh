@@ -5,7 +5,7 @@
 ** main
 */
 
-#include "minishell.h"
+#include "c_zsh.h"
 
 static history_t *init_history(main_t *main)
 {

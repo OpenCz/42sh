@@ -5,7 +5,7 @@
 ** command
 */
 #include <termios.h>
-#include "../../../include/minishell.h"
+#include "c_zsh.h"
 
 static void left_arrow(char arrow, int *cursor)
 {

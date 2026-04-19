@@ -5,7 +5,7 @@
 ** my_putstr
 */
 
-#include "minishell.h"
+#include "c_zsh.h"
 
 void my_putchar(char c, int sortie)
 {
@@ -14,6 +14,8 @@ void my_putchar(char c, int sortie)
 
 void my_putstr(char *str)
 {
+    if (!str)
+        return;
     for (int i = 0; str[i] != '\0'; i++) {
         my_putchar(str[i], 1);
     }

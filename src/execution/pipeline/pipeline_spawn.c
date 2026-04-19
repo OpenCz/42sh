@@ -5,7 +5,7 @@
 ** pipeline spawn
 */
 
-#include "minishell.h"
+#include "c_zsh.h"
 
 int create_pipe(int segment_count, int i, int pipefd[2])
 {

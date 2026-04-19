@@ -5,10 +5,21 @@
 ** sandbox
 */
 
-#include "minishell.h"
+#include "c_zsh.h"
+
+static int separator_has_space(char *separator)
+{
+    for (int i = 0; separator[i] != '\0'; i++) {
+        if (separator[i] == ' ')
+            return 1;
+    }
+    return 0;
+}
 
 static int is_separator(char c, char *separator)
 {
+    if (separator_has_space(separator) && isspace((unsigned char)c))
+        return 1;
     for (int i = 0; separator[i] != '\0'; i++) {
         if (separator[i] == c)
             return 1;

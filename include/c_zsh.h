@@ -17,6 +17,7 @@
 #include <unistd.h>
 #include <errno.h>
 #include <signal.h>
+#include <ctype.h>
 
 #ifndef MINISHELL_H
     #define MINISHELL_H
@@ -26,9 +27,11 @@
     #include "utils/utils.h"
     #include "utils/defines.h"
     #include "environment/environment.h"
+    #include "environment/env_var_management/en_var_management.h"
     #include "parsing/parsing.h"
     #include "builtins/builtins.h"
     #include "execution/execution.h"
     #include "memory/memory.h"
+    #include "config/czshrc.h"
 
 #endif

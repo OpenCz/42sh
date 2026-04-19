@@ -5,7 +5,7 @@
 ** len
 */
 
-#include "minishell.h"
+#include "c_zsh.h"
 
 int my_wordarray_len(char **word_array)
 {
