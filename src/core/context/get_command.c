@@ -4,6 +4,7 @@
 ** File description:
 ** command
 */
+
 #include <termios.h>
 #include "c_zsh.h"
 
@@ -37,8 +38,30 @@ static int append_char(char **buffer, char ch, int *len, int *cursor)
     return 0;
 }
 
+static int handle_ctrl_l(char ch, char *user)
+{
+    pid_t pid;
+    char *av[] = {"clear", NULL};
+
+    pid = fork();
+    if (pid == 0) {
+        execv("/bin/clear", av);
+    } else
+        waitpid(pid, NULL, 0);
+    display_prompt(user);
+    return 0;
+}
+
 static int specific_char(char ch, char **buffer, int *len, int *cursor)
 {
+    if (ch == 1) {
+        *cursor = 0;
+        return 1;
+    }
+    if (ch == 5) {
+        *cursor = *len;
+        return 1;
+    }
     if (ch == 127) {
         if (*cursor == 0)
             return 1;
@@ -60,15 +83,26 @@ static int handle_ctrl_d(int *len, char *user)
     return 2;
 }
 
+static int handle_ctrl_c(char ch)
+{
+    if (ch == 3) {
+        write(1, "\n", 1);
+        return -1;
+    }
+    return 0;
+}
+
 static int check_char(history_t *history, buffer_t *buff,
     int *cursor, char *user)
 {
     char ch = 0;
 
-    if (read(STDIN_FILENO, &ch, 1) == -1)
+    if (read(STDIN_FILENO, &ch, 1) == -1 || handle_ctrl_c(ch) == -1)
         return -1;
     if (ch == 3)
         return 0;
+    if (ch == 12)
+        return handle_ctrl_l(ch, user);
     if (ch == 4)
         return handle_ctrl_d(buff->len, user);
     if (ch == ARROW_START)
