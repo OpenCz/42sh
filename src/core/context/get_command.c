@@ -43,6 +43,10 @@ static int specific_char(char ch, char **buffer, int *len, int *cursor)
         *cursor = 0;
         return 1;
     }
+    if (ch == 5) {
+        *cursor = *len;
+        return 1;
+    }
     if (ch == 127) {
         if (*cursor == 0)
             return 1;
