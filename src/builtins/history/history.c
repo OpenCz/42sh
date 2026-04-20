@@ -10,11 +10,16 @@
 void write_limited_history(char *file, command_ctx_t *ctx)
 {
     int n = atoi(ctx->argv[1]);
-    char *str = strtok(file, "\n");
+    char **arr = my_str_to_word_array(file, "\n");
+    int len = 0;
+    int tmp = 0;
 
-    for (int i = 0; i < n && str != NULL; i++) {
-        printf("%s\n", str);
-        str = strtok(NULL, "\n");
+    if (!arr)
+        return;
+    len = my_wordarray_len(arr);
+    for (int i = len - n; tmp < n && arr[i] != NULL; i++) {
+        printf("%s\n", arr[i]);
+        tmp++;
     }
 }
 
