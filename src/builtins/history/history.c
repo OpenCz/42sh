@@ -17,6 +17,8 @@ void write_limited_history(char *file, command_ctx_t *ctx)
     if (!arr)
         return;
     len = my_wordarray_len(arr);
+    if (n > len)
+        n = len;
     for (int i = len - n; tmp < n && arr[i] != NULL; i++) {
         printf("%s\n", arr[i]);
         tmp++;
