@@ -34,4 +34,10 @@
     #include "memory/memory.h"
     #include "config/czshrc.h"
 
+typedef struct history_rc_s {
+    int history;
+    int savehist;
+    bool enabled;
+} history_rc_t;
+
 #endif
