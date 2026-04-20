@@ -7,16 +7,17 @@
 
 #include "c_zsh.h"
 
-void write_limited_history(char *file, command_ctx_t *ctx)
+void write_history(char *file, command_ctx_t *ctx)
 {
-    int n = atoi(ctx->argv[1]);
     char **arr = my_str_to_word_array(file, "\n");
     int len = 0;
     int tmp = 0;
+    int n = 0;
 
     if (!arr)
         return;
     len = my_wordarray_len(arr);
+    n = ctx->argv[1] ? atoi(ctx->argv[1]) : len;
     if (n > len)
         n = len;
     for (int i = len - n; tmp < n && arr[i] != NULL; i++) {
@@ -26,9 +27,9 @@ void write_limited_history(char *file, command_ctx_t *ctx)
     free_array(arr);
 }
 
-static void history_reverse(char *file, command_ctx_t *ctx)
+static void write_reverse_history(char *file, command_ctx_t *ctx)
 {
-    int n = atoi(ctx->argv[2]);
+    int n = ctx->argv[2] ? atoi(ctx->argv[2]) : HISTORY;
     char *str = strtok(file, "\n");
 
     for (int i = 0; i < n && str; i++) {
@@ -44,9 +45,9 @@ int builtin_history(main_t *main_stock, command_ctx_t *ctx)
     if (!file)
         return 1;
     if (ctx->argv[1] && strcmp(ctx->argv[1], "-r") == 0) {
-        history_reverse(file, ctx);
+        write_reverse_history(file, ctx);
     } else
-        write_limited_history(file, ctx);
+        write_history(file, ctx);
     free(file);
     return 0;
 }
