@@ -9,6 +9,8 @@
 
 int child_exec(command_ctx_t *ctx, char *path, char **env)
 {
+    signal(SIGINT, SIG_DFL);
+    signal(SIGQUIT, SIG_DFL);
     if (execve(path, ctx->argv, env) == -1) {
         my_putstrerror(ctx->command);
         if (errno == ENOEXEC) {
@@ -29,6 +31,10 @@ int get_seg(int status)
     int sig = WTERMSIG(status);
     int exit_value = 0;
 
+    if (sig == SIGINT) {
+        write(1, "\n", 1);
+        return 130;
+    }
     if (sig == SIGFPE) {
         write(1, "Floating exception\n", 19);
         exit_value = 136;
