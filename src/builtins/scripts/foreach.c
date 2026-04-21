@@ -114,33 +114,34 @@ static char **get_array_arg(command_ctx_t *ctx)
     return arg;
 }
 
-static int foreach(command_ctx_t *ctx)
+static int foreach(command_ctx_t *ctx, char **cmd, main_t *main_stock)
 {
+    command_ctx_t new_ctx = *ctx;
+    char **array = NULL;
     char **arg = get_array_arg(ctx);
 
     if (!arg)
         return FAILURE;
+    for (int i = 0; arg[i] != NULL; i++) {
+        for (int j = 0; cmd[j] != NULL; j++) {
+            parse_command_context(cmd[j], &new_ctx);
+            exec_any(main_stock, &new_ctx);
+            free_array(array);
+        }
+    }
     free(arg);
+    free_array(cmd);
     return SUCCESS;
 }
 
 int builtin_foreach(main_t *main_stock, command_ctx_t *ctx)
 {
-    size_t len = 0;
-    ssize_t read = 0;
-    char *line = NULL;
+    char **cmd = NULL;
 
     if (handle_error(ctx) == FAILURE)
         return 1;
-    while (1) {
-        my_putstr("foreach? ");
-        read = getline(&line, &len, stdin);
-        if (read == -1)
-            return FAILURE;
-        line[read - 1] = '\0';
-        if (my_strcmp(line, "end") == 0)
-            break;
-    }
-    free(line);
-    return foreach(ctx);
+    cmd = foreach_read_commands();
+    if (cmd == NULL)
+        return FAILURE;
+    return foreach(ctx, cmd, main_stock);
 }

@@ -27,6 +27,7 @@ int builtin_foreground(main_t *main_stock, command_ctx_t *ctx);
 int builtin_background(main_t *main_stock, command_ctx_t *ctx);
 int builtin_repeat(main_t *main_stock, command_ctx_t *ctx);
 int builtin_foreach(main_t *main_stock, command_ctx_t *ctx);
+char **foreach_read_commands(void);
 
 int my_env(main_t *main_stock);
 int my_setenv(main_t *main_stock);
