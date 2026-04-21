@@ -50,7 +50,6 @@ int main(int argc, char **argv, char **env)
             break;
         last_exit = execute_command(stock, buffer);
     }
-    free_alloc(buffer);
     write_tty("exit\n");
     free_main(stock);
     return last_exit;
