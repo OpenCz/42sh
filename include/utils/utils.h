@@ -23,6 +23,8 @@ char *my_strconcat(char *str1, char *str2);
 const char *my_strstr(const char *str, const char *to_f);
 char **my_str_to_word_array(char *str, char *separator);
 char **my_str_to_word_array_quote(char *str, char *separator);
+char ***my_str_to_array_of_word_array(char const *str, char const *sep_ext,
+    char const *sep_int);
 int my_wordarray_len(char **word_array);
 int my_char_isnum(char *str);
 int my_str_is_alphanum(char *key);
