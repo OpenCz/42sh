@@ -11,24 +11,32 @@ static size_t get_var_name_len(const char *name)
 {
     size_t i = 0;
 
+    if (name[0] == '{') {
+        i = 1;
+        for (; name[i] && name[i] != '}'; i++);
+        return i;
+    }
     for (; name[i] && (isalnum(name[i]) || name[i] == '_'); i++);
     return i;
 }
 
 static char *find_value(char *key, main_t *stock_main)
 {
+    bool is_braced = key[1] == '{';
     size_t key_len = 0;
+    int offset = is_braced ? 2 : 1;
 
     if (!key || !stock_main || key[0] != '$')
         return NULL;
     key_len = get_var_name_len(key + 1);
     if (key_len == 0)
         return NULL;
-    for (env_t *head_env = stock_main->stock_env;
-        head_env; head_env = head_env->next)
-        if (strlen(head_env->key) == key_len &&
-            strncmp(head_env->key, key + 1, key_len) == 0)
-            return head_env->value;
+    if (is_braced)
+        key_len--;
+    for (env_t *e = stock_main->stock_env; e; e = e->next)
+        if (strlen(e->key) == key_len &&
+            strncmp(e->key, key + offset, key_len) == 0)
+            return e->value;
     return NULL;
 }
 
@@ -38,6 +46,7 @@ static void replace_single_arg(char **args, int i, main_t *stock_main)
     char *suffix = NULL;
     char *new_val = NULL;
     size_t var_len = 0;
+    bool is_braced = args[i][1] == '{';
 
     if (args[i][0] != '$')
         return;
@@ -45,7 +54,7 @@ static void replace_single_arg(char **args, int i, main_t *stock_main)
     if (!env_var)
         return;
     var_len = get_var_name_len(args[i] + 1);
-    suffix = args[i] + 1 + var_len;
+    suffix = args[i] + 1 + var_len + (is_braced ? 1 : 0);
     new_val = malloc(strlen(env_var) + strlen(suffix) + 1);
     if (!new_val)
         return;
