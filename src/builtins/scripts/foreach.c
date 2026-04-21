@@ -12,46 +12,6 @@
 
 #include "../../../include/c_zsh.h"
 
-static int handle_bracket(command_ctx_t *ctx)
-{
-    int len_array = 0;
-    int len = 0;
-
-    if (my_wordarray_len(ctx->arg_command) > 2
-        && ctx->arg_command[1][0] != '(') {
-        my_putstr("foreach: Words not parenthesized.\n");
-        return FAILURE;
-    }
-    if (ctx->arg_command[1] && ctx->arg_command[1][0] != '(') {
-        my_putstr("foreach: Too few arguments.\n");
-        return FAILURE;
-    }
-    len_array = my_wordarray_len(ctx->arg_command) - 1;
-    len = strlen(ctx->arg_command[len_array]) - 1;
-    if (ctx->arg_command[len_array][len] != ')') {
-        my_putstr("Too many (\'s.\n");
-        return FAILURE;
-    }
-    return SUCCESS;
-}
-
-static int handle_error(command_ctx_t *ctx)
-{
-    if (my_wordarray_len(ctx->arg_command) < 2) {
-        my_putstr("foreach: Too few arguments.\n");
-        return FAILURE;
-    }
-    if (my_char_is_alpha(ctx->arg_command[0][0]) == 1) {
-        my_putstr("foreach: Variable name must begin with a letter.\n");
-        return FAILURE;
-    }
-    if (my_str_is_alphanum(ctx->arg_command[0]) == 1) {
-        my_putstr("foreach: Variable name must contain alphanumeric"
-            " characters\n");
-        return FAILURE;
-    }
-    return handle_bracket(ctx);
-}
 
 static int get_len_arg(command_ctx_t *ctx)
 {
@@ -62,7 +22,6 @@ static int get_len_arg(command_ctx_t *ctx)
         len--;
     if (ctx->arg_command[1] && strcmp(ctx->arg_command[1], "(") == 0)
         len--;
-    len--;
     return len;
 }
 
@@ -107,11 +66,20 @@ static char **get_array_arg(command_ctx_t *ctx)
     if (arg == NULL)
         return NULL;
     arg[len] = NULL;
+    arg[0] = ctx->arg_command[0];
     for (int i = start + 1; i < len + start + 1; i++) {
-        j = i - start - 1;
+        j = i - start;
         fill_arg(arg, ctx, i, j);
     }
     return arg;
+}
+
+static void handle_var(command_ctx_t *new_ctx, char *var, char **arg, int i)
+{
+    for (int k = 0; new_ctx->argv[k] != NULL; k++) {
+        if (strncmp(new_ctx->argv[k], "$", 1) == 0 && strcmp(new_ctx->argv[k] + 1, var) == 0)
+            new_ctx->argv[k] = arg[i];
+    }
 }
 
 static int foreach(command_ctx_t *ctx, char **cmd, main_t *main_stock)
@@ -121,9 +89,10 @@ static int foreach(command_ctx_t *ctx, char **cmd, main_t *main_stock)
 
     if (!arg)
         return FAILURE;
-    for (int i = 0; arg[i] != NULL; i++) {
+    for (int i = 1; arg[i] != NULL; i++) {
         for (int j = 0; cmd[j] != NULL; j++) {
             parse_command_context(cmd[j], &new_ctx);
+            handle_var(&new_ctx, arg[0], arg, i);
             exec_any(main_stock, &new_ctx);
         }
     }

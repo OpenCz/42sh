@@ -40,6 +40,47 @@ static int append_cmd(char ***cmd, char *line)
     return SUCCESS;
 }
 
+static int handle_bracket(command_ctx_t *ctx)
+{
+    int len_array = 0;
+    int len = 0;
+
+    if (my_wordarray_len(ctx->arg_command) > 2
+        && ctx->arg_command[1][0] != '(') {
+        my_putstr("foreach: Words not parenthesized.\n");
+        return FAILURE;
+    }
+    if (ctx->arg_command[1] && ctx->arg_command[1][0] != '(') {
+        my_putstr("foreach: Too few arguments.\n");
+        return FAILURE;
+    }
+    len_array = my_wordarray_len(ctx->arg_command) - 1;
+    len = strlen(ctx->arg_command[len_array]) - 1;
+    if (ctx->arg_command[len_array][len] != ')') {
+        my_putstr("Too many (\'s.\n");
+        return FAILURE;
+    }
+    return SUCCESS;
+}
+
+int handle_error(command_ctx_t *ctx)
+{
+    if (my_wordarray_len(ctx->arg_command) < 2) {
+        my_putstr("foreach: Too few arguments.\n");
+        return FAILURE;
+    }
+    if (my_char_is_alpha(ctx->arg_command[0][0]) == 1) {
+        my_putstr("foreach: Variable name must begin with a letter.\n");
+        return FAILURE;
+    }
+    if (my_str_is_alphanum(ctx->arg_command[0]) == 1) {
+        my_putstr("foreach: Variable name must contain alphanumeric"
+            " characters\n");
+        return FAILURE;
+    }
+    return handle_bracket(ctx);
+}
+
 char **foreach_read_commands(void)
 {
     size_t len = 0;
