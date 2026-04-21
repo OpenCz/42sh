@@ -7,20 +7,6 @@
 
 #include "c_zsh.h"
 
-static void write_print(main_t *stock)
-{
-    char *user = get_user(stock->stock_env);
-
-    if (isatty(0))
-        display_prompt(user);
-}
-
-static void write_tty(char *buffer)
-{
-    if (isatty(0))
-        my_putstr(buffer);
-}
-
 static char *serialize(char *buffer)
 {
     size_t len = 0;
@@ -33,24 +19,52 @@ static char *serialize(char *buffer)
     return buffer;
 }
 
+static bool handle_command_result(main_t *stock, loop_state_t *state)
+{
+    state->buffer = serialize(state->buffer);
+    if (state->cmd == -1 || my_strcmp(state->buffer, "exit") == 0)
+        return true;
+    state->last_exit = execute_command(stock, state->buffer);
+    if (state->last_exit == 130) {
+        display_prompt(get_user(stock->stock_env));
+        state->prompt_displayed = true;
+    } else {
+        state->prompt_displayed = false;
+    }
+    return false;
+}
+
+static void run_shell_loop(main_t *stock, loop_state_t *state)
+{
+    while (my_strcmp(state->buffer, "exit") != 0) {
+        if (!state->prompt_displayed)
+            write_print(stock);
+        state->prompt_displayed = true;
+        state->cmd = get_command(stock, &state->buffer, stock->history,
+            get_user(stock->stock_env));
+        if (state->cmd == CONTINUE) {
+            state->prompt_displayed = false;
+            continue;
+        }
+        if (handle_command_result(stock, state))
+            break;
+    }
+    write_tty("exit\n");
+}
+
 int main(int argc, char **argv, char **env)
 {
     main_t *stock = init_main(env);
-    char *buffer = NULL;
-    int last_exit = 0;
-    int cmd = 0;
+    loop_state_t state = {
+        .buffer = NULL,
+        .last_exit = 0,
+        .cmd = 0,
+        .prompt_displayed = false
+    };
 
-    while (my_strcmp(buffer, "exit") != 0) {
-        write_print(stock);
-        cmd = get_command(&buffer, stock->history, get_user(stock->stock_env));
-        if (cmd == CONTINUE)
-            continue;
-        buffer = serialize(buffer);
-        if (my_strcmp(buffer, "exit") == 0 || cmd == -1)
-            break;
-        last_exit = execute_command(stock, buffer);
-    }
-    write_tty("exit\n");
+    setup_shell_signals();
+    run_shell_loop(stock, &state);
+    write_tty("exit\n", state.cmd);
     free_main(stock);
-    return last_exit;
+    return state.last_exit;
 }

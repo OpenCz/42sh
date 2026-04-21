@@ -19,7 +19,11 @@ SRC_CORE = \
 	src/core/context/get_command.c \
 	src/core/context/arrow_handling.c \
 	src/core/context/manage_history.c \
-	src/core/context/command_context.c
+	src/core/context/command_context.c \
+	src/core/context/signal.c \
+	src/core/context/termios.c \
+	src/core/context/display.c \
+	src/core/context/control.c \
 
 SRC_BUILTINS = \
 	src/builtins/env/my_env.c \
