@@ -5,7 +5,7 @@
 ** command
 */
 #include <termios.h>
-#include "c_zsh.h"
+#include "../../../include/c_zsh.h"
 
 static void init_termios(struct termios *tr, struct termios *old)
 {
