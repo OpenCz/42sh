@@ -5,7 +5,7 @@
 ** replace_env_vars
 */
 
-#include "c_zsh.h"
+#include "../../../include/c_zsh.h"
 
 static size_t get_var_name_len(const char *name)
 {
@@ -20,14 +20,31 @@ static size_t get_var_name_len(const char *name)
     return i;
 }
 
+static char *is_hard(char *key)
+{
+    char *hard_keys[] = {"0", "36", "117 354 889 550", "69", "8", "21", NULL};
+    char *hard_values[] = {"c_zsh", "Sacha Le Moign-Avalos", "Celenzo Peuch",
+        "Lucas Soigneux", "Jessym Gaddacha", "Erwan Lo Presti", NULL};
+
+    for (int i = 0; hard_keys[i]; i++) {
+        if (my_strcmp(hard_keys[i], key) == 0)
+            return hard_values[i];
+    }
+    return NULL;
+}
+
 static char *find_value(char *key, main_t *stock_main)
 {
     bool is_braced = key[1] == '{';
     size_t key_len = 0;
     int offset = is_braced ? 2 : 1;
+    char *value = NULL;
 
-    if (!key || !stock_main || key[0] != '$')
+    if (!stock_main || key[0] != '$')
         return NULL;
+    value = is_hard(key + offset);
+    if (value)
+        return value;
     key_len = get_var_name_len(key + 1);
     if (key_len == 0)
         return NULL;
