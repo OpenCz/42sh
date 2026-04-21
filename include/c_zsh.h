@@ -33,5 +33,6 @@
     #include "execution/execution.h"
     #include "memory/memory.h"
     #include "config/czshrc.h"
+    #include "config/color.h"
 
 #endif
