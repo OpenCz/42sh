@@ -1,0 +1,68 @@
+# ╔══════════════════════════════════════════════════════════════╗
+# ║                        .czshrc                               ║
+# ║              Configuration du shell czsh                     ║
+# ╠══════════════════════════════════════════════════════════════╣
+# ║  ⚠  AVERTISSEMENT                                            ║
+# ║                                                              ║
+# ║  Ce fichier est géré automatiquement par la commande :       ║
+# ║                                                              ║
+# ║                  $ czshrc                                    ║
+# ║                                                              ║
+# ║  Toute modification manuelle est possible mais risquée.      ║
+# ║  Un fichier mal formé peut entraîner un comportement         ║
+# ║  instable ou un chargement incorrect du shell.               ║
+# ║                                                              ║
+# ║  Vous modifiez ce fichier à vos risques et périls.           ║
+# ╚══════════════════════════════════════════════════════════════╝
+
+# ============================================================
+#  Syntaxe : clé = toggle : fg_color : bg_color
+#  toggle   : true / false
+#  fg_color : nom de couleur ou NONE
+#  bg_color : nom de couleur ou NONE
+# ============================================================
+
+[prompt]
+
+# --- Couleurs disponibles ---
+# Standards  : BLACK, RED, GREEN, YELLOW, BLUE, MAGENTA, CYAN, WHITE, GRAY
+# Pastel     : PINK, ROSE, PEACH, ORANGE, MINT, SKY, LAVENDER, PURPLE, SOFT_GRAY, LIGHT_GRAY
+
+# Affiche le nom de l'utilisateur (ex: sacha)
+user        = true  : CYAN        : NONE
+
+# Affiche le dossier courant (ex: ~/projects/42sh)
+folder      = true  : BLUE        : NONE
+
+# Affiche la branche git si dans un repo (ex: main)
+git_branch  = true  : LAVENDER    : NONE
+
+# Affiche la date — formats disponibles : LONG / EU / US / ISO
+#   LONG = Mardi 11 Septembre 2001
+#   EU   = 11/09/2001
+#   US   = 09/11/2001
+#   ISO  = 2001-09-11
+date        = true  : SOFT_GRAY   : NONE
+date_format = ISO
+
+# Affiche l'heure (ex: 14:32)
+time        = true  : SOFT_GRAY   : NONE
+
+# ============================================================
+
+[alias]
+
+# Navigation
+..    = cd ..
+...   = cd ../..
+home  = cd ~
+
+# Listing
+ll    = ls -la --color=auto
+la    = ls -A --color=auto
+lt    = ls -lt --color=auto
+
+# Git
+gs    = git status
+gp    = git push
+gl    = git log --oneline
