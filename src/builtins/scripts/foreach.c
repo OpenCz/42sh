@@ -117,7 +117,6 @@ static char **get_array_arg(command_ctx_t *ctx)
 static int foreach(command_ctx_t *ctx, char **cmd, main_t *main_stock)
 {
     command_ctx_t new_ctx = *ctx;
-    char **array = NULL;
     char **arg = get_array_arg(ctx);
 
     if (!arg)
@@ -126,7 +125,6 @@ static int foreach(command_ctx_t *ctx, char **cmd, main_t *main_stock)
         for (int j = 0; cmd[j] != NULL; j++) {
             parse_command_context(cmd[j], &new_ctx);
             exec_any(main_stock, &new_ctx);
-            free_array(array);
         }
     }
     free(arg);
