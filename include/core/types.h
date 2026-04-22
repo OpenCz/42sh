@@ -9,6 +9,7 @@
     #define CORE_TYPES_H
 
     #include <sys/types.h>
+    #include "../config/czshrc.h"
 
     #define CONTINUE -5
 
@@ -43,6 +44,7 @@ typedef struct main_s {
     char *redirection;
     history_t *history;
     struct env_s *stock_env;
+    czshrc_t *czshrc;
 } main_t;
 
 typedef struct command_ctx_s {
