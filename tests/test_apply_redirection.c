@@ -44,12 +44,11 @@ Test(apply_redirection, returns_success_when_absent)
     cr_assert_eq(apply_redirection(&ctx), SUCCESS);
 }
 
-Test(apply_redirection, rejects_missing_target)
+Test(apply_redirection, rejects_missing_target, .init = cr_redirect_stderr)
 {
     command_ctx_t ctx = {0};
     char *argv[] = {"echo", ">", NULL};
 
-    cr_redirect_stderr();
     ctx.argv = argv;
     ctx.redirection = ">";
     cr_assert_eq(apply_redirection(&ctx), 1);
