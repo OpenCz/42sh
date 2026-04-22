@@ -11,6 +11,8 @@ int normalize_status(int status)
 {
     int seg_status = 0;
 
+    if (status == 0x7f)
+        return 1;
     if (WIFEXITED(status))
         return WEXITSTATUS(status);
     if (WIFSTOPPED(status))
