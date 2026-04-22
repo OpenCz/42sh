@@ -15,7 +15,7 @@ void write_print(main_t *stock)
         display_prompt(user);
 }
 
-void write_tty(char *buffer, int cmd)
+void write_tty(char *buffer)
 {
     if (isatty(0))
         my_putstr(buffer);

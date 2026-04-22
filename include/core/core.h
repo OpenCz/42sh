@@ -25,7 +25,7 @@ void clear_command_ctx(command_ctx_t *ctx);
 int bind_command_context(main_t *stock_main, command_ctx_t *ctx);
 void init_termios(struct termios *tr, struct termios *old);
 void setup_shell_signals(void);
-void write_tty(char *buffer, int cmd);
+void write_tty(char *buffer);
 void write_print(main_t *stock);
 int handle_ctrl_l(main_t *stock_main, char *user);
 int handle_ctrl_d(int *len, char *user);
