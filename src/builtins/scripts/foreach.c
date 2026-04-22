@@ -107,7 +107,7 @@ static int handle_cmd(char **cmd, command_ctx_t *new_ctx,
     handle_arg_t *handle_arg, main_t *main_stock)
 {
     for (int j = 0; cmd[j] != NULL; j++) {
-        parse_command_context(cmd[j], new_ctx);
+        parse_command_context(cmd[j], new_ctx, main_stock);
         if (handle_var(new_ctx, handle_arg->var, handle_arg->arg,
                 main_stock->stock_env) == FAILURE)
             return FAILURE;
