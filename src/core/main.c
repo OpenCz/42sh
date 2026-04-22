@@ -36,6 +36,7 @@ static bool handle_command_result(main_t *stock, loop_state_t *state)
 
 static void run_shell_loop(main_t *stock, loop_state_t *state)
 {
+    stock->last_exit = my_itoa(state->last_exit);
     while (my_strcmp(state->buffer, "exit") != 0) {
         if (!state->prompt_displayed)
             write_print(stock);
@@ -48,8 +49,9 @@ static void run_shell_loop(main_t *stock, loop_state_t *state)
         }
         if (handle_command_result(stock, state))
             break;
+        stock->last_exit = my_itoa(state->last_exit);
     }
-    write_tty("exit\n");
+    write_tty("exit\n", state->cmd);
 }
 
 int main(int argc, char **argv, char **env)
