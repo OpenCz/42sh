@@ -5,7 +5,7 @@
 ** function
 */
 
-#include "c_zsh.h"
+#include "../../../include/c_zsh.h"
 
 void free_alloc(void *object)
 {
@@ -50,10 +50,19 @@ static void free_history(history_t *his, history_cmd_t *history)
     free_alloc(his);
 }
 
+static void free_rc(czshrc_t *rc)
+{
+    if (!rc)
+        return;
+    free(rc->prompt);
+    free_rc(rc);
+}
+
 void free_main(main_t *stock)
 {
     if (!stock)
         return;
+    free_rc(stock->czshrc);
     free_array(stock->path);
     free_array(stock->argv);
     free_alloc(stock->redirection);
