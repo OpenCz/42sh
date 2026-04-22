@@ -5,7 +5,7 @@
 ** main
 */
 
-#include "c_zsh.h"
+#include "../../../include/c_zsh.h"
 
 static history_t *init_history(main_t *main)
 {
@@ -21,6 +21,15 @@ static history_t *init_history(main_t *main)
     if (!main->history->curr)
         return NULL;
     return main->history;
+}
+
+static czshrc_t *init_rc(void)
+{
+    czshrc_t *rc = update_rc();
+
+    if (!rc)
+        return NULL;
+    return rc;
 }
 
 main_t *init_main(char **env)
@@ -39,5 +48,6 @@ main_t *init_main(char **env)
     main_node->path = my_str_to_word_array(get_path(main_node->stock_env), ":");
     main_node->home = get_home(main_node->stock_env);
     init_history(main_node);
+    main_node->czshrc = init_rc();
     return main_node;
 }
