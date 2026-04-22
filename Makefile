@@ -19,7 +19,11 @@ SRC_CORE = \
 	src/core/context/get_command.c \
 	src/core/context/arrow_handling.c \
 	src/core/context/manage_history.c \
-	src/core/context/command_context.c
+	src/core/context/command_context.c \
+	src/core/context/signal.c \
+	src/core/context/termios.c \
+	src/core/context/display.c \
+	src/core/context/control.c \
 
 SRC_BUILTINS = \
 	src/builtins/env/my_env.c \
@@ -78,6 +82,7 @@ SRC_UTILS = \
 	src/utils/strings/my_strstr.c \
 	src/utils/strings/my_str_to_word_array.c \
 	src/utils/strings/my_str_to_word_array_quotes.c \
+	src/utils/strings/str_to_array_of_word_array.c \
 	src/utils/strings/my_wordarraylen.c \
 	src/utils/strings/my_itoa.c \
 	src/utils/validation/my_ischar_num.c \
@@ -86,6 +91,11 @@ SRC_UTILS = \
 SRC_MEMORY = \
 	src/memory/free/free_function.c
 
+SRC_CONFIG = \
+	src/config/czshrc.c \
+	src/config/manage_prompt.c \
+	src/config/set_default_rc.c
+
 SRC = \
 	$(SRC_CORE) \
 	$(SRC_BUILTINS) \
@@ -93,7 +103,8 @@ SRC = \
 	$(SRC_ENV) \
 	$(SRC_PARSING) \
 	$(SRC_UTILS) \
-	$(SRC_MEMORY)
+	$(SRC_MEMORY) \
+	$(SRC_CONFIG)
 
 OBJ = $(SRC:.c=.o)
 

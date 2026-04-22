@@ -65,4 +65,18 @@ typedef struct pipeline_state_s {
     int count;
 } pipeline_state_t;
 
+typedef struct input_ctx_s {
+    char *user;
+    main_t *stock_main;
+    char ch;
+} input_ctx_t;
+
+typedef struct loop_state_s {
+    char *buffer;
+    int last_exit;
+    int cmd;
+    bool prompt_displayed;
+} loop_state_t;
+
+
 #endif

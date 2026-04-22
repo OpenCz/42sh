@@ -5,8 +5,7 @@
 ** replace_env_vars
 */
 
-#include "../../../include/c_zsh.h"
-#include <stdlib.h>
+#include "c_zsh.h"
 
 static size_t get_var_name_len(const char *name)
 {

@@ -19,6 +19,7 @@
 #include <signal.h>
 #include <ctype.h>
 #include <limits.h>
+#include <termios.h>
 
 #ifndef MINISHELL_H
     #define MINISHELL_H
@@ -34,5 +35,6 @@
     #include "execution/execution.h"
     #include "memory/memory.h"
     #include "config/czshrc.h"
+    #include "config/color.h"
 
 #endif
