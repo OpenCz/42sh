@@ -42,7 +42,7 @@ SRC_UTILS = \
 	$(wildcard ../src/utils/io/*.c) \
 	$(wildcard ../src/utils/strings/*.c) \
 	$(wildcard ../src/utils/validation/*.c) \
-	$(wildcard ../src/utils/errors/*.c)
+	$(wildcard ../src/utils/errors/*.c) \
 	$(wildcard ../src/utils/display/*.c)
 
 SRC_MEMORY = \
