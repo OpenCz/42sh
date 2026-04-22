@@ -64,7 +64,6 @@ int main(int argc, char **argv, char **env)
 
     setup_shell_signals();
     run_shell_loop(stock, &state);
-    write_tty("exit\n", state.cmd);
     free_main(stock);
     return state.last_exit;
 }
