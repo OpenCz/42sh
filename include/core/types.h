@@ -41,6 +41,7 @@ typedef struct main_s {
     char **argv;
     char **arg_command;
     char *redirection;
+    char *last_exit;
     history_t *history;
     struct env_s *stock_env;
 } main_t;
