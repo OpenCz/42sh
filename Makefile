@@ -48,7 +48,7 @@ SRC_EXEC = \
 	src/execution/pipeline/pipeline_spawn.c \
 	src/execution/pipeline/pipeline_syntax.c \
 	src/execution/pipeline/pipeline_wait.c \
-	src/execution/redirection/apply_redirection.c 
+	src/execution/redirection/apply_redirection.c
 
 SRC_ENV = \
 	src/environment/path/check_bin.c \
@@ -79,8 +79,9 @@ SRC_UTILS = \
 	src/utils/strings/my_str_to_word_array.c \
 	src/utils/strings/my_str_to_word_array_quotes.c \
 	src/utils/strings/my_wordarraylen.c \
+	src/utils/strings/my_itoa.c \
 	src/utils/validation/my_ischar_num.c \
-	src/utils/validation/my_str_is_alphanum.c
+	src/utils/validation/my_str_is_alphanum.c \
 
 SRC_MEMORY = \
 	src/memory/free/free_function.c
