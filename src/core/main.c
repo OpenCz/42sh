@@ -49,7 +49,7 @@ static void run_shell_loop(main_t *stock, loop_state_t *state)
         if (handle_command_result(stock, state))
             break;
     }
-    write_tty("exit\n", state->cmd);
+    write_tty("exit\n");
 }
 
 int main(int argc, char **argv, char **env)
