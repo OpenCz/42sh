@@ -7,8 +7,13 @@
 
 #include <criterion/criterion.h>
 #include <fcntl.h>
+#include <sys/wait.h>
 #include <unistd.h>
 #include "../include/c_zsh.h"
+
+#ifndef W_EXITCODE
+#define W_EXITCODE(ret, sig) (((ret) << 8) | (sig))
+#endif
 
 Test(pipeline_syntax, detects_invalid_and_valid_pipes)
 {

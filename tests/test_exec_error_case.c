@@ -8,8 +8,13 @@
 #include <criterion/criterion.h>
 #include <criterion/redirect.h>
 #include <fcntl.h>
+#include <sys/wait.h>
 #include <unistd.h>
 #include "../include/c_zsh.h"
+
+#ifndef W_EXITCODE
+#define W_EXITCODE(ret, sig) (((ret) << 8) | (sig))
+#endif
 
 static char *create_temp_file(const char *content, mode_t mode)
 {
