@@ -9,10 +9,20 @@
 
 int normalize_status(int status)
 {
-    if (WIFSIGNALED(status))
-        return get_seg(status);
+    int seg_status = 0;
+
+    if (status == 0x7f)
+        return 1;
     if (WIFEXITED(status))
         return WEXITSTATUS(status);
+    if (WIFSTOPPED(status))
+        return 1;
+    if (WIFSIGNALED(status)) {
+        seg_status = get_seg(status);
+        if (seg_status != 0)
+            return seg_status;
+        return 128 + WTERMSIG(status);
+    }
     return 1;
 }
 
