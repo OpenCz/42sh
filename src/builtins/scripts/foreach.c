@@ -74,27 +74,61 @@ static char **get_array_arg(command_ctx_t *ctx)
     return arg;
 }
 
-static void handle_var(command_ctx_t *new_ctx, char *var, char **arg, int i)
+static int handle_env_var(char *var, env_t *stock_env)
 {
-    for (int k = 0; new_ctx->argv[k] != NULL; k++) {
-        if (strncmp(new_ctx->argv[k], "$", 1) == 0 && strcmp(new_ctx->argv[k] + 1, var) == 0)
-            new_ctx->argv[k] = arg[i];
+    for (env_t *tmp = stock_env; tmp != NULL; tmp = tmp->next) {
+        if (strcmp(tmp->key, var) == 0)
+            return SUCCESS;
     }
+    return FAILURE;
+}
+
+static int handle_var(command_ctx_t *new_ctx, char *var, char *arg,
+    env_t *stock_env)
+{
+    int k = 1;
+
+    for (; new_ctx->argv[k] != NULL; k++) {
+        if (strlen(new_ctx->argv[k]) == 1 || new_ctx->argv[k][0] != '$')
+            continue;
+        if (strncmp(new_ctx->argv[k], "$", 1) == 0
+            && strcmp(new_ctx->argv[k] + 1, var) == 0) {
+            new_ctx->argv[k] = arg;
+            continue;
+        }
+        if (strcmp(new_ctx->argv[k] + 1, var) != 0
+            && handle_env_var(new_ctx->argv[k] + 1, stock_env) == FAILURE)
+            return put_error_var(new_ctx->argv[k] + 1);
+    }
+    return SUCCESS;
+}
+
+static int handle_cmd(char **cmd, command_ctx_t *new_ctx,
+    handle_arg_t *handle_arg, main_t *main_stock)
+{
+    for (int j = 0; cmd[j] != NULL; j++) {
+        parse_command_context(cmd[j], new_ctx);
+        if (handle_var(new_ctx, handle_arg->var, handle_arg->arg,
+                main_stock->stock_env) == FAILURE)
+            return FAILURE;
+        exec_any(main_stock, new_ctx);
+    }
+    return SUCCESS;
 }
 
 static int foreach(command_ctx_t *ctx, char **cmd, main_t *main_stock)
 {
     command_ctx_t new_ctx = *ctx;
+    handle_arg_t handle_arg = {0};
     char **arg = get_array_arg(ctx);
 
     if (!arg)
         return FAILURE;
     for (int i = 1; arg[i] != NULL; i++) {
-        for (int j = 0; cmd[j] != NULL; j++) {
-            parse_command_context(cmd[j], &new_ctx);
-            handle_var(&new_ctx, arg[0], arg, i);
-            exec_any(main_stock, &new_ctx);
-        }
+        handle_arg.var = arg[0];
+        handle_arg.arg = arg[i];
+        if (handle_cmd(cmd, &new_ctx, &handle_arg, main_stock) == FAILURE)
+            return 1;
     }
     free(arg);
     free_array(cmd);
