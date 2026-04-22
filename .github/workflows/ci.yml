@@ -51,7 +51,7 @@ jobs:
     environment: production
     runs-on: ubuntu-latest
     container:
-      image: epitechcontent/epitest-docker
+      image: lukassgx/epigambling
 
     steps:
       - uses: actions/checkout@v6
@@ -151,7 +151,7 @@ jobs:
     environment: production
     runs-on: ubuntu-latest
     container:
-      image: epitechcontent/epitest-docker
+      image: lukassgx/epigambling
     needs:
       - check_mirror
       - check_compilation_and_coding_style
