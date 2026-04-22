@@ -5,7 +5,7 @@
 ** main
 */
 
-#include "c_zsh.h"
+#include "../../include/c_zsh.h"
 
 static char *serialize(char *buffer)
 {
