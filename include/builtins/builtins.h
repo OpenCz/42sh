@@ -17,6 +17,11 @@ typedef struct builtin_command_s {
     builtin_handler_t func;
 } builtin_command_t;
 
+typedef struct handle_arg_s {
+    char *var;
+    char *arg;
+} handle_arg_t;
+
 int builtin_history(main_t *main_stock, command_ctx_t *ctx);
 int execute_builtin(main_t *main_stock, command_ctx_t *ctx);
 int builtin_env(main_t *main_stock, command_ctx_t *ctx);
@@ -27,6 +32,10 @@ int builtin_jobs(main_t *main_stock, command_ctx_t *ctx);
 int builtin_foreground(main_t *main_stock, command_ctx_t *ctx);
 int builtin_background(main_t *main_stock, command_ctx_t *ctx);
 int builtin_repeat(main_t *main_stock, command_ctx_t *ctx);
+int builtin_foreach(main_t *main_stock, command_ctx_t *ctx);
+char **foreach_read_commands(void);
+int handle_error(command_ctx_t *ctx);
+int put_error_var(char *var);
 int builtin_printenv(main_t *main_stock, command_ctx_t *ctx);
 
 int my_env(main_t *main_stock);
