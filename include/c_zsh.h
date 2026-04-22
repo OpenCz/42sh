@@ -18,6 +18,7 @@
 #include <errno.h>
 #include <signal.h>
 #include <ctype.h>
+#include <limits.h>
 
 #ifndef MINISHELL_H
     #define MINISHELL_H
