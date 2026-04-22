@@ -11,7 +11,7 @@ int execute_single_command(main_t *stock_main,
     char *command, bool allow_builtin)
 {
     command_ctx_t ctx;
-    int parse_status = parse_command_context(command, &ctx);
+    int parse_status = parse_command_context(command, &ctx, stock_main);
     int builtin_status = -1;
 
     if (parse_status == 1)

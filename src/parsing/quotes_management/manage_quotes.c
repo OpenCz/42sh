@@ -49,7 +49,7 @@ char *convert_quotes(char *cmd)
     char *result = NULL;
     int j = 0;
 
-    result = malloc(strlen(cmd) + 1);
+    result = malloc(sizeof(char) * (strlen(cmd) + 1));
     if (!result)
         return NULL;
     result = get_result(cmd, result, &j);

@@ -16,7 +16,14 @@ SRC_CORE = \
 	src/core/main.c \
 	src/core/init/init_env.c \
 	src/core/init/init_main.c \
-	src/core/context/command_context.c
+	src/core/context/get_command.c \
+	src/core/context/arrow_handling.c \
+	src/core/context/manage_history.c \
+	src/core/context/command_context.c \
+	src/core/context/signal.c \
+	src/core/context/termios.c \
+	src/core/context/display.c \
+	src/core/context/control.c \
 
 SRC_BUILTINS = \
 	src/builtins/env/my_env.c \
@@ -30,6 +37,10 @@ SRC_BUILTINS = \
 	src/builtins/scripts/foreach.c \
 	src/builtins/scripts/foreach_input.c \
 	src/utils/errors/foreach.c
+	src/builtins/fs/my_which.c \
+	src/builtins/fs/my_where.c \
+	src/builtins/env/printenv.c \
+	src/builtins/history/history.c
 
 SRC_EXEC = \
 	src/execution/dispatch/execute_builtin.c \
@@ -49,15 +60,19 @@ SRC_EXEC = \
 SRC_ENV = \
 	src/environment/path/check_bin.c \
 	src/environment/query/get_home.c \
-	src/environment/query/get_path.c
+	src/environment/query/get_path.c \
+	src/environment/query/get_user.c
 
 SRC_PARSING = \
 	src/parsing/redirection/get_redirection.c \
+	src/parsing/env_var_management/replace_env_vars.c \
 	src/parsing/quotes_management/manage_quotes.c \
 
 SRC_UTILS = \
 	src/utils/io/my_putstr.c \
 	src/utils/io/get_file_size_stat.c \
+	src/utils/io/my_putnbr.c \
+	src/utils/display/display_time.c \
 	src/utils/io/openator.c \
 	src/utils/display/get_branch_git.c \
 	src/utils/display/get_folder.c \
@@ -70,6 +85,7 @@ SRC_UTILS = \
 	src/utils/strings/my_strstr.c \
 	src/utils/strings/my_str_to_word_array.c \
 	src/utils/strings/my_str_to_word_array_quotes.c \
+	src/utils/strings/str_to_array_of_word_array.c \
 	src/utils/strings/my_wordarraylen.c \
 	src/utils/validation/my_ischar_num.c \
 	src/utils/validation/my_str_is_alphanum.c \
@@ -78,6 +94,11 @@ SRC_UTILS = \
 SRC_MEMORY = \
 	src/memory/free/free_function.c
 
+SRC_CONFIG = \
+	src/config/czshrc.c \
+	src/config/manage_prompt.c \
+	src/config/set_default_rc.c
+
 SRC = \
 	$(SRC_CORE) \
 	$(SRC_BUILTINS) \
@@ -85,7 +106,8 @@ SRC = \
 	$(SRC_ENV) \
 	$(SRC_PARSING) \
 	$(SRC_UTILS) \
-	$(SRC_MEMORY)
+	$(SRC_MEMORY) \
+	$(SRC_CONFIG)
 
 OBJ = $(SRC:.c=.o)
 

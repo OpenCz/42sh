@@ -21,6 +21,7 @@ SRC_BUILTINS = \
 	$(wildcard ../src/builtins/jobs/*.c) \
 	$(wildcard ../src/builtins/repeat/*.c) \
 	$(wildcard ../src/builtins/scripts/*.c) \
+	$(wildcard ../src/builtins/history/*.c)
 
 SRC_EXEC = \
 	$(wildcard ../src/execution/dispatch/*.c) \
@@ -34,6 +35,7 @@ SRC_ENV = \
 
 SRC_PARSING = \
 	$(wildcard ../src/parsing/redirection/*.c) \
+	$(wildcard ../src/parsing/env_var_management/*.c) \
 	$(wildcard ../src/parsing/quotes_management/*.c)
 
 SRC_UTILS = \
@@ -41,6 +43,7 @@ SRC_UTILS = \
 	$(wildcard ../src/utils/strings/*.c) \
 	$(wildcard ../src/utils/validation/*.c) \
 	$(wildcard ../src/utils/errors/*.c)
+	$(wildcard ../src/utils/display/*.c)
 
 SRC_MEMORY = \
 	$(wildcard ../src/memory/free/*.c)

@@ -10,6 +10,22 @@
 
     #include <sys/types.h>
 
+    #define CONTINUE -5
+
+typedef struct history_cmd_s {
+    int id;
+    char *cmd;
+    struct history_cmd_s *prev;
+    struct history_cmd_s *next;
+} history_cmd_t;
+
+typedef struct history_s {
+    history_cmd_t *history_cmd;
+    history_cmd_t *curr_cmd;
+    int id;
+    char *curr;
+} history_t;
+
 typedef struct env_s {
     char *key;
     char *value;
@@ -25,6 +41,7 @@ typedef struct main_s {
     char **argv;
     char **arg_command;
     char *redirection;
+    history_t *history;
     struct env_s *stock_env;
 } main_t;
 
@@ -46,5 +63,19 @@ typedef struct pipeline_state_s {
     int prev_read;
     int count;
 } pipeline_state_t;
+
+typedef struct input_ctx_s {
+    char *user;
+    main_t *stock_main;
+    char ch;
+} input_ctx_t;
+
+typedef struct loop_state_s {
+    char *buffer;
+    int last_exit;
+    int cmd;
+    bool prompt_displayed;
+} loop_state_t;
+
 
 #endif

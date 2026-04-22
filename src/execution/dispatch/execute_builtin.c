@@ -17,6 +17,10 @@ const builtin_command_t command_shell[] = {
     {"bg", builtin_background},
     {"repeat", builtin_repeat},
     {"foreach", builtin_foreach},
+    {"which", builtin_which},
+    {"where", builtin_where},
+    {"printenv", builtin_printenv},
+    {"history", builtin_history},
     {NULL, NULL}
 };
 

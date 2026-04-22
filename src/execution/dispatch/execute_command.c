@@ -7,12 +7,27 @@
 
 #include "c_zsh.h"
 
+static int has_pipeline_operator(char *command)
+{
+    for (int i = 0; command[i] != '\0'; i++) {
+        if (command[i] != '|')
+            continue;
+        if ((i == 0 || command[i - 1] != '|') &&
+            (command[i + 1] == '\0' || command[i + 1] != '|'))
+            return 1;
+    }
+    return 0;
+}
+
 static int execute_compound_command(main_t *stock_main, char *command)
 {
-    if (my_strstr(command, "&&") != NULL ||
-        my_strstr(command, "||") != NULL)
+    int has_logic_operator = (my_strstr(command, "&&") != NULL ||
+        my_strstr(command, "||") != NULL);
+    int has_pipe_operator = has_pipeline_operator(command);
+
+    if (has_logic_operator)
         return execute_operator(stock_main, command);
-    if (my_strstr(command, "|") != NULL)
+    if (has_pipe_operator)
         return execute_pipeline(stock_main, command);
     return execute_single_command(stock_main, command, true);
 }
