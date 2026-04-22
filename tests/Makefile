@@ -20,6 +20,7 @@ SRC_BUILTINS = \
 	$(wildcard ../src/builtins/fs/*.c) \
 	$(wildcard ../src/builtins/jobs/*.c) \
 	$(wildcard ../src/builtins/repeat/*.c) \
+	$(wildcard ../src/builtins/scripts/*.c) \
 
 SRC_EXEC = \
 	$(wildcard ../src/execution/dispatch/*.c) \
@@ -38,7 +39,8 @@ SRC_PARSING = \
 SRC_UTILS = \
 	$(wildcard ../src/utils/io/*.c) \
 	$(wildcard ../src/utils/strings/*.c) \
-	$(wildcard ../src/utils/validation/*.c)
+	$(wildcard ../src/utils/validation/*.c) \
+	$(wildcard ../src/utils/errors/*.c)
 
 SRC_MEMORY = \
 	$(wildcard ../src/memory/free/*.c)
