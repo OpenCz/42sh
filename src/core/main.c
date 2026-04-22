@@ -5,7 +5,7 @@
 ** main
 */
 
-#include "c_zsh.h"
+#include "../../include/c_zsh.h"
 
 static void write_print(main_t *stock)
 {
@@ -40,6 +40,7 @@ int main(int argc, char **argv, char **env)
     int last_exit = 0;
     int cmd = 0;
 
+    stock->last_exit = my_itoa(last_exit);
     while (my_strcmp(buffer, "exit") != 0) {
         write_print(stock);
         cmd = get_command(&buffer, stock->history, get_user(stock->stock_env));
@@ -49,6 +50,7 @@ int main(int argc, char **argv, char **env)
         if (my_strcmp(buffer, "exit") == 0 || cmd == -1)
             break;
         last_exit = execute_command(stock, buffer);
+        stock->last_exit = my_itoa(last_exit);
     }
     write_tty("exit\n");
     free_main(stock);
