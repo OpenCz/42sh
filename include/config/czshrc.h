@@ -44,5 +44,6 @@ typedef struct buffer_s {
 
 void set_default_rc(czshrc_t *rc);
 void manage_prompt(czshrc_t *rc, char ***rc_parsed, int i);
+czshrc_t *update_rc(void);
 
 #endif
