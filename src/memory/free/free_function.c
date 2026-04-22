@@ -55,7 +55,6 @@ static void free_rc(czshrc_t *rc)
     if (!rc)
         return;
     free(rc->prompt);
-    free_rc(rc);
 }
 
 void free_main(main_t *stock)
