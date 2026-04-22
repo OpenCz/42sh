@@ -33,5 +33,6 @@ char *get_branch_git(void);
 void display_prompt(char *user);
 int my_putnbr(int nb);
 void display_time(void);
+char *my_itoa(int num);
 
 #endif
