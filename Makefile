@@ -36,7 +36,7 @@ SRC_BUILTINS = \
 	src/builtins/repeat/repeat.c \
 	src/builtins/scripts/foreach.c \
 	src/builtins/scripts/foreach_input.c \
-	src/utils/errors/foreach.c
+	src/utils/errors/foreach.c \
 	src/builtins/fs/my_which.c \
 	src/builtins/fs/my_where.c \
 	src/builtins/env/printenv.c \
