@@ -8,7 +8,7 @@
 #ifndef CZ_SHRT_H
     #define CZ_SHRT_H
 
-    #include "../c_zsh.h"
+    #include "c_zsh.h"
 
 typedef enum date_format_e {
     LONG,
@@ -44,5 +44,6 @@ typedef struct buffer_s {
 
 void set_default_rc(czshrc_t *rc);
 void manage_prompt(czshrc_t *rc, char ***rc_parsed, int i);
+czshrc_t *update_rc(void);
 
 #endif
