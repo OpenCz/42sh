@@ -15,7 +15,7 @@
 char *get_user(env_t *stock_env)
 {
     for (env_t *tmp = stock_env; tmp; tmp = tmp->next) {
-        if (my_strcmp(tmp->key, "USERNAME") == 0 && tmp->value != NULL)
+        if (my_strcmp(tmp->key, "USER") == 0 && tmp->value != NULL)
             return tmp->value;
     }
     return NULL;
