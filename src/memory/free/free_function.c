@@ -54,6 +54,8 @@ void free_main(main_t *stock)
 {
     if (!stock)
         return;
+    free_alloc(stock->czshrc->prompt);
+    free_alloc(stock->czshrc);
     free_array(stock->path);
     free_array(stock->argv);
     free_alloc(stock->redirection);

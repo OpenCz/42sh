@@ -12,7 +12,6 @@
 
 #include "../../../include/c_zsh.h"
 
-
 static int get_len_arg(command_ctx_t *ctx)
 {
     int len = my_wordarray_len(ctx->arg_command);
@@ -25,18 +24,9 @@ static int get_len_arg(command_ctx_t *ctx)
     return len;
 }
 
-static int start_arg(command_ctx_t *ctx)
-{
-    int start = 0;
-
-    if (strcmp(ctx->arg_command[1], "(") == 0)
-        start++;
-    return start;
-}
-
 static void fill_arg(char **arg, command_ctx_t *ctx, int i, int j)
 {
-    int start = start_arg(ctx);
+    int start = strcmp(ctx->arg_command[1], "(") == 0;
     int len_array = my_wordarray_len(ctx->arg_command) - 1;
     int last = 0;
 
@@ -59,7 +49,7 @@ static void fill_arg(char **arg, command_ctx_t *ctx, int i, int j)
 static char **get_array_arg(command_ctx_t *ctx)
 {
     int len = get_len_arg(ctx);
-    int start = start_arg(ctx);
+    int start = strcmp(ctx->arg_command[1], "(") == 0;
     int j = 0;
     char **arg = malloc(sizeof(char *) * (len + 1));
 
@@ -74,46 +64,94 @@ static char **get_array_arg(command_ctx_t *ctx)
     return arg;
 }
 
-static int handle_env_var(char *var, env_t *stock_env)
+static env_t *create_loop_node(char *var, char *new_value)
 {
-    for (env_t *tmp = stock_env; tmp != NULL; tmp = tmp->next) {
-        if (strcmp(tmp->key, var) == 0)
-            return SUCCESS;
+    env_t *node = malloc(sizeof(env_t));
+
+    if (!node) {
+        free(new_value);
+        return NULL;
     }
-    return FAILURE;
+    node->key = my_strdup(var);
+    if (!node->key) {
+        free(new_value);
+        free(node);
+        return NULL;
+    }
+    node->value = new_value;
+    node->next = NULL;
+    return node;
 }
 
-static int handle_var(command_ctx_t *new_ctx, char *var, char *arg,
-    env_t *stock_env)
+static int update_existing_loop_var(env_t *curr, char *arg,
+    loop_env_state_t *state)
 {
-    int k = 1;
+    char *new_value = arg ? my_strdup(arg) : NULL;
 
-    for (; new_ctx->argv[k] != NULL; k++) {
-        if (strlen(new_ctx->argv[k]) == 1 || new_ctx->argv[k][0] != '$')
-            continue;
-        if (strncmp(new_ctx->argv[k], "$", 1) == 0
-            && strcmp(new_ctx->argv[k] + 1, var) == 0) {
-            new_ctx->argv[k] = arg;
-            continue;
-        }
-        if (strcmp(new_ctx->argv[k] + 1, var) != 0
-            && handle_env_var(new_ctx->argv[k] + 1, stock_env) == FAILURE)
-            return put_error_var(new_ctx->argv[k] + 1);
-    }
+    if (arg && !new_value)
+        return FAILURE;
+    state->existing_node = curr;
+    state->saved_value = curr->value;
+    curr->value = new_value;
     return SUCCESS;
+}
+
+static int set_loop_variable(main_t *main_stock, char *var, char *arg,
+    loop_env_state_t *state)
+{
+    env_t *prev = NULL;
+    env_t *curr = find_env_node(main_stock->stock_env, var, &prev);
+
+    state->existing_node = NULL;
+    state->created_node = NULL;
+    state->saved_value = NULL;
+    if (curr)
+        return update_existing_loop_var(curr, arg, state);
+    state->created_node = create_loop_node(var, arg ? my_strdup(arg) : NULL);
+    if (!state->created_node)
+        return FAILURE;
+    state->created_node->next = main_stock->stock_env;
+    main_stock->stock_env = state->created_node;
+    return SUCCESS;
+}
+
+static void restore_loop_variable(main_t *main_stock, loop_env_state_t *state)
+{
+    if (state->existing_node) {
+        free(state->existing_node->value);
+        state->existing_node->value = state->saved_value;
+    }
+    if (state->created_node) {
+        main_stock->stock_env = state->created_node->next;
+        free(state->created_node->key);
+        free(state->created_node->value);
+        free(state->created_node);
+    }
 }
 
 static int handle_cmd(char **cmd, command_ctx_t *new_ctx,
     handle_arg_t *handle_arg, main_t *main_stock)
 {
+    loop_env_state_t state = {0};
+    int status = SUCCESS;
+
+    status = set_loop_variable(main_stock, handle_arg->var,
+        handle_arg->arg, &state);
+    if (status == FAILURE)
+        return FAILURE;
     for (int j = 0; cmd[j] != NULL; j++) {
-        parse_command_context(cmd[j], new_ctx, main_stock);
-        if (handle_var(new_ctx, handle_arg->var, handle_arg->arg,
-                main_stock->stock_env) == FAILURE)
-            return FAILURE;
-        exec_any(main_stock, new_ctx);
+        status = parse_command_context(cmd[j], new_ctx, main_stock);
+        if (status == 1)
+            break;
+        if (status == 2)
+            continue;
+        status = exec_any(main_stock, new_ctx);
+        clear_command_ctx(new_ctx);
+        if (status == FAILURE)
+            break;
     }
-    return SUCCESS;
+    restore_loop_variable(main_stock, &state);
+    return status == 1 ? FAILURE : status;
 }
 
 static int foreach(command_ctx_t *ctx, char **cmd, main_t *main_stock)
@@ -127,8 +165,11 @@ static int foreach(command_ctx_t *ctx, char **cmd, main_t *main_stock)
     for (int i = 1; arg[i] != NULL; i++) {
         handle_arg.var = arg[0];
         handle_arg.arg = arg[i];
-        if (handle_cmd(cmd, &new_ctx, &handle_arg, main_stock) == FAILURE)
+        if (handle_cmd(cmd, &new_ctx, &handle_arg, main_stock) == FAILURE) {
+            free(arg);
+            free_array(cmd);
             return 1;
+        }
     }
     free(arg);
     free_array(cmd);

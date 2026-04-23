@@ -33,6 +33,9 @@ SRC_ENV = \
 	$(wildcard ../src/environment/path/*.c) \
 	$(wildcard ../src/environment/query/*.c)
 
+SRC_CONFIG = \
+	$(wildcard ../src/config/*.c)
+
 SRC_PARSING = \
 	$(wildcard ../src/parsing/redirection/*.c) \
 	$(wildcard ../src/parsing/env_var_management/*.c) \
@@ -53,6 +56,7 @@ SRC_PROJECT = \
 	$(SRC_BUILTINS) \
 	$(SRC_EXEC) \
 	$(SRC_ENV) \
+	$(SRC_CONFIG) \
 	$(SRC_PARSING) \
 	$(SRC_UTILS) \
 	$(SRC_MEMORY)

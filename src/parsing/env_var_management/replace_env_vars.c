@@ -22,9 +22,9 @@ static size_t get_var_name_len(const char *name)
 
 static char *is_hard(char *key)
 {
-    char *hard_keys[] = {"0", "36", "117 354 889 550", "69", "8", "21", NULL};
-    char *hard_values[] = {"c_zsh", "Sacha Le Moign-Avalos", "Celenzo Peuch",
-        "Lucas Soigneux", "Jessym Gaddacha", "Erwan Lo Presti", NULL};
+    char *hard_keys[] = {"0", "36", "117 354 889 550", "69", "8", "12", NULL};
+    char *hard_values[] = {"c_zsh", "Sasha Le Moins-Avalos", "Celenzo Peuch",
+        "Lukas Soigneux", "Jessym Gaddacha", "Erwan Lo Presti", NULL};
 
     for (int i = 0; hard_keys[i]; i++) {
         if (my_strcmp(hard_keys[i], key) == 0)
