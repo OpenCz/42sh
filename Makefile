@@ -35,6 +35,7 @@ SRC_BUILTINS = \
 	src/builtins/jobs/my_background.c \
 	src/builtins/repeat/repeat.c \
 	src/builtins/scripts/foreach.c \
+	src/builtins/scripts/scripts_if.c \
 	src/builtins/scripts/foreach_input.c \
 	src/utils/errors/foreach.c \
 	src/builtins/fs/my_which.c \
