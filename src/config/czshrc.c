@@ -7,16 +7,28 @@
 
 #include "../../include/c_zsh.h"
 
+static void free_parsed_rc(char ***rc_parsed)
+{
+    if (!rc_parsed)
+        return;
+    for (int i = 0; rc_parsed[i]; i++)
+        free_array(rc_parsed[i]);
+    free(rc_parsed);
+}
+
 static void parse_and_fill_struct(czshrc_t *rc, char *rc_content)
 {
     char ***rc_parsed = my_str_to_array_of_word_array(rc_content, "\n", "=");
 
+    if (!rc_parsed)
+        return;
     for (int i = 0; rc_parsed[i]; i++) {
         if (rc_parsed[i][0][0] == '#')
             continue;
         if (my_strcmp(rc_parsed[i][0], "[prompt]") == 0)
             manage_prompt(rc, rc_parsed, i);
     }
+    free_parsed_rc(rc_parsed);
 }
 
 czshrc_t *update_rc(void)
@@ -36,5 +48,6 @@ czshrc_t *update_rc(void)
         return rc;
     }
     parse_and_fill_struct(rc, rc_content);
+    free_alloc(rc_content);
     return rc;
 }
