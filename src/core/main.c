@@ -9,13 +9,19 @@
 
 static char *serialize(char *buffer)
 {
-    size_t len = 0;
+    size_t start = 0;
+    size_t end = 0;
 
     if (!buffer)
         return NULL;
-    len = my_strlen(buffer);
-    if (len > 0 && buffer[len - 1] == '\n')
-        buffer[len - 1] = '\0';
+    end = my_strlen(buffer);
+    while (end > 0 && isspace((unsigned char)buffer[end - 1]))
+        end--;
+    buffer[end] = '\0';
+    while (buffer[start] != '\0' && isspace((unsigned char)buffer[start]))
+        start++;
+    if (start > 0)
+        memmove(buffer, buffer + start, end - start + 1);
     return buffer;
 }
 
