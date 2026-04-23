@@ -7,7 +7,6 @@
 
 #include "../../../include/c_zsh.h"
 #include <fcntl.h>
-
 static char *is_command(char *str)
 {
     for (int i = 0; str[i] != '\0'; i++) {
@@ -64,28 +63,34 @@ static char *verif_value(main_t *main, char **str)
     return *str;
 }
 
-static char *create_condition(main_t *main, command_ctx_t *ctx, char *cmd)
+static char *create_condition(main_t *main, command_ctx_t *ctx,
+    char *cmd, char **to_exec)
 {
     char *buffer = calloc(1, BUFFER_SIZE);
+    int i = 1;
 
     if (!buffer) {
         free_alloc(cmd);
         return NULL;
     }
-    for (int i = 1; ctx->argv[i] && strcmp(ctx->argv[i], "endif") != 0; i++)
+    for (; ctx->argv[i + 1] && strcmp(ctx->argv[i], "endif") != 0; i++)
         buffer = strcat(buffer, verif_value(main, &ctx->argv[i]));
+    *to_exec = strdup(ctx->argv[i]);
     return buffer;
 }
 
 int builtin_if(main_t *main_stock, command_ctx_t *ctx)
 {
     char *cmd = init_cmd();
-    char *condition = create_condition(main_stock, ctx, cmd);
+    char *to_exec = NULL;
+    char *condition = create_condition(main_stock, ctx, cmd, &to_exec);
 
     if (!cmd || !condition)
         return 1;
     cmd = strcat(cmd, condition);
-    printf("%d\n", redirect_command(main_stock, cmd));
+    if (redirect_command(main_stock, cmd) == 1)
+        execute_command(main_stock, to_exec);
+    free(to_exec);
     free(cmd);
     free(condition);
     return 0;
