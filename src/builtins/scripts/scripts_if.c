@@ -86,5 +86,7 @@ int builtin_if(main_t *main_stock, command_ctx_t *ctx)
         return 1;
     cmd = strcat(cmd, condition);
     printf("%d\n", redirect_command(main_stock, cmd));
+    free(cmd);
+    free(condition);
     return 0;
 }
