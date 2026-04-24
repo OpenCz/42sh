@@ -9,7 +9,7 @@
 
 static void pwd(char *pwd_folder, infos_t *folder)
 {
-    if (pwd_folder && folder->toggle) {
+    if (pwd_folder) {
         my_putstr("\033[102m  ");
         my_putstr(pwd_folder);
         my_putstr(" \033[0m");
