@@ -7,6 +7,7 @@
 
 #include "../../../include/c_zsh.h"
 #include <fcntl.h>
+
 static char *is_command(char *str)
 {
     for (int i = 0; str[i] != '\0'; i++) {
@@ -88,7 +89,7 @@ int builtin_if(main_t *main_stock, command_ctx_t *ctx)
     if (!cmd || !condition)
         return 1;
     cmd = strcat(cmd, condition);
-    if (redirect_command(main_stock, cmd) == 1)
+    if (redirect_command(main_stock, cmd) != 0)
         execute_command(main_stock, to_exec);
     free(to_exec);
     free(cmd);
