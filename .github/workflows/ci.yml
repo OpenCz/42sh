@@ -51,7 +51,7 @@ jobs:
     environment: production
     runs-on: ubuntu-latest
     container:
-      image: lukassgx/epi-docker
+      image: lukassgx/epi-docker:tek-1
 
     steps:
       - uses: actions/checkout@v6
@@ -151,7 +151,7 @@ jobs:
     environment: production
     runs-on: ubuntu-latest
     container:
-      image: lukassgx/epi-docker
+      image: lukassgx/epi-docker:tek-1
     needs:
       - check_mirror
       - check_compilation_and_coding_style
