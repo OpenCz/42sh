@@ -28,6 +28,6 @@ void setup_shell_signals(void);
 void write_tty(char *buffer);
 void write_print(main_t *stock);
 int handle_ctrl_l(main_t *stock_main, char *user);
-int handle_ctrl_d(int *len, char *user);
+int handle_ctrl_d(int *len, char *user, main_t *stock_main);
 
 #endif

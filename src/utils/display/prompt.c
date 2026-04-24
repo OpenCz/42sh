@@ -7,9 +7,9 @@
 
 #include "c_zsh.h"
 
-static void pwd(char *pwd_folder)
+static void pwd(char *pwd_folder, infos_t *folder)
 {
-    if (pwd_folder) {
+    if (pwd_folder && folder->toggle) {
         my_putstr("\033[102m  ");
         my_putstr(pwd_folder);
         my_putstr(" \033[0m");
@@ -36,7 +36,7 @@ static void git(char *git_branch)
     }
 }
 
-void display_prompt(char *user)
+void display_prompt(prompt_t *prompt, char *user)
 {
     char *git_branch = get_branch_git();
     char *pwd_folder = get_folder();
@@ -47,7 +47,7 @@ void display_prompt(char *user)
     my_putstr("m");
     my_putstr("╭─ \033[0m");
     my_putstr("\033[47m\033[30m  \033[0m");
-    pwd(pwd_folder);
+    pwd(pwd_folder, &prompt->folder);
     username(user);
     git(git_branch);
     my_putstr("\n\033[90m╰─❯\033[0m ");
