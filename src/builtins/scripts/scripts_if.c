@@ -12,7 +12,7 @@ static char *is_command(char *str)
     for (int i = 0; str[i] != '\0'; i++) {
         if (str[i] == '(' || str[i] == ')' || str[i] == '+' || str[i] == '=' ||
             str[i] == '-' || (str[i] == '/' && str[i - 1] != '.') ||
-            str[i] == '!')
+            str[i] == '!' || str[i] == '*' || str[i] == '|')
             return str;
         if (str[0] == '-')
             continue;
@@ -73,7 +73,7 @@ static char *create_condition(main_t *main, command_ctx_t *ctx,
         free_alloc(cmd);
         return NULL;
     }
-    for (; ctx->argv[i + 1] && strcmp(ctx->argv[i], "endif") != 0; i++)
+    for (; ctx->argv[i + 1] && strcmp(ctx->argv[i + 1], "endif") != 0; i++)
         buffer = strcat(buffer, verif_value(main, &ctx->argv[i]));
     *to_exec = strdup(ctx->argv[i]);
     return buffer;
