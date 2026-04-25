@@ -40,7 +40,8 @@ SRC_BUILTINS = \
 	src/builtins/fs/my_which.c \
 	src/builtins/fs/my_where.c \
 	src/builtins/env/printenv.c \
-	src/builtins/history/history.c
+	src/builtins/history/history.c \
+	src/builtins/fs/my_alias.c \
 
 SRC_EXEC = \
 	src/execution/dispatch/execute_builtin.c \
@@ -124,7 +125,7 @@ GCOVRFLAGS  = --gcov-executable "llvm-cov-20 gcov" --exclude tests/
 
 # ─── Tools ───────────────────────────────────────────────────────────────
 RM           = rm -rf
-ECC          = epiclang
+ECC          = clang
 ARGUMENTS    =
 DEBUG_STRICT ?= 0
 LOCAL_BIN   ?= $(HOME)/.local/bin
