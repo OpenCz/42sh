@@ -12,6 +12,13 @@
 
     #define CONTINUE -5
 
+typedef struct alias_stock_s {
+    char *new_name;
+    char *command;
+    bool is_fixed;
+    struct alias_stock_s *next;
+} alias_stock_t;
+
 typedef struct history_cmd_s {
     int id;
     char *cmd;
@@ -42,6 +49,7 @@ typedef struct main_s {
     char **arg_command;
     char *redirection;
     history_t *history;
+    alias_stock_t *alias_stock;
     struct env_s *stock_env;
 } main_t;
 
