@@ -19,12 +19,26 @@ static int has_pipeline_operator(char *command)
     return 0;
 }
 
+static void check_alias(main_t *stock_main, char **command)
+{
+    alias_stock_t *alias = stock_main->alias_stock;
+
+    while (alias) {
+        if (my_strcmp(*command, alias->new_name) == 0) {
+            *command = my_strdup(alias->command);
+            break;
+        }
+        alias = alias->next;
+    }
+}
+
 static int execute_compound_command(main_t *stock_main, char *command)
 {
     int has_logic_operator = (my_strstr(command, "&&") != NULL ||
         my_strstr(command, "||") != NULL);
     int has_pipe_operator = has_pipeline_operator(command);
 
+    check_alias(stock_main, &command);
     if (has_logic_operator)
         return execute_operator(stock_main, command);
     if (has_pipe_operator)
