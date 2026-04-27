@@ -103,6 +103,11 @@ static int check_if_format(command_ctx_t *ctx)
             printf("bad formated command\n");
             return -1;
         }
+        if (is_operator(ctx->argv[i]) && (is_operator(ctx->argv[i - 1]) ||
+                is_operator(ctx->argv[i + 1]))) {
+            printf("bad formated operation\n");
+            return -1;
+        }
     }
     return 0;
 }
