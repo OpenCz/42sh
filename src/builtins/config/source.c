@@ -9,6 +9,6 @@
 
 int source(main_t *stock_main, command_ctx_t *ctx)
 {
-    stock_main->czshrc = update_rc();
+    stock_main->czshrc = update_rc(ctx->argv[1]);
     return 0;
 }
