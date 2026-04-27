@@ -191,7 +191,6 @@ jobs:
           gh pr create \
             --title "merge: ${{ github.ref_name }} -> main" \
             --body "$COMMITS_LIST" \
-            --reviewer "lukas-sgx,copilot" \
             --base main \
             --head dev || echo "PR already exists or could not be created"
         env:
