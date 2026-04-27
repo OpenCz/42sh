@@ -11,6 +11,8 @@ static int is_shell_builtin(char *name)
 {
     if (my_strcmp(name, "env") == 0 || my_strcmp(name, "setenv") == 0)
         return 1;
+    if (my_strcmp(name, "set") == 0 || my_strcmp(name, "unset") == 0)
+        return 1;
     if (my_strcmp(name, "unsetenv") == 0 || my_strcmp(name, "cd") == 0)
         return 1;
     if (my_strcmp(name, "jobs") == 0 || my_strcmp(name, "fg") == 0)
@@ -56,7 +58,7 @@ static int print_where_result(main_t *main_stock, char *command)
     int found = print_paths_for_command(main_stock, command);
 
     if (is_shell_builtin(command)) {
-        printf("%s: shell built-in command.\n", command);
+        printf("%s is a shell built-in\n", command);
         found = 1;
     }
     if (!found)
