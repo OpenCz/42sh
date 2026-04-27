@@ -9,8 +9,11 @@
     #define CORE_TYPES_H
 
     #include <sys/types.h>
+    #include <stdbool.h>
+    #include "../config/czshrc.h"
 
     #define CONTINUE -5
+    #define TAB_WIDTH 4
 
 typedef struct history_cmd_s {
     int id;
@@ -44,6 +47,7 @@ typedef struct main_s {
     char *last_exit;
     history_t *history;
     struct env_s *stock_env;
+    czshrc_t *czshrc;
 } main_t;
 
 typedef struct command_ctx_s {
@@ -78,5 +82,10 @@ typedef struct loop_state_s {
     bool prompt_displayed;
 } loop_state_t;
 
+typedef struct loop_env_state_s {
+    env_t *existing_node;
+    env_t *created_node;
+    char *saved_value;
+} loop_env_state_t;
 
 #endif

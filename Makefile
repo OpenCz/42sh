@@ -23,7 +23,8 @@ SRC_CORE = \
 	src/core/context/signal.c \
 	src/core/context/termios.c \
 	src/core/context/display.c \
-	src/core/context/control.c \
+	src/core/context/key_binding.c \
+	src/core/context/tab.c
 
 SRC_BUILTINS = \
 	src/builtins/env/my_env.c \
@@ -34,10 +35,14 @@ SRC_BUILTINS = \
 	src/builtins/jobs/my_foreground.c \
 	src/builtins/jobs/my_background.c \
 	src/builtins/repeat/repeat.c \
+	src/builtins/scripts/foreach.c \
+	src/builtins/scripts/foreach_input.c \
+	src/utils/errors/foreach.c \
 	src/builtins/fs/my_which.c \
 	src/builtins/fs/my_where.c \
 	src/builtins/env/printenv.c \
-	src/builtins/history/history.c
+	src/builtins/history/history.c \
+	src/builtins/config/source.c
 
 SRC_EXEC = \
 	src/execution/dispatch/execute_builtin.c \
@@ -87,6 +92,8 @@ SRC_UTILS = \
 	src/utils/strings/my_itoa.c \
 	src/utils/validation/my_ischar_num.c \
 	src/utils/validation/my_str_is_alphanum.c \
+	src/utils/validation/my_str_is_alphanum.c \
+	src/utils/validation/my_char_is_alpha.c
 
 SRC_MEMORY = \
 	src/memory/free/free_function.c

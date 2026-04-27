@@ -1,0 +1,32 @@
+/*
+** EPITECH PROJECT, 2026
+** ~/epitech/delivery/42sh/src/core/context
+** File description:
+** tab
+*/
+
+#include "c_zsh.h"
+
+int get_display_width(char ch)
+{
+    return ch == '\t' ? TAB_WIDTH : 1;
+}
+
+int get_buffer_display_width(char *buffer, int len)
+{
+    int width = 0;
+
+    for (int i = 0; i < len && buffer[i]; i++)
+        width += get_display_width(buffer[i]);
+    return width;
+}
+
+void write_tab_spaces(void)
+{
+    int tab = 0;
+
+    while (tab < TAB_WIDTH) {
+        write(1, " ", 1);
+        tab++;
+    }
+}

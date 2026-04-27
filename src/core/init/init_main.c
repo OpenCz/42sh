@@ -23,6 +23,15 @@ static history_t *init_history(main_t *main)
     return main->history;
 }
 
+static czshrc_t *init_rc(void)
+{
+    czshrc_t *rc = update_rc();
+
+    if (!rc)
+        return NULL;
+    return rc;
+}
+
 main_t *init_main(char **env)
 {
     main_t *main_node = malloc(sizeof(main_t));
@@ -39,5 +48,6 @@ main_t *init_main(char **env)
     main_node->path = my_str_to_word_array(get_path(main_node->stock_env), ":");
     main_node->home = get_home(main_node->stock_env);
     init_history(main_node);
+    main_node->czshrc = init_rc();
     return main_node;
 }

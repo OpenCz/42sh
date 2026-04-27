@@ -5,7 +5,8 @@
 ** builtin
 */
 
-#include "c_zsh.h"
+#include "../../../include/c_zsh.h"
+#include "../../../include/builtins/builtins.h"
 
 const builtin_command_t command_shell[] = {
     {"env", builtin_env},
@@ -16,10 +17,12 @@ const builtin_command_t command_shell[] = {
     {"fg", builtin_foreground},
     {"bg", builtin_background},
     {"repeat", builtin_repeat},
+    {"foreach", builtin_foreach},
     {"which", builtin_which},
     {"where", builtin_where},
     {"printenv", builtin_printenv},
     {"history", builtin_history},
+    {"source", source},
     {NULL, NULL}
 };
 

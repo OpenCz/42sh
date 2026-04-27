@@ -9,15 +9,22 @@
 
 static void print_command(char *buffer, int len, int cursor)
 {
+    int cursor_width = get_buffer_display_width(buffer, cursor);
+    int total_width = get_buffer_display_width(buffer, len);
+
     write(1, "\r\x1b[2K", 5);
     my_putstr("\033[90m╰─❯\033[0m ");
-    write(1, buffer, cursor);
-    write(1, &buffer[cursor], len - cursor);
-    for (int i = len; cursor < i; i--)
+    for (int i = 0; i < len && buffer[i]; i++) {
+        if (buffer[i] == '\t')
+            write_tab_spaces();
+        else
+            write(1, &buffer[i], 1);
+    }
+    for (int i = total_width; cursor_width < i; i--)
         write(1, "\b", 1);
 }
 
-static int append_char(char **buffer, char ch, int *len, int *cursor)
+int append_char(char **buffer, char ch, int *len, int *cursor)
 {
     memmove(&(*buffer)[*cursor + 1], &(*buffer)[*cursor], *len - *cursor + 1);
     (*buffer)[*cursor] = ch;
@@ -27,61 +34,10 @@ static int append_char(char **buffer, char ch, int *len, int *cursor)
     return 0;
 }
 
-static int specific_char(char ch, char **buffer, int *len, int *cursor)
-{
-    if (ch == 1) {
-        *cursor = 0;
-        return 1;
-    }
-    if (ch == 5) {
-        *cursor = *len;
-        return 1;
-    }
-    if (ch == 127) {
-        if (*cursor == 0)
-            return 1;
-        memmove(&(*buffer)[*cursor - 1],
-            &(*buffer)[*cursor], *len - *cursor + 1);
-        *len -= (*len > 0 ? 1 : 0);
-        *cursor -= (*cursor > 0 ? 1 : 0);
-        return 1;
-    }
-    return 0;
-}
-
-static int handle_regular_char(buffer_t *buff, int *cursor, char ch)
-{
-    append_char(buff->buffer, ch, buff->len, cursor);
-    return 0;
-}
-
 static int reset_prompt_status(int *cursor, int len)
 {
     *cursor = len;
     return 0;
-}
-
-static int handle_input_char(history_t *history, buffer_t *buff,
-    int *cursor, input_ctx_t *ctx)
-{
-    if (ctx->ch == 3) {
-        my_putstr("\n");
-        display_prompt(ctx->user);
-        return 0;
-    }
-    if (ctx->ch == 12)
-        return handle_ctrl_l(ctx->stock_main, ctx->user);
-    if (ctx->ch == 4)
-        return handle_ctrl_d(buff->len, ctx->user);
-    if (ctx->ch == ARROW_START)
-        return arrow_handling(history, buff->buffer, cursor, buff->len);
-    if (specific_char(ctx->ch, buff->buffer, buff->len, cursor) == 1)
-        return 0;
-    if (ctx->ch == '\n') {
-        my_putstr("\n");
-        return 1;
-    }
-    return handle_regular_char(buff, cursor, ctx->ch);
 }
 
 static int check_char(history_t *history, buffer_t *buff,

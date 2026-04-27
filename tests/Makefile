@@ -20,6 +20,7 @@ SRC_BUILTINS = \
 	$(wildcard ../src/builtins/fs/*.c) \
 	$(wildcard ../src/builtins/jobs/*.c) \
 	$(wildcard ../src/builtins/repeat/*.c) \
+	$(wildcard ../src/builtins/scripts/*.c) \
 	$(wildcard ../src/builtins/history/*.c)
 
 SRC_EXEC = \
@@ -32,6 +33,9 @@ SRC_ENV = \
 	$(wildcard ../src/environment/path/*.c) \
 	$(wildcard ../src/environment/query/*.c)
 
+SRC_CONFIG = \
+	$(wildcard ../src/config/*.c)
+
 SRC_PARSING = \
 	$(wildcard ../src/parsing/redirection/*.c) \
 	$(wildcard ../src/parsing/env_var_management/*.c) \
@@ -41,6 +45,7 @@ SRC_UTILS = \
 	$(wildcard ../src/utils/io/*.c) \
 	$(wildcard ../src/utils/strings/*.c) \
 	$(wildcard ../src/utils/validation/*.c) \
+	$(wildcard ../src/utils/errors/*.c) \
 	$(wildcard ../src/utils/display/*.c)
 
 SRC_MEMORY = \
@@ -51,6 +56,7 @@ SRC_PROJECT = \
 	$(SRC_BUILTINS) \
 	$(SRC_EXEC) \
 	$(SRC_ENV) \
+	$(SRC_CONFIG) \
 	$(SRC_PARSING) \
 	$(SRC_UTILS) \
 	$(SRC_MEMORY)
@@ -85,6 +91,7 @@ H_CYAN   = \033[96m
 all: unit_tests
 
 unit_tests:
+	@$(RM) *.gcda *.gcno
 	@mkdir -p $(LOGS_DIR) $(COVERAGE_RAW_DIR)
 	@printf "$(H_CYAN)Building$(END) $(BOLD)unit_tests$(END) ...\n"
 	@$(CC) -o unit_tests $(SRCTST) $(TESTSFLAGS) $(CFLAGS) && \
@@ -92,31 +99,39 @@ unit_tests:
 		(printf "%b\n" "$(BOLD)$(H_YELLOW)[ FAIL ]$(END)" && exit 1)
 
 tests_run: unit_tests
-	@CRITERION_SHOW_STDOUT=1 ./unit_tests > $(LOGS_DIR)/test_output.log 2>&1; EXIT_CODE=$$?; \
-	if [ $$EXIT_CODE -ne 0 ]; then \
+	@$(RM) *.gcda *.gcno
+	@CRITERION_SHOW_STDOUT=1 ./unit_tests 2>&1 | grep -v "^profiling:" > $(LOGS_DIR)/test_output.log; \
+	FAILED=$$(grep -c "Échoués: [^0]" $(LOGS_DIR)/test_output.log || true); \
+	CRASHED=$$(grep -c "Plantages: [^0]" $(LOGS_DIR)/test_output.log || true); \
+	if [ "$$FAILED" -gt 0 ] || [ "$$CRASHED" -gt 0 ]; then \
 	    printf "%b\n" "$(BOLD)$(H_YELLOW)Some tests failed! Check $(LOGS_DIR)/test_output.log$(END)"; \
 	    cat $(LOGS_DIR)/test_output.log; \
-	    exit $$EXIT_CODE; \
+	    exit 1; \
 	fi; \
+	cat $(LOGS_DIR)/test_output.log; \
 	printf "%b\n" "$(BOLD)$(H_GREEN)All tests passed! Generating coverage report...$(END)"; \
 	gcovr $(GCOVRFLAGS) $(WEBGCOVRFLAGS) > $(LOGS_DIR)/coverage_report.log 2>&1; \
 	gcovr $(GCOVRFLAGS) --branches >> $(LOGS_DIR)/coverage_report.log 2>&1; \
 	printf "%b\n" "$(BOLD)$(H_GREEN)Done! Logs: $(LOGS_DIR)/test_output.log | $(LOGS_DIR)/coverage_report.log$(END)"
 
 coverage: unit_tests
+	@$(RM) *.gcda *.gcno
 	@mkdir -p $(LOGS_DIR) $(COVERAGE_DIR) $(COVERAGE_RAW_DIR)
-	@CRITERION_SHOW_STDOUT=1 ./unit_tests > $(LOGS_DIR)/test_output.log 2>&1; EXIT_CODE=$$?; \
-	if [ $$EXIT_CODE -ne 0 ]; then \
+	@CRITERION_SHOW_STDOUT=1 ./unit_tests 2>&1 | grep -v "^profiling:" > $(LOGS_DIR)/test_output.log; \
+	FAILED=$$(grep -c "Échoués: [^0]" $(LOGS_DIR)/test_output.log || true); \
+	CRASHED=$$(grep -c "Plantages: [^0]" $(LOGS_DIR)/test_output.log || true); \
+	if [ "$$FAILED" -gt 0 ] || [ "$$CRASHED" -gt 0 ]; then \
 	    printf "%b\n" "$(BOLD)$(H_YELLOW)Some tests failed! Check $(LOGS_DIR)/test_output.log$(END)"; \
 	    cat $(LOGS_DIR)/test_output.log; \
-	    exit $$EXIT_CODE; \
+	    exit 1; \
 	fi
+	@cat $(LOGS_DIR)/test_output.log
 	@printf "%b\n" "$(BOLD)$(H_GREEN)All tests passed! Generating coverage report...$(END)"
 	@gcovr $(GCOVRFLAGS) $(WEBGCOVRFLAGS) > $(LOGS_DIR)/coverage_report.log 2>&1
 	@gcovr $(GCOVRFLAGS) --txt-metric branch >> $(LOGS_DIR)/coverage_report.log 2>&1
 	@printf "%b\n" "$(BOLD)$(H_CYAN)Running Valgrind...$(END)"
 	@valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes \
-	    --log-file=$(VALGRIND_LOG) ./unit_tests >/dev/null 2>&1; \
+	    --log-file=$(VALGRIND_LOG) ./unit_tests >/dev/null 2>/dev/null; \
 	{ echo '<!DOCTYPE html><html><head><meta charset="utf-8">'; \
 	  echo '<title>Valgrind Report</title>'; \
 	  echo '<style>'; \
