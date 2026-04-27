@@ -84,25 +84,48 @@ static char *create_condition(main_t *main, command_ctx_t *ctx,
     return buffer;
 }
 
-int builtin_if(main_t *main_stock, command_ctx_t *ctx)
+static int check_if_format(command_ctx_t *ctx)
 {
-    char *cmd = init_cmd();
-    char *to_exec = NULL;
-    char *else_cmd;
-    char *condition = create_condition(main_stock, ctx, &else_cmd, &to_exec);
-
-    if (!cmd || !condition) {
-        if (cmd)
-            free(cmd);
-        return 1;
+    if (my_wordarray_len(ctx->argv) < 2)
+        return -1;
+    for (int i = 1; ctx->argv[i] && strcmp(ctx->argv[i], "endif") != 0; i++) {
+        if (strcmp(ctx->argv[i], "else") == 0 && (!ctx->argv[i + 1] ||
+                is_command(ctx->argv[i - 1]))) {
+            printf("bad formated command\n");
+            return -1;
+        }
     }
-    cmd = strcat(cmd, condition);
+    return 0;
+}
+
+static void exec_if_command(main_t *main_stock, char *cmd,
+    char *to_exec, char *else_cmd)
+{
     if (redirect_command(main_stock, cmd) != 0)
         execute_command(main_stock, to_exec);
     else if (else_cmd)
         execute_command(main_stock, else_cmd);
     free(to_exec);
     free(cmd);
+}
+
+int builtin_if(main_t *main_stock, command_ctx_t *ctx)
+{
+    char *cmd = init_cmd();
+    char *to_exec = NULL;
+    char *else_cmd;
+    char *condition = NULL;
+
+    if (!cmd || check_if_format(ctx) == -1) {
+        if (cmd)
+            free(cmd);
+        return 1;
+    }
+    condition = create_condition(main_stock, ctx, &else_cmd, &to_exec);
+    if (!condition || strlen(condition) < 1)
+        return 1;
+    cmd = strcat(cmd, condition);
     free(condition);
+    exec_if_command(main_stock, cmd, to_exec, else_cmd);
     return 0;
 }
