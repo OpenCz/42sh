@@ -57,7 +57,7 @@ static void run_shell_loop(main_t *stock, loop_state_t *state)
             break;
         stock->last_exit = my_itoa(state->last_exit);
     }
-    write_tty("exit\n", state->cmd);
+    write_tty("exit\n");
 }
 
 int main(int argc, char **argv, char **env)
