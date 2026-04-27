@@ -21,7 +21,8 @@ SRC_BUILTINS = \
 	$(wildcard ../src/builtins/jobs/*.c) \
 	$(wildcard ../src/builtins/repeat/*.c) \
 	$(wildcard ../src/builtins/scripts/*.c) \
-	$(wildcard ../src/builtins/history/*.c)
+	$(wildcard ../src/builtins/history/*.c) \
+	$(wildcard ../src/builtins/config/*.c)
 
 SRC_EXEC = \
 	$(wildcard ../src/execution/dispatch/*.c) \
