@@ -92,7 +92,6 @@ SRC_UTILS = \
 	src/utils/strings/my_itoa.c \
 	src/utils/validation/my_ischar_num.c \
 	src/utils/validation/my_str_is_alphanum.c \
-	src/utils/validation/my_str_is_alphanum.c \
 	src/utils/validation/my_char_is_alpha.c
 
 SRC_MEMORY = \
