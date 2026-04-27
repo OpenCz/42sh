@@ -12,6 +12,7 @@
     #include "config/czshrc.h"
 
     #define CONTINUE -5
+    #define TAB_WIDTH 4
 
 typedef struct history_cmd_s {
     int id;

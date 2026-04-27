@@ -23,7 +23,8 @@ SRC_CORE = \
 	src/core/context/signal.c \
 	src/core/context/termios.c \
 	src/core/context/display.c \
-	src/core/context/control.c \
+	src/core/context/key_binding.c \
+	src/core/context/tab.c
 
 SRC_BUILTINS = \
 	src/builtins/env/my_env.c \
