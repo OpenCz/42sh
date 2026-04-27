@@ -7,12 +7,15 @@
 #include <termios.h>
 #include "c_zsh.h"
 
-static void left_arrow(char arrow, int *cursor)
+static void left_arrow(char arrow, char *buffer, int *cursor)
 {
     if (arrow != 'D')
         return;
-    *cursor -= *cursor > 0 ? 1 : 0;
-    write(1, "\b", 1);
+    if (*cursor == 0)
+        return;
+    *cursor -= 1;
+    for (int i = 0; i < get_display_width(buffer[*cursor]); i++)
+        write(1, "\b", 1);
 }
 
 static int up_arrow(history_t *history, char **buffer, int *len, char arrow)
@@ -45,12 +48,15 @@ static int down_arrow(history_t *history, char **buffer, int *len, char arrow)
     return 1;
 }
 
-static void right_arrow(char arrow, int *cursor, int len)
+static void right_arrow(char arrow, char *buffer, int *cursor, int len)
 {
     if (arrow != 'C')
         return;
-    *cursor += *cursor < len ? 1 : 0;
-    write(1, "\x1b[C", 3);
+    if (*cursor >= len)
+        return;
+    for (int i = 0; i < get_display_width(buffer[*cursor]); i++)
+        write(1, "\x1b[C", 3);
+    *cursor += 1;
 }
 
 int arrow_handling(history_t *history, char **buffer, int *cursor, int *len)
@@ -61,8 +67,8 @@ int arrow_handling(history_t *history, char **buffer, int *cursor, int *len)
     if (arrow[0] != '[')
         return 0;
     read(STDIN_FILENO, &arrow[1], 1);
-    left_arrow(arrow[1], cursor);
-    right_arrow(arrow[1], cursor, *len);
+    left_arrow(arrow[1], *buffer, cursor);
+    right_arrow(arrow[1], *buffer, cursor, *len);
     if (up_arrow(history, buffer, len, arrow[1]) == 1 ||
         down_arrow(history, buffer, len, arrow[1]) == 1)
         *cursor = strlen(*buffer);
