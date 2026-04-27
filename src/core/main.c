@@ -32,7 +32,7 @@ static bool handle_command_result(main_t *stock, loop_state_t *state)
         return true;
     state->last_exit = execute_command(stock, state->buffer);
     if (state->last_exit == 130) {
-        display_prompt(get_user(stock->stock_env));
+        display_prompt(stock->czshrc->prompt, get_user(stock->stock_env));
         state->prompt_displayed = true;
     } else {
         state->prompt_displayed = false;
