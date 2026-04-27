@@ -37,6 +37,7 @@ char **foreach_read_commands(void);
 int handle_error(command_ctx_t *ctx);
 int put_error_var(char *var);
 int builtin_printenv(main_t *main_stock, command_ctx_t *ctx);
+int source(main_t *stock_main, command_ctx_t *ctx);
 
 int my_env(main_t *main_stock);
 int my_setenv(main_t *main_stock);
