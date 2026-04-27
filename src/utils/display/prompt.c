@@ -7,9 +7,9 @@
 
 #include "c_zsh.h"
 
-static void pwd(char *pwd_folder)
+static void pwd(char *pwd_folder, infos_t *folder)
 {
-    if (pwd_folder) {
+    if (pwd_folder && folder->toggle) {
         my_putstr("\033[102m  ");
         my_putstr(pwd_folder);
         my_putstr(" \033[0m");
@@ -17,18 +17,18 @@ static void pwd(char *pwd_folder)
     }
 }
 
-static void username(char *user)
+static void username(char *user, infos_t *user_info)
 {
-    if (user) {
+    if (user && user_info->toggle) {
         my_putstr("\033[103m 🐧 ");
         my_putstr(user);
         my_putstr(" \033[0m");
     }
 }
 
-static void git(char *git_branch)
+static void git(char *git_branch, infos_t *git_info)
 {
-    if (git_branch) {
+    if (git_branch && git_info->toggle) {
         my_putstr("\033[104m  ");
         my_putstr(git_branch);
         my_putstr(" \033[0m");
@@ -36,7 +36,7 @@ static void git(char *git_branch)
     }
 }
 
-void display_prompt(char *user)
+void display_prompt(prompt_t *prompt, char *user)
 {
     char *git_branch = get_branch_git();
     char *pwd_folder = get_folder();
@@ -47,8 +47,8 @@ void display_prompt(char *user)
     my_putstr("m");
     my_putstr("╭─ \033[0m");
     my_putstr("\033[47m\033[30m  \033[0m");
-    pwd(pwd_folder);
-    username(user);
-    git(git_branch);
+    pwd(pwd_folder, &prompt->folder);
+    username(user, &prompt->user);
+    git(git_branch, &prompt->git_branch);
     my_putstr("\n\033[90m╰─❯\033[0m ");
 }

@@ -7,7 +7,7 @@
 
 #ifndef UTILS_H
     #define UTILS_H
-
+    #include "../config/czshrc.h"
 typedef struct word_state_s {
     int in_word;
     int count;
@@ -33,7 +33,7 @@ char *openator(char const *filepath);
 char *get_folder(void);
 char *get_branch_git(void);
 int my_char_is_alpha(char key);
-void display_prompt(char *user);
+void display_prompt(prompt_t *prompt, char *user);
 int my_putnbr(int nb);
 void display_time(void);
 

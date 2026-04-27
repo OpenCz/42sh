@@ -9,6 +9,7 @@
     #define CORE_TYPES_H
 
     #include <sys/types.h>
+    #include <stdbool.h>
     #include "../config/czshrc.h"
 
     #define CONTINUE -5
