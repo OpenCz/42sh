@@ -7,6 +7,26 @@
 
 #include "../../include/c_zsh.h"
 
+static void trim_inplace(char *str)
+{
+    int start = 0;
+    int end;
+    int len;
+
+    if (!str || str[0] == '\0')
+        return;
+    for (; str[start] == ' ' || str[start] == '\t'; start++);
+    for (end = (int)strlen(str) - 1;
+        end >= start && (str[end] == ' ' || str[end] == '\t'); end--);
+    len = end - start + 1;
+    if (len <= 0) {
+        str[0] = '\0';
+        return;
+    }
+    memmove(str, str + start, (size_t)len);
+    str[len] = '\0';
+}
+
 static void free_parsed_rc(char ***rc_parsed)
 {
     if (!rc_parsed)
@@ -23,10 +43,16 @@ static void parse_and_fill_struct(czshrc_t *rc, char *rc_content)
     if (!rc_parsed)
         return;
     for (int i = 0; rc_parsed[i]; i++) {
+        trim_inplace(rc_parsed[i][0]);
+        if (rc_parsed[i][1])
+            trim_inplace(rc_parsed[i][1]);
+    }
+    for (int i = 0; rc_parsed[i]; i++) {
         if (rc_parsed[i][0][0] == '#')
             continue;
-        if (my_strcmp(rc_parsed[i][0], "[prompt]") == 0)
+        if (my_strcmp(rc_parsed[i][0], "[prompt]") == 0) {
             manage_prompt(rc, rc_parsed, i);
+        }
     }
     free_parsed_rc(rc_parsed);
 }
@@ -38,15 +64,12 @@ czshrc_t *update_rc(void)
 
     if (!rc)
         return NULL;
-    if (access(".czshrc", F_OK) == -1) {
-        set_default_rc(rc);
+    set_default_rc(rc);
+    if (access(".czshrc", F_OK) == -1)
         return rc;
-    }
     rc_content = openator(".czshrc");
-    if (!rc_content) {
-        set_default_rc(rc);
+    if (!rc_content)
         return rc;
-    }
     parse_and_fill_struct(rc, rc_content);
     free_alloc(rc_content);
     return rc;

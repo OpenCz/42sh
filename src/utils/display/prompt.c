@@ -5,7 +5,7 @@
 ** The prompt.c
 */
 
-#include "c_zsh.h"
+#include "../../../include/c_zsh.h"
 
 static void pwd(char *pwd_folder, infos_t *folder)
 {
