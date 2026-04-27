@@ -8,13 +8,22 @@
 #include "../../../include/c_zsh.h"
 #include <fcntl.h>
 
-static char *is_command(char *str)
+static char *is_operator(char *str)
 {
     for (int i = 0; str[i] != '\0'; i++) {
         if (str[i] == '(' || str[i] == ')' || str[i] == '+' || str[i] == '=' ||
             str[i] == '-' || (str[i] == '/' && str[i - 1] != '.') ||
             str[i] == '!' || str[i] == '*' || str[i] == '|')
             return str;
+    }
+    return NULL;
+}
+
+static char *is_command(char *str)
+{
+    if (is_operator(str))
+        return str;
+    for (int i = 0; str[i] != '\0'; i++) {
         if (str[0] == '-')
             continue;
         if (str[i] < '0' || str[i] > '9')
@@ -113,7 +122,7 @@ int builtin_if(main_t *main_stock, command_ctx_t *ctx)
 {
     char *cmd = init_cmd();
     char *to_exec = NULL;
-    char *else_cmd;
+    char *else_cmd = NULL;
     char *condition = NULL;
 
     if (!cmd || check_if_format(ctx) == -1) {
