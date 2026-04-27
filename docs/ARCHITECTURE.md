@@ -1,104 +1,104 @@
-# Architecture Du Projet
+# Project Architecture
 
-Ce document decrit l architecture actuelle du minishell et les regles de conception
-qui permettent de garder une base modulaire, lisible et facile a faire evoluer.
+This document describes the current architecture of the minishell and the design
+rules that keep the codebase modular, readable, and easy to evolve.
 
-## 1. Vision D Ensemble
+## 1. Big Picture
 
-Le projet est decoupe par responsabilite metier:
+The project is split by business responsibility:
 
-- `src/core`: cycle de vie global du shell et contexte de commande.
-- `src/builtins`: commandes internes (`env`, `setenv`, `unsetenv`, `cd`).
-- `src/execution`: orchestration d execution (dispatch, externe, pipeline, redirections).
-- `src/environment`: acces a l environnement et resolution binaire via PATH.
-- `src/parsing`: extraction de tokens de parsing (ex: redirection).
-- `src/utils`: fonctions utilitaires bas niveau (string, io, validation).
-- `src/memory`: destruction/liberation des structures dynamiques.
+- `src/core`: global shell lifecycle and command context.
+- `src/builtins`: internal commands (`env`, `setenv`, `unsetenv`, `cd`).
+- `src/execution`: execution orchestration (dispatch, external, pipeline, redirections).
+- `src/environment`: environment access and binary resolution through PATH.
+- `src/parsing`: parsing token extraction (for example redirections).
+- `src/utils`: low-level utility functions (string, io, validation).
+- `src/memory`: destruction and cleanup of dynamic structures.
 
-Le dossier `include` suit la meme logique avec des APIs separees par domaines.
+The `include` directory follows the same logic with APIs separated by domain.
 
-## 2. Arborescence Detaillee
+## 2. Detailed Layout
 
 ### 2.1 Core
 
-- `src/core/main.c`: boucle REPL, lecture entree, appel executeur.
-- `src/core/init/init_env.c`: construction de la liste chainee d environnement.
-- `src/core/init/init_main.c`: initialisation de l etat global `main_t`.
-- `src/core/context/command_context.c`: parsing d une commande vers `command_ctx_t`.
+- `src/core/main.c`: REPL loop, input reading, executor call.
+- `src/core/init/init_env.c`: build the environment linked list.
+- `src/core/init/init_main.c`: initialize the global `main_t` state.
+- `src/core/context/command_context.c`: parse a command into `command_ctx_t`.
 
 ### 2.2 Builtins
 
-- `src/builtins/env/my_env.c`: affichage de l environnement.
-- `src/builtins/env/my_setenv.c`: ajout/mise a jour variable env.
-- `src/builtins/env/my_unsetenv.c`: suppression variable env.
-- `src/builtins/fs/my_chdir.c`: implementation de `cd`.
+- `src/builtins/env/my_env.c`: display the environment.
+- `src/builtins/env/my_setenv.c`: add/update an environment variable.
+- `src/builtins/env/my_unsetenv.c`: remove an environment variable.
+- `src/builtins/fs/my_chdir.c`: `cd` implementation.
 
 ### 2.3 Execution
 
-- `src/execution/dispatch/execute_command.c`: split par `;` et orchestration globale.
-- `src/execution/dispatch/execute_single_command.c`: pipeline hors `|`, builtin/externe.
-- `src/execution/dispatch/execute_builtin.c`: registre et dispatch des builtins.
-- `src/execution/external/exec_any.c`: resolution commande et lancement externe.
+- `src/execution/dispatch/execute_command.c`: split by `;` and global orchestration.
+- `src/execution/dispatch/execute_single_command.c`: non-pipeline path, builtin/external.
+- `src/execution/dispatch/execute_builtin.c`: builtin registry and dispatch.
+- `src/execution/external/exec_any.c`: command resolution and external launch.
 - `src/execution/external/run_fork.c`: fork + wait + status.
-- `src/execution/external/exec_error_case.c`: gestion erreurs `execve` et signaux.
-- `src/execution/pipeline/*`: parse/spawn/wait/finalize pour les pipelines.
-- `src/execution/redirection/apply_redirection.c`: application des redirections.
+- `src/execution/external/exec_error_case.c`: `execve` error handling and signals.
+- `src/execution/pipeline/*`: parse/spawn/wait/finalize for pipelines.
+- `src/execution/redirection/apply_redirection.c`: apply redirections.
 
 ### 2.4 Environment
 
-- `src/environment/query/get_home.c`: lecture de HOME.
-- `src/environment/query/get_path.c`: lecture de PATH.
-- `src/environment/path/check_bin.c`: resolution executable dans PATH.
+- `src/environment/query/get_home.c`: read HOME.
+- `src/environment/query/get_path.c`: read PATH.
+- `src/environment/path/check_bin.c`: executable resolution in PATH.
 
 ### 2.5 Parsing
 
-- `src/parsing/redirection/get_redirection.c`: detection token de redirection.
+- `src/parsing/redirection/get_redirection.c`: redirection token detection.
 
 ### 2.6 Utils
 
-- `src/utils/strings/*`: fonctions string maison.
-- `src/utils/io/my_putstr.c`: sorties stdout/stderr.
-- `src/utils/validation/*`: validation des arguments.
+- `src/utils/strings/*`: custom string helpers.
+- `src/utils/io/my_putstr.c`: stdout/stderr output.
+- `src/utils/validation/*`: argument validation.
 
 ### 2.7 Memory
 
-- `src/memory/free/free_function.c`: liberation des structures dynamiques.
+- `src/memory/free/free_function.c`: cleanup of dynamic structures.
 
-## 3. Types Structurants
+## 3. Core Types
 
-Les types centraux sont declares dans `include/core/types.h`:
+The central types are declared in `include/core/types.h`:
 
-- `env_t`: noeud de liste chainee `key/value` pour l environnement.
-- `main_t`: etat global du shell (longue duree).
-- `command_ctx_t`: etat ephemere d une commande.
-- `pipeline_segment_t`: representation d un segment de pipeline.
-- `pipeline_state_t`: contexte d execution d un pipeline.
+- `env_t`: linked-list `key/value` node for the environment.
+- `main_t`: global shell state (long-lived).
+- `command_ctx_t`: ephemeral command state.
+- `pipeline_segment_t`: representation of one pipeline segment.
+- `pipeline_state_t`: execution context for a pipeline.
 
-## 4. Frontieres Modulaires
+## 4. Modular Boundaries
 
-Regles clefs de modularite:
+Key modularity rules:
 
-- Les modules `dispatch` ne font pas de logique metier de redirection.
-- Les modules `external` ne parsent pas la commande; ils consomment un contexte deja valide.
-- Les builtins sont appeles via un registre (`builtin_command_t`) et une signature commune.
-- Le parsing de redirection est isole du code de fork/exec.
-- Le pipeline est traite comme une unite independante avec son propre etat.
+- `dispatch` modules do not contain business logic for redirections.
+- `external` modules do not parse commands; they consume an already valid context.
+- Builtins are called through a registry (`builtin_command_t`) and a shared signature.
+- Redirection parsing is isolated from fork/exec code.
+- The pipeline is handled as an independent unit with its own state.
 
-## 5. Flux D Execution
+## 5. Execution Flow
 
-Chemin nominal:
+Nominal path:
 
-1. `main` lit une ligne.
-2. `execute_command` split la ligne sur `;`.
-3. Chaque segment va soit vers `execute_pipeline` soit `execute_single_command`.
-4. `execute_single_command` parse `command_ctx_t`.
-5. Si builtin connu: execute handler builtin.
-6. Sinon: `exec_any` -> `run_fork` -> `child_exec`.
-7. Retour du status au REPL.
+1. `main` reads a line.
+2. `execute_command` splits the line on `;`.
+3. Each segment goes either to `execute_pipeline` or `execute_single_command`.
+4. `execute_single_command` parses `command_ctx_t`.
+5. If the builtin is known: execute the builtin handler.
+6. Otherwise: `exec_any` -> `run_fork` -> `child_exec`.
+7. Status is returned to the REPL.
 
-## 6. APIs Header Par Domaine
+## 6. Header APIs by Domain
 
-Les points d entree publics sont separes:
+Public entry points are separated:
 
 - `include/core/core.h`
 - `include/builtins/builtins.h`
@@ -108,23 +108,22 @@ Les points d entree publics sont separes:
 - `include/utils/utils.h`
 - `include/memory/memory.h`
 
-Le fichier `include/c_zsh.h` sert de facade agregatrice pour compatibilite.
+The `include/c_zsh.h` file acts as an aggregator facade for compatibility.
 
-## 7. Evolutions Recommandees
+## 7. Recommended Evolution
 
-Pour rester modulaire a long terme:
+To remain modular over time:
 
-- Ajouter chaque nouvelle feature dans un sous-domaine existant ou nouveau,
-  jamais dans un fichier fourre-tout.
-- Garder les fonctions `static` quand elles ne sont pas exportees.
-- Limiter la taille des fonctions et separer parse, validation, execution.
-- Documenter toute nouvelle structure dans `docs/OWNERSHIP.md`.
-- Ajouter au minimum un test unitaire par nouveau chemin de code critique.
+- Add each new feature in an existing or new subdomain, never in a catch-all file.
+- Keep functions `static` when they are not exported.
+- Keep functions small and separate parsing, validation, and execution.
+- Document any new structure in `docs/OWNERSHIP.md`.
+- Add at least one unit test for every new critical code path.
 
-## 8. Checklist Avant Merge
+## 8. Pre-merge Checklist
 
-- Le module a un domaine clair (`core`, `execution`, `builtins`, etc.).
-- Le header exporte seulement ce qui est necessaire.
-- Le code ne depend pas d un champ global quand un contexte local existe.
-- Les allocations ont un destructeur explicite.
-- `make re` et `make unit_tests` passent.
+- The module has a clear domain (`core`, `execution`, `builtins`, etc.).
+- The header exports only what is necessary.
+- The code does not depend on a global field when a local context exists.
+- Allocations have an explicit destructor.
+- `make re` and `make unit_tests` pass.
