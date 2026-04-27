@@ -29,10 +29,10 @@ static size_t get_var_name_len(const char *name)
 static char *is_hard(const char *key, size_t key_len, main_t *stock_main)
 {
     char *hard_keys[] = {"0", "36", "117 354 889 550", "69", "8", "12", "?",
-        NULL};
+        "$", NULL};
     char *hard_values[] = {"c_zsh", "Sasha Le Moins-Avalos", "Celenzo Peuch",
         "Lukas Soigneux", "Jessym Gaddacha", "Erwan Lo Presti",
-        stock_main->last_exit, NULL};
+        stock_main->last_exit, my_itoa(getpid()), NULL};
 
     for (int i = 0; hard_keys[i]; i++) {
         if (strlen(hard_keys[i]) == key_len &&
