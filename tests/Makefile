@@ -20,6 +20,7 @@ SRC_BUILTINS = \
 	$(wildcard ../src/builtins/fs/*.c) \
 	$(wildcard ../src/builtins/jobs/*.c) \
 	$(wildcard ../src/builtins/repeat/*.c) \
+	$(wildcard ../src/builtins/config/*.c) \
 	$(wildcard ../src/builtins/scripts/*.c) \
 	$(wildcard ../src/builtins/history/*.c)
 
