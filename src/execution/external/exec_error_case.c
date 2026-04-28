@@ -45,5 +45,7 @@ int get_seg(int status)
     }
     if (WCOREDUMP(status))
         write(1, " (core dumped)\n", 15);
+    if (WIFSTOPPED(status))
+        my_putstr("\nSuspended\n");
     return exit_value;
 }
