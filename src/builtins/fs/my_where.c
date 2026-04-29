@@ -28,6 +28,10 @@ static int is_shell_builtin(char *name)
         return 1;
     if (my_strcmp(name, "printenv") == 0 || my_strcmp(name, "history") == 0)
         return 1;
+    if (my_strcmp(name, "alias") == 0 || my_strcmp(name, "unalias") == 0)
+        return 1;
+    if (my_strcmp(name, "echo") == 0)
+        return 1;
     return 0;
 }
 
@@ -58,12 +62,13 @@ static int print_not_found(char *command)
 
 static int print_where_result(main_t *main_stock, char *command)
 {
-    int found = print_paths_for_command(main_stock, command);
+    int found = 0;
 
     if (is_shell_builtin(command)) {
         printf("%s is a shell built-in\n", command);
         found = 1;
     }
+    found |= print_paths_for_command(main_stock, command);
     if (!found)
         return print_not_found(command);
     return SUCCESS;

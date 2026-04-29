@@ -25,6 +25,7 @@ const builtin_command_t command_shell[] = {
     {"where", builtin_where},
     {"printenv", builtin_printenv},
     {"history", builtin_history},
+    {"alias", builtin_alias},
     {"source", source},
     {NULL, NULL}
 };
