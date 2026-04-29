@@ -1,21 +1,30 @@
 /*
 ** EPITECH PROJECT, 2026
-** main
+** 42sh
 ** File description:
-** main
+** Shell entry point: main() calls init_main, setup_shell_signals,
+** run_shell_loop; serialize() trims trailing newline; the loop
+** calls get_command then execute_command until 'exit' or EOF.
+** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 
-#include "c_zsh.h"
+#include "../../include/c_zsh.h"
 
 static char *serialize(char *buffer)
 {
-    size_t len = 0;
+    size_t start = 0;
+    size_t end = 0;
 
     if (!buffer)
         return NULL;
-    len = my_strlen(buffer);
-    if (len > 0 && buffer[len - 1] == '\n')
-        buffer[len - 1] = '\0';
+    end = my_strlen(buffer);
+    while (end > 0 && isspace((unsigned char)buffer[end - 1]))
+        end--;
+    buffer[end] = '\0';
+    while (buffer[start] != '\0' && isspace((unsigned char)buffer[start]))
+        start++;
+    if (start > 0)
+        memmove(buffer, buffer + start, end - start + 1);
     return buffer;
 }
 
@@ -26,7 +35,7 @@ static bool handle_command_result(main_t *stock, loop_state_t *state)
         return true;
     state->last_exit = execute_command(stock, state->buffer);
     if (state->last_exit == 130) {
-        display_prompt(get_user(stock->stock_env));
+        display_prompt(stock->czshrc->prompt, get_user(stock->stock_env));
         state->prompt_displayed = true;
     } else {
         state->prompt_displayed = false;
@@ -36,6 +45,7 @@ static bool handle_command_result(main_t *stock, loop_state_t *state)
 
 static void run_shell_loop(main_t *stock, loop_state_t *state)
 {
+    stock->last_exit = my_itoa(state->last_exit);
     while (my_strcmp(state->buffer, "exit") != 0) {
         if (!state->prompt_displayed)
             write_print(stock);
@@ -48,6 +58,7 @@ static void run_shell_loop(main_t *stock, loop_state_t *state)
         }
         if (handle_command_result(stock, state))
             break;
+        stock->last_exit = my_itoa(state->last_exit);
     }
     write_tty("exit\n");
 }

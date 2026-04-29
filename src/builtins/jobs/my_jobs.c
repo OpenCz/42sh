@@ -1,8 +1,11 @@
 /*
 ** EPITECH PROJECT, 2026
-** ~/epitech/delivery/42sh/src/builtins/signal
+** 42sh
 ** File description:
-** my_jobs
+** jobs builtin stub: registered in the builtin table, returns 0.
+** Full implementation requires a job_t list populated by a
+** SIGCHLD handler tracking background processes.
+** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 
 #include "c_zsh.h"

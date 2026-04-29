@@ -2,13 +2,11 @@
 ** EPITECH PROJECT, 2026
 ** 42sh
 ** File description:
-** The display_time.c
+** Time display: display_time prints current HH:MM right-aligned
+** using terminal column count from ioctl(TIOCGWINSZ).
+** check_null_win falls back to 80 columns when ioctl fails.
+** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
-/**
- * @file display_time.c
- * @brief The display_time.c
- * @author Erwan Lo Presti
- */
 
 #include <stdio.h>
 #include <time.h>

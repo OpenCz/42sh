@@ -1,8 +1,11 @@
 /*
 ** EPITECH PROJECT, 2026
-** unsetenv
+** 42sh
 ** File description:
-** unenvset
+** unsetenv builtin: find_env_node locates the node by key
+** with a prev pointer; remove_env_node splices it out of
+** the list and frees key, value and the node struct.
+** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 
 #include "c_zsh.h"

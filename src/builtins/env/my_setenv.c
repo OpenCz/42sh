@@ -1,8 +1,11 @@
 /*
 ** EPITECH PROJECT, 2026
-** setenv
+** 42sh
 ** File description:
-** setenv
+** setenv builtin: validates key (alphanumeric + _ only, starts
+** with a letter), updates an existing env_t node or appends
+** a new one; with 0 args behaves like env.
+** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 
 #include "c_zsh.h"

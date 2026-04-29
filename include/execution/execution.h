@@ -1,8 +1,11 @@
 /*
 ** EPITECH PROJECT, 2026
-** minishell
+** 42sh
 ** File description:
-** execution api
+** Public API for the execution layer: execute_command (;-dispatch),
+** execute_single_command, execute_pipeline,
+** parse_pipeline, init_pipeline_state, close_and_free, create_pipe.
+** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 
 #ifndef EXECUTION_H

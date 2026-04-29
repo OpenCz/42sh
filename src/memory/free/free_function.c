@@ -1,8 +1,11 @@
 /*
 ** EPITECH PROJECT, 2026
-** free
+** 42sh
 ** File description:
-** function
+** Full memory cleanup: free_alloc (NULL-safe free), free_array
+** (char** + each element), free_linked_list (env_t chain),
+** free_history (doubly-linked list), free_main (full teardown).
+** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 
 #include "c_zsh.h"
@@ -54,6 +57,8 @@ void free_main(main_t *stock)
 {
     if (!stock)
         return;
+    free_alloc(stock->czshrc->prompt);
+    free_alloc(stock->czshrc);
     free_array(stock->path);
     free_array(stock->argv);
     free_alloc(stock->redirection);

@@ -1,11 +1,15 @@
 /*
 ** EPITECH PROJECT, 2026
-** execute
+** 42sh
 ** File description:
-** builtin
+** Builtin registry and dispatcher: command_shell[] maps command
+** name strings to handler pointers; execute_builtin searches
+** linearly and calls the match, or returns -1 if not found.
+** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 
-#include "c_zsh.h"
+#include "../../../include/c_zsh.h"
+#include "../../../include/builtins/builtins.h"
 
 const builtin_command_t command_shell[] = {
     {"env", builtin_env},
@@ -22,6 +26,7 @@ const builtin_command_t command_shell[] = {
     {"printenv", builtin_printenv},
     {"history", builtin_history},
     {"alias", builtin_alias},
+    {"source", source},
     {NULL, NULL}
 };
 

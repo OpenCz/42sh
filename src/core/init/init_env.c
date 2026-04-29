@@ -1,8 +1,11 @@
 /*
 ** EPITECH PROJECT, 2026
-** env
+** 42sh
 ** File description:
-** env
+** Builds the env_t linked list from the environ array.
+** create_env_node splits KEY=VALUE at the first '=' into a node;
+** init_env iterates environ and returns the completed list head.
+** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 
 #include "c_zsh.h"
