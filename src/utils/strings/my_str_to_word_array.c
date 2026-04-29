@@ -1,8 +1,11 @@
 /*
 ** EPITECH PROJECT, 2026
-** sandbox
+** 42sh
 ** File description:
-** sandbox
+** Word array builder: count_word counts tokens; my_str_to_word_array
+** allocates the NULL-terminated char** and fills it by iterating
+** the string and extracting each token bounded by the separator.
+** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 
 #include "c_zsh.h"

@@ -1,8 +1,11 @@
 /*
 ** EPITECH PROJECT, 2026
-** mycd
+** 42sh
 ** File description:
-** mycd
+** cd builtin: resolve_path handles ~(HOME) and -(OLDPWD);
+** save_old_path stores current PWD; change_pwd and change_env
+** update both PWD and OLDPWD in the env_t linked list.
+** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 
 #include "c_zsh.h"

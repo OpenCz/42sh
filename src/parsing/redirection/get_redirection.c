@@ -1,8 +1,11 @@
 /*
 ** EPITECH PROJECT, 2026
-** redirection
+** 42sh
 ** File description:
-** redirection
+** Redirection token scanner: get_redirection scans the command
+** for >>, <<, >, < (longest-match first) outside quoted sections
+** and returns the matching token string, or NULL if none found.
+** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 
 #include "c_zsh.h"

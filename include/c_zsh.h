@@ -1,27 +1,31 @@
 /*
 ** EPITECH PROJECT, 2026
-** minishell
+** 42sh
 ** File description:
-** shell
+** Aggregator facade: single include that pulls in every domain
+** header (core, builtins, execution, parsing, environment,
+** memory, utils). Include in all .c files for the full API.
+** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
+
+#include <stdlib.h>
+#include <string.h>
+#include <stdbool.h>
+#include <stdio.h>
+#include <unistd.h>
+#include <dirent.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <sys/stat.h>
+#include <unistd.h>
+#include <errno.h>
+#include <signal.h>
+#include <ctype.h>
+#include <limits.h>
+#include <termios.h>
 
 #ifndef MINISHELL_H
     #define MINISHELL_H
-
-    #include <stdlib.h>
-    #include <string.h>
-    #include <stdbool.h>
-    #include <stdio.h>
-    #include <unistd.h>
-    #include <dirent.h>
-    #include <sys/types.h>
-    #include <sys/wait.h>
-    #include <sys/stat.h>
-    #include <unistd.h>
-    #include <errno.h>
-    #include <signal.h>
-    #include <ctype.h>
-    #include <termios.h>
 
     #include "core/types.h"
     #include "core/core.h"

@@ -1,8 +1,11 @@
 /*
 ** EPITECH PROJECT, 2026
-** which
+** 42sh
 ** File description:
-** which
+** which builtin: checks the builtin registry (is_shell_builtin),
+** then calls loop_bin to find the first PATH match and prints
+** its absolute path, or a tcsh error if not found.
+** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 
 #include "c_zsh.h"

@@ -1,8 +1,11 @@
 /*
 ** EPITECH PROJECT, 2026
-** minishell
+** 42sh
 ** File description:
-** builtins api
+** Public API for all builtin commands: declares builtin_handler_t,
+** builtin_command_t registry type, execute_builtin(), and every
+** handler (env, cd, foreach, repeat, history, source, jobs...).
+** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 
 #ifndef BUILTINS_H
@@ -37,6 +40,7 @@ char **foreach_read_commands(void);
 int handle_error(command_ctx_t *ctx);
 int put_error_var(char *var);
 int builtin_printenv(main_t *main_stock, command_ctx_t *ctx);
+int source(main_t *stock_main, command_ctx_t *ctx);
 
 int my_env(main_t *main_stock);
 int my_setenv(main_t *main_stock);

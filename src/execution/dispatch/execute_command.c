@@ -1,8 +1,11 @@
 /*
 ** EPITECH PROJECT, 2026
-** execute
+** 42sh
 ** File description:
-** command
+** Top-level dispatcher: splits input on ';' respecting quotes,
+** then routes each segment to execute_pipeline (pipe present),
+** execute_operator (&& or ||), or execute_single_command.
+** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 
 #include "c_zsh.h"

@@ -1,18 +1,31 @@
 /*
 ** EPITECH PROJECT, 2026
-** execute
+** 42sh
 ** File description:
-** pipeline wait
+** Pipeline completion: normalize_status converts raw waitpid
+** status to a tcsh exit code; wait_pipeline loops over pids[];
+** finalize_pipeline calls wait_pipeline then close_and_free.
+** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 
 #include "c_zsh.h"
 
 int normalize_status(int status)
 {
-    if (WIFSIGNALED(status))
-        return get_seg(status);
+    int seg_status = 0;
+
+    if (status == 0x7f)
+        return 1;
     if (WIFEXITED(status))
         return WEXITSTATUS(status);
+    if (WIFSTOPPED(status))
+        return 1;
+    if (WIFSIGNALED(status)) {
+        seg_status = get_seg(status);
+        if (seg_status != 0)
+            return seg_status;
+        return 128 + WTERMSIG(status);
+    }
     return 1;
 }
 

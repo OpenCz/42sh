@@ -1,8 +1,11 @@
 /*
 ** EPITECH PROJECT, 2026
-** which
+** 42sh
 ** File description:
-** which
+** where builtin: checks the builtin registry first, then
+** iterates all PATH directories with print_paths_for_command
+** and prints every executable match found.
+** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 
 #include "c_zsh.h"
@@ -10,6 +13,8 @@
 static int is_shell_builtin(char *name)
 {
     if (my_strcmp(name, "env") == 0 || my_strcmp(name, "setenv") == 0)
+        return 1;
+    if (my_strcmp(name, "set") == 0 || my_strcmp(name, "unset") == 0)
         return 1;
     if (my_strcmp(name, "unsetenv") == 0 || my_strcmp(name, "cd") == 0)
         return 1;
