@@ -70,7 +70,6 @@ czshrc_t *update_rc(char *path)
         return NULL;
     set_default_rc(rc);
     if (path) {
-        printf("%s\n", path);
         if (access(path, F_OK) == -1)
             return rc;
         rc_content = openator(path);
