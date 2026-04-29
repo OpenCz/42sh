@@ -22,15 +22,13 @@ static int is_shell_builtin(char *name)
         return 1;
     if (my_strcmp(name, "bg") == 0 || my_strcmp(name, "repeat") == 0)
         return 1;
-    if (my_strcmp(name, "foreach") == 0)
+    if (my_strcmp(name, "foreach") == 0 || my_strcmp(name, "echo") == 0)
         return 1;
     if (my_strcmp(name, "which") == 0 || my_strcmp(name, "where") == 0)
         return 1;
     if (my_strcmp(name, "printenv") == 0 || my_strcmp(name, "history") == 0)
         return 1;
     if (my_strcmp(name, "alias") == 0 || my_strcmp(name, "unalias") == 0)
-        return 1;
-    if (my_strcmp(name, "echo") == 0)
         return 1;
     return 0;
 }
