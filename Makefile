@@ -241,7 +241,7 @@ fclean: clean
 	$(call pretty_header, Full clean: objects binary tests coverage)
 	@$(RM) $(NAME) $(TO_RM)
 	@$(RM) $(LOGS_DIR)/functional_tests
-	@$(RM) /tmp/test.* /tmp/.shell.* /tmp/.refer.* /tmp/.tester.* /tmp/.runner.* /tmp/.tmp.*
+	@$(RM) /tmp/test.* /tmp/.shell.* /tmp/.refer.* /tmp/.tester.* /tmp/.runner.* /tmp/.tmp.* test/ dir;
 	@$(RM) "dir \"" "dir;" test output
 	@$(MAKE) fclean -C tests/
 
