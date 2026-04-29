@@ -32,13 +32,13 @@
 #              SKY, LIGHT_BLUE, LAVENDER, PURPLE, SOFT_GRAY, LIGHT_GRAY
 
 # Affiche le nom de l'utilisateur (ex: sacha)
-user        = true  : NONE        : LAVENDER
+user        = true  : BLACK        : WHITE
 
 # Affiche le dossier courant (ex: ~/projects/42sh)
-folder      = true  : BLUE        : NONE
+folder      = true  : BLACK        : BLUE
 
 # Affiche la branche git si dans un repo (ex: main)
-git_branch  = true  : BLUE    : NONE
+git_branch  = true  : BLACK        : RED
 
 # Affiche la date — formats disponibles : LONG / EU / US / ISO
 #   LONG = Mardi 11 Septembre 2001
