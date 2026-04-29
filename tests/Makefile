@@ -2,7 +2,7 @@
 ## EPITECH PROJECT, 2026
 ## 42sh — tests/Makefile
 ## File description:
-## Dedicated Makefile for Criterion unit tests and functional tests
+## Dedicated Makefile for Criterion unit tests and coverage
 ##
 
 MAKEFLAGS += --no-print-directory
@@ -65,26 +65,34 @@ SRC_PROJECT = \
 SRCTST = $(SRC_TESTS) $(SRC_PROJECT)
 
 # ─── Flags ───────────────────────────────────────────────────────────────
-CC          = clang
-RM          = rm -rf
-TESTSFLAGS  = --coverage -lcriterion
-CFLAGS      = -I../include -Wall -Wextra -Wshadow -Wno-unused-parameter
-GCOVRSTYLE  = 'github.dark-green'
-LOGS_DIR    = ../Logs
-COVERAGE_DIR     = $(LOGS_DIR)/coverage
-COVERAGE_RAW_DIR = $(COVERAGE_DIR)/raw
-COVERAGE_HTML    = $(COVERAGE_DIR)/index.html
-WEBGCOVRFLAGS    = --html-theme $(GCOVRSTYLE) --html -o $(COVERAGE_HTML)
-GCOVRFLAGS  = --gcov-executable "llvm-cov-20 gcov" --filter ".*src/.*" --exclude ".*tests/.*" --exclude-directories "tests" --root ..
+CC           = clang
+RM           = rm -rf
+TESTSFLAGS   = --coverage -lcriterion
+CFLAGS       = -I../include -Wall -Wextra -Wshadow -Wno-unused-parameter
+GCOVRSTYLE   = 'github.dark-green'
+LOGS_DIR     = ../Logs
+COVERAGE_DIR      = $(LOGS_DIR)/coverage
+COVERAGE_RAW_DIR  = $(COVERAGE_DIR)/raw
+COVERAGE_HTML     = $(COVERAGE_DIR)/index.html
+WEBGCOVRFLAGS     = --html-theme $(GCOVRSTYLE) --html --html-nested -o $(COVERAGE_HTML)
+GCOVRFLAGS   = --gcov-executable "llvm-cov-20 gcov" \
+               --filter ".*src/.*" \
+               --exclude ".*tests/.*" \
+               --exclude-directories "tests" \
+               --root ..
 VALGRIND_LOG  = $(LOGS_DIR)/valgrind.log
 VALGRIND_HTML = $(LOGS_DIR)/valgrind.html
+DEBUG_STRICT ?= 0
 
 # ─── Colors ──────────────────────────────────────────────────────────────
 END      = \033[0m
 BOLD     = \033[1m
+H_RED    = \033[91m
 H_GREEN  = \033[92m
 H_YELLOW = \033[93m
+H_PURPLE = \033[95m
 H_CYAN   = \033[96m
+H_WHITE  = \033[97m
 
 # ─── Rules ───────────────────────────────────────────────────────────────
 .PHONY: all unit_tests tests_run coverage clean fclean
@@ -99,8 +107,9 @@ unit_tests:
 		printf "%b\n" "$(BOLD)$(H_GREEN)[ OK ]$(END)" || \
 		(printf "%b\n" "$(BOLD)$(H_YELLOW)[ FAIL ]$(END)" && exit 1)
 
+# ─── Run tests + light coverage (no valgrind) ────────────────────────────
 tests_run: unit_tests
-	@$(RM) *.gcda *.gcno
+	@$(RM) *.gcda
 	@CRITERION_SHOW_STDOUT=1 ./unit_tests 2>&1 | grep -v "^profiling:" > $(LOGS_DIR)/test_output.log; \
 	FAILED=$$(grep -c "Échoués: [^0]" $(LOGS_DIR)/test_output.log || true); \
 	CRASHED=$$(grep -c "Plantages: [^0]" $(LOGS_DIR)/test_output.log || true); \
@@ -112,11 +121,12 @@ tests_run: unit_tests
 	cat $(LOGS_DIR)/test_output.log; \
 	printf "%b\n" "$(BOLD)$(H_GREEN)All tests passed! Generating coverage report...$(END)"; \
 	gcovr $(GCOVRFLAGS) $(WEBGCOVRFLAGS) > $(LOGS_DIR)/coverage_report.log 2>&1; \
-	gcovr $(GCOVRFLAGS) --branches >> $(LOGS_DIR)/coverage_report.log 2>&1; \
+	gcovr $(GCOVRFLAGS) --txt-metric branch >> $(LOGS_DIR)/coverage_report.log 2>&1; \
 	printf "%b\n" "$(BOLD)$(H_GREEN)Done! Logs: $(LOGS_DIR)/test_output.log | $(LOGS_DIR)/coverage_report.log$(END)"
 
+# ─── Full coverage + valgrind ────────────────────────────────────────────
 coverage: unit_tests
-	@$(RM) *.gcda *.gcno
+	@$(RM) *.gcda
 	@mkdir -p $(LOGS_DIR) $(COVERAGE_DIR) $(COVERAGE_RAW_DIR)
 	@CRITERION_SHOW_STDOUT=1 ./unit_tests 2>&1 | grep -v "^profiling:" > $(LOGS_DIR)/test_output.log; \
 	FAILED=$$(grep -c "Échoués: [^0]" $(LOGS_DIR)/test_output.log || true); \
@@ -131,19 +141,31 @@ coverage: unit_tests
 	@gcovr $(GCOVRFLAGS) $(WEBGCOVRFLAGS) > $(LOGS_DIR)/coverage_report.log 2>&1
 	@gcovr $(GCOVRFLAGS) --txt-metric branch >> $(LOGS_DIR)/coverage_report.log 2>&1
 	@printf "%b\n" "$(BOLD)$(H_CYAN)Running Valgrind...$(END)"
-	@valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes \
-	    --log-file=$(VALGRIND_LOG) ./unit_tests >/dev/null 2>/dev/null; \
-	{ echo '<!DOCTYPE html><html><head><meta charset="utf-8">'; \
-	  echo '<title>Valgrind Report</title>'; \
-	  echo '<style>'; \
-	  echo 'body{background:#0d1117;color:#e6edf3;font-family:monospace;padding:2em;margin:0}'; \
-	  echo 'h1{color:#58a6ff;border-bottom:1px solid #30363d;padding-bottom:.5em}'; \
-	  echo 'pre{white-space:pre-wrap;background:#161b22;padding:1.5em;border-radius:6px;'; \
-	  echo '    border:1px solid #30363d;overflow-x:auto}'; \
-	  echo '</style></head><body>'; \
-	  echo '<h1>Valgrind Report — unit_tests</h1><pre>'; \
+	@VALGRIND_STATUS=0; \
+	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes \
+	    --log-file=$(VALGRIND_LOG) ./unit_tests >/dev/null 2>/dev/null \
+	    || VALGRIND_STATUS=$$?; \
+	{ printf '<!DOCTYPE html><html><head><meta charset="utf-8">'; \
+	  printf '<title>Valgrind Report</title>'; \
+	  printf '<style>'; \
+	  printf 'body{background:#0d1117;color:#e6edf3;font-family:monospace;padding:2em;margin:0}'; \
+	  printf 'h1{color:#58a6ff;border-bottom:1px solid #30363d;padding-bottom:.5em}'; \
+	  printf 'pre{white-space:pre-wrap;background:#161b22;padding:1.5em;border-radius:6px;'; \
+	  printf 'border:1px solid #30363d;overflow-x:auto}'; \
+	  printf '</style></head><body>'; \
+	  printf '<h1>Valgrind Report — unit_tests</h1><pre>'; \
 	  cat $(VALGRIND_LOG); \
-	  echo '</pre></body></html>'; } > $(VALGRIND_HTML)
+	  printf '</pre></body></html>'; } > $(VALGRIND_HTML); \
+	printf "%b\n" "$(H_CYAN)📝 Valgrind report saved to $(H_YELLOW)$(VALGRIND_HTML)$(END)"; \
+	if [ -f $(VALGRIND_LOG) ] && grep -q "ERROR SUMMARY: 0 errors" $(VALGRIND_LOG); then \
+	    printf "%b\n" "$(BOLD)$(H_GREEN)✨ No memory errors detected! Perfect! ✨$(END)"; \
+	else \
+	    printf "%b\n" "$(BOLD)$(H_YELLOW)⚠️  Memory issues detected. Check $(VALGRIND_LOG) for details$(END)"; \
+	fi; \
+	if [ "$(DEBUG_STRICT)" = "1" ] && [ "$$VALGRIND_STATUS" -ne 0 ]; then \
+	    printf "%b\n" "$(BOLD)$(H_RED)DEBUG_STRICT: Valgrind exited $$VALGRIND_STATUS — failing$(END)"; \
+	    exit $$VALGRIND_STATUS; \
+	fi
 	@printf "%b\n" "$(BOLD)$(H_GREEN)Done! Logs: $(LOGS_DIR)/test_output.log | $(LOGS_DIR)/coverage_report.log$(END)"
 	@printf "%b\n" "$(BOLD)$(H_GREEN)Reports: $(COVERAGE_HTML) | $(VALGRIND_HTML)$(END)"
 	@if command -v xdg-open >/dev/null 2>&1; then \
