@@ -75,6 +75,7 @@ SRC_PARSING = \
 	src/parsing/env_var_management/replace_env_vars.c \
 	src/parsing/quotes_management/manage_quotes.c \
 	src/parsing/command_substitution/command_substitution.c \
+	src/parsing/manage_backticks/manage_backticks.c \
 
 SRC_UTILS = \
 	src/utils/io/my_putstr.c \
@@ -96,6 +97,7 @@ SRC_UTILS = \
 	src/utils/strings/str_to_array_of_word_array.c \
 	src/utils/strings/my_wordarraylen.c \
 	src/utils/strings/my_itoa.c \
+	src/utils/strings/my_word_array_to_str.c \
 	src/utils/validation/my_ischar_num.c \
 	src/utils/validation/my_str_is_alphanum.c \
 	src/utils/validation/my_char_is_alpha.c \
