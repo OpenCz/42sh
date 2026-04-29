@@ -35,6 +35,17 @@ typedef struct env_s {
     struct env_s *next;
 } env_t;
 
+typedef struct job_s {
+    pid_t pid;
+    char **command;
+    char sign;
+} job_t;
+
+typedef struct job_controler_s {
+    job_t *job;
+    struct job_controler_s *next;
+} job_controler_t;
+
 typedef struct main_s {
     char *home;
     char *old_path;
@@ -47,6 +58,7 @@ typedef struct main_s {
     history_t *history;
     struct env_s *stock_env;
     czshrc_t *czshrc;
+    job_controler_t *controler;
 } main_t;
 
 typedef struct command_ctx_s {

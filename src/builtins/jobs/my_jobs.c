@@ -7,7 +7,40 @@
 
 #include "c_zsh.h"
 
+int append_jobs(char **command, int pid, main_t *main_stock)
+{
+    job_controler_t *new_controler = malloc(sizeof(job_controler_t));
+    job_t *job = malloc(sizeof(job_t));
+    job_controler_t *tmp = NULL;
+
+    if (!job || !new_controler)
+        return 1;
+    job->command = command;
+    job->pid = pid;
+    job->sign = '+';
+    new_controler->job = job;
+    new_controler->next = NULL;
+    if (!main_stock->controler) {
+        main_stock->controler = new_controler;
+        return 0;
+    }
+    tmp = main_stock->controler;
+    while (tmp->next)
+        tmp = tmp->next;
+    tmp->next = new_controler;
+    return 0;
+}
+
 int builtin_jobs(main_t *main_stock, command_ctx_t *ctx)
 {
+    job_controler_t *controler = main_stock->controler;
+    job_controler_t *tmp = controler->next;
+
+    for (int i = 1; tmp && tmp->job != NULL; tmp = tmp->next, i++) {
+        printf("[%i]  %c Suspended                     ", i, tmp->job->sign);
+        for (int j = 0; tmp->job->command[j] != NULL; j++)
+            printf(" %s", tmp->job->command[j]);
+        printf("\n");
+    }
     return 0;
 }

@@ -32,6 +32,17 @@ static czshrc_t *init_rc(void)
     return rc;
 }
 
+static job_controler_t *init_job_controler(void)
+{
+    job_controler_t *controler = malloc(sizeof(job_controler_t));
+
+    if (controler == NULL)
+        return NULL;
+    controler->job = NULL;
+    controler->next = NULL;
+    return controler;
+}
+
 main_t *init_main(char **env)
 {
     main_t *main_node = malloc(sizeof(main_t));
@@ -49,5 +60,6 @@ main_t *init_main(char **env)
     main_node->home = get_home(main_node->stock_env);
     init_history(main_node);
     main_node->czshrc = init_rc();
+    main_node->controler = init_job_controler();
     return main_node;
 }

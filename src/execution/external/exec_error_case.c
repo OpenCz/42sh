@@ -26,7 +26,7 @@ int child_exec(command_ctx_t *ctx, char *path, char **env)
     return SUCCESS;
 }
 
-int get_seg(int status)
+int get_seg(int status, main_t *stock_main, int pid, char **command)
 {
     int sig = WTERMSIG(status);
     int exit_value = 0;
@@ -45,7 +45,9 @@ int get_seg(int status)
     }
     if (WCOREDUMP(status))
         write(1, " (core dumped)\n", 15);
-    if (WIFSTOPPED(status))
+    if (WIFSTOPPED(status)) {
         my_putstr("\nSuspended\n");
+        append_jobs(command, pid, stock_main);
+    }
     return exit_value;
 }
