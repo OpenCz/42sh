@@ -128,7 +128,7 @@ GCOVRFLAGS  = --gcov-executable "llvm-cov-20 gcov" --exclude tests/
 
 # ─── Tools ───────────────────────────────────────────────────────────────
 RM           = rm -rf
-ECC          = clang
+ECC          = epiclang
 ARGUMENTS    =
 DEBUG_STRICT ?= 0
 LOCAL_BIN   ?= $(HOME)/.local/bin
