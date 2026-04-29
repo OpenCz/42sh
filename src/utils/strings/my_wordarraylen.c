@@ -1,8 +1,11 @@
 /*
 ** EPITECH PROJECT, 2026
-** wordarray
+** 42sh
 ** File description:
-** len
+** Word array length: my_wordarray_len iterates a NULL-terminated
+** char** and returns the element count before the sentinel.
+** Returns 0 for NULL input or an immediately-NULL-terminated array.
+** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 
 #include "c_zsh.h"

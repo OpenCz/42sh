@@ -1,8 +1,11 @@
 /*
 ** EPITECH PROJECT, 2026
-** minishell
+** 42sh
 ** File description:
-** shell
+** Command history: push_front prepends a new history_cmd_t node
+** with id and HH:MM timestamp, appends to ~/.c_zsh_history.
+** manage_history is the public entry point after each command.
+** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 
 #include "c_zsh.h"

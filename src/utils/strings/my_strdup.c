@@ -1,8 +1,11 @@
 /*
 ** EPITECH PROJECT, 2026
-** strdup
+** 42sh
 ** File description:
-** recode
+** String duplication: allocates strlen(str)+1 bytes and copies
+** the input character by character into the new buffer.
+** Returns NULL if the input pointer is NULL.
+** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 
 #include "c_zsh.h"

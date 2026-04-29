@@ -2,13 +2,11 @@
 ** EPITECH PROJECT, 2026
 ** 42sh
 ** File description:
-** The my_char_is_alpha.c
+** Alphabetic check: my_char_is_alpha returns SUCCESS(0) if the
+** character is in [a-z] or [A-Z], used by setenv to validate
+** that the key name starts with a letter (tcsh rule).
+** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
-/**
- * @file my_char_is_alpha.c
- * @brief The my_char_is_alpha.c
- * @author Erwan Lo Presti
- */
 
 #include "../../../include/c_zsh.h"
 

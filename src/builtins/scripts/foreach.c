@@ -2,13 +2,11 @@
 ** EPITECH PROJECT, 2026
 ** 42sh
 ** File description:
-** The foreach.c
+** foreach builtin: get_array_arg extracts the item list;
+** set_loop_variable binds the loop var in env_t; handle_cmd
+** inner loop runs each body command per item; then restores.
+** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
-/**
- * @file foreach.c
- * @brief The foreach.c
- * @author Erwan Lo Presti
- */
 
 #include "../../../include/c_zsh.h"
 

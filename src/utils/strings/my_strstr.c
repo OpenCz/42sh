@@ -1,8 +1,11 @@
 /*
 ** EPITECH PROJECT, 2026
-** strstr
+** 42sh
 ** File description:
-** str
+** Substring search: iterates the haystack and at each position
+** compares the next len(needle) chars using my_strncmp.
+** Returns pointer to the first match, or NULL if not found.
+** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 
 #include "c_zsh.h"

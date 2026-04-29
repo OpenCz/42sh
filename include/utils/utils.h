@@ -1,8 +1,11 @@
 /*
 ** EPITECH PROJECT, 2026
-** minishell
+** 42sh
 ** File description:
-** utils api
+** Public API for utilities: string helpers (strlen, strdup,
+** strcmp, strconcat, strstr, word arrays), I/O helpers
+** (putstr, putnbr, openator), display and validation helpers.
+** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 
 #ifndef UTILS_H

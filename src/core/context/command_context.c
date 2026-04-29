@@ -1,8 +1,11 @@
 /*
 ** EPITECH PROJECT, 2026
-** execute
+** 42sh
 ** File description:
-** context
+** Builds command_ctx_t from a raw string: tokenizes input,
+** calls convert_quotes and replace_env_vars on each token,
+** detects redirection, fills command/argv/arg_command fields.
+** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 
 #include "c_zsh.h"

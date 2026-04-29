@@ -1,8 +1,11 @@
 /*
 ** EPITECH PROJECT, 2026
-** which
+** 42sh
 ** File description:
-** which
+** where builtin: checks the builtin registry first, then
+** iterates all PATH directories with print_paths_for_command
+** and prints every executable match found.
+** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 
 #include "c_zsh.h"

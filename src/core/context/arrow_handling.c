@@ -1,8 +1,11 @@
 /*
 ** EPITECH PROJECT, 2026
-** execute
+** 42sh
 ** File description:
-** command
+** Arrow key decoder for interactive line editing.
+** up_arrow / down_arrow navigate history and save/restore input.
+** left_arrow / right_arrow adjust the cursor within the line.
+** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 #include <termios.h>
 #include "c_zsh.h"

@@ -1,8 +1,11 @@
 /*
 ** EPITECH PROJECT, 2026
-** 42_sh
+** 42sh
 ** File description:
-** replace_env_vars
+** Variable substitution in argv: get_var_name_len reads the
+** identifier after '$'; find_value looks it up in stock_env;
+** replace_env_vars iterates all argv tokens and replaces each.
+** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 
 #include "../../../include/c_zsh.h"

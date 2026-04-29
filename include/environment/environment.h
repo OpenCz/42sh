@@ -1,8 +1,11 @@
 /*
 ** EPITECH PROJECT, 2026
-** minishell
+** 42sh
 ** File description:
-** environment api
+** Public API for environment access and binary resolution:
+** get_path, get_home, get_user, find_env_node,
+** check_bin (one dir), loop_bin (iterate PATH).
+** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 
 #ifndef ENVIRONMENT_H

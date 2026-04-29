@@ -1,8 +1,11 @@
 /*
 ** EPITECH PROJECT, 2026
-** ~/epitech/delivery/42sh/src/core/context
+** 42sh
 ** File description:
-** signal
+** Shell signal init: setup_shell_signals ignores SIGINT, SIGTSTP,
+** SIGTTOU, SIGTTIN and SIGQUIT; calls setpgid and tcsetpgrp to
+** make the shell the foreground process-group leader.
+** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 
 #include "c_zsh.h"

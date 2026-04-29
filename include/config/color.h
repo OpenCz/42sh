@@ -2,13 +2,11 @@
 ** EPITECH PROJECT, 2026
 ** 42sh
 ** File description:
-** The color.h
+** ANSI escape-code macros for terminal color output.
+** Defines foreground/background constants (BLACK, RED, GREEN,
+** YELLOW, BLUE, MAGENTA, CYAN, WHITE, RESET) for prompt output.
+** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
-/**
- * @file color.h
- * @brief The color.h
- * @author Erwan Lo Presti
- */
 
 #ifndef INC_42SH_COLOR_H
     #define INC_42SH_COLOR_H
