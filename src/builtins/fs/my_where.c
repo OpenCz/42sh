@@ -31,7 +31,7 @@ static int is_shell_builtin(char *name)
     if (my_strcmp(name, "alias") == 0 || my_strcmp(name, "unalias") == 0)
         return 1;
     return 0;
-}
+}   
 
 static int print_paths_for_command(main_t *main_stock, char *command)
 {
