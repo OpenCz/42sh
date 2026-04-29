@@ -28,6 +28,8 @@ const builtin_command_t command_shell[] = {
     {"history", builtin_history},
     {"alias", builtin_alias},
     {"source", source},
+    {"set", builtin_set},
+    {"unset", builtin_unset},
     {NULL, NULL}
 };
 

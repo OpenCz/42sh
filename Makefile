@@ -44,7 +44,9 @@ SRC_BUILTINS = \
 	src/builtins/env/printenv.c \
 	src/builtins/history/history.c \
 	src/builtins/fs/my_alias.c \
-	src/builtins/config/source.c
+	src/builtins/config/source.c \
+	src/builtins/var_local/set.c \
+	src/builtins/var_local/unset.c
 
 SRC_EXEC = \
 	src/execution/dispatch/execute_builtin.c \

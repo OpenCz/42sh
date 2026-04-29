@@ -53,5 +53,6 @@ main_t *init_main(char **env)
     main_node->alias_stock = NULL;
     init_history(main_node);
     main_node->czshrc = init_rc();
+    main_node->stock_local_var = NULL;
     return main_node;
 }
