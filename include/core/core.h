@@ -1,8 +1,11 @@
 /*
 ** EPITECH PROJECT, 2026
-** minishell
+** 42sh
 ** File description:
-** core api
+** Public API for the shell core: init_main, init_env, get_command
+** (interactive input), manage_history, arrow_handling,
+** parse_command_context, set_command_context, clear_command_ctx.
+** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 
 #ifndef CORE_H

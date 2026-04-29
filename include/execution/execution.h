@@ -1,8 +1,11 @@
 /*
 ** EPITECH PROJECT, 2026
-** minishell
+** 42sh
 ** File description:
-** execution api
+** Public API for the execution layer: execute_command (;-dispatch),
+** execute_single_command, execute_pipeline,
+** parse_pipeline, init_pipeline_state, close_and_free, create_pipe.
+** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 
 #ifndef EXECUTION_H
@@ -40,5 +43,7 @@ int execute_operator(main_t *stock_main, char *command);
 
 int builtin_where(main_t *main_stock, command_ctx_t *ctx);
 int builtin_which(main_t *main_stock, command_ctx_t *ctx);
+
+int builtin_alias(main_t *main_stock, command_ctx_t *ctx);
 
 #endif

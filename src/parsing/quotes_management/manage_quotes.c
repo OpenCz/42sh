@@ -1,8 +1,11 @@
 /*
 ** EPITECH PROJECT, 2026
-** 42_sh
+** 42sh
 ** File description:
-** manage_quotes
+** Double-quote and escape processor: get_escape maps an escape
+** letter (n, t, r, a, b, f, v, backslash, quote) to its byte;
+** convert_quotes strips outer quotes and resolves all escapes.
+** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 
 #include "c_zsh.h"

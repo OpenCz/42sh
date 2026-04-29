@@ -1,8 +1,11 @@
 /*
 ** EPITECH PROJECT, 2026
-** my_strncmo
+** 42sh
 ** File description:
-** cmp
+** Bounded comparison: compares at most n characters of s1 and s2;
+** returns 0 if the first n chars are identical, or the numeric
+** difference at the first mismatch; stops at null terminator.
+** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 
 #include "c_zsh.h"

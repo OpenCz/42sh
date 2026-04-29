@@ -1,8 +1,11 @@
 /*
 ** EPITECH PROJECT, 2026
-** 42_sh
+** 42sh
 ** File description:
-** czshrc
+** RC configuration structures: czshrc_t holds the full config;
+** prompt_t holds per-component flags and ANSI color codes.
+** Declares update_rc(), set_default_rc(), manage_prompt().
+** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 
 #ifndef CZ_SHRT_H

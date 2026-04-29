@@ -1,8 +1,11 @@
 /*
 ** EPITECH PROJECT, 2026
-** minishell_2
+** 42sh
 ** File description:
-** str_to_array_of_word_array
+** 2D word array for operator-chain parsing: count_words counts
+** outer tokens; fill_slot splits each into a char** word array;
+** free_array_of_word_array cleans up on partial failure.
+** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 
 #include "../../../include/c_zsh.h"

@@ -2,7 +2,10 @@
 ** EPITECH PROJECT, 2026
 ** 42sh
 ** File description:
-** The prompt.c
+** Prompt renderer: pwd, username, git each fill an infos_t struct
+** with the ANSI-colored component string; display_prompt writes
+** each enabled component in order with a reset code at the end.
+** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 
 #include "../../../include/c_zsh.h"

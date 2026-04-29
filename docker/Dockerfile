@@ -2,8 +2,8 @@ FROM alpine
 LABEL maintainer="Lukas Soigneux <lukas.soigneux@epitech.eu>"
 
 WORKDIR /app
-RUN apk add --no-cache clang20 clang20-rtlib git make gcovr build-base cmake meson ninja libffi-dev libgit2-dev bash \
-	&& git clone --depth 1 --single-branch https://github.com/lukas-sgx/Epifaster.git
+RUN apk add --no-cache clang20 clang20-rtlib git make build-base cmake meson ninja libffi-dev libgit2-dev
+RUN git clone --depth 1 --single-branch https://github.com/lukas-sgx/Epifaster.git
 RUN git clone --recursive https://github.com/Snaipe/Criterion
 
 WORKDIR /app/Criterion
@@ -24,5 +24,3 @@ RUN mkdir -p /usr/lib/epiclang/ && \
 
 RUN apk del git build-base meson ninja \
 	&& rm -rf /app/Epifaster/.git /var/cache/apk/* /app/Criterion
-
-COPY banana-check-repo.sh /usr/bin/banana-check-repo

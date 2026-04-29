@@ -1,0 +1,247 @@
+flowchart TD
+    %% 42sh — Architecture & Execution Flow
+    %% All loops and inner loops from startup to exit-code return.
+    %% Render: mmdc -i ARCHITECTURE_DIAGRAM.mmd -o diagram.svg
+
+    %% ─────────────────────────────────────────────────────────────────
+    %% STARTUP
+    %% ─────────────────────────────────────────────────────────────────
+    START([42sh binary])
+    START --> INIT["init_main(env)\nbuild env_t list · parse PATH · get HOME\nload ~/.c_zsh_history"]
+    INIT --> SIGS["setup_shell_signals()\nSIGINT · SIGTSTP · SIGTTOU · SIGTTIN · SIGQUIT → SIG_IGN\nshell becomes process-group leader"]
+    SIGS --> RC["update_rc() / set_default_rc()\nload prompt colors + format"]
+    RC --> PROMPT_DRAW
+
+    %% ─────────────────────────────────────────────────────────────────
+    %% LOOP 1 — REPL (main.c)
+    %% ─────────────────────────────────────────────────────────────────
+    subgraph REPL ["LOOP 1 — REPL  ·  while buffer ≠ 'exit'  ·  src/core/main.c"]
+        direction TB
+
+        PROMPT_DRAW["write_print()\nstyled prompt: dir · git branch · user"]
+        PROMPT_DRAW --> TTY_CHECK
+
+        %% ─────────────────────────────────────────────────────────────
+        %% LOOP 2 — Interactive Input (get_command.c)
+        %% ─────────────────────────────────────────────────────────────
+        subgraph INPUT ["LOOP 2 — Interactive Input  ·  until Enter or EOF  ·  src/core/context/get_command.c"]
+            direction TB
+            TTY_CHECK{stdin is TTY?}
+            TTY_CHECK -->|Yes| RAW["init_termios()\nICANON=0 · ECHO=0"]
+            RAW --> CHAR_LOOP(["for cursor=0; status==0 — redraw line"])
+            CHAR_LOOP --> READ["read(STDIN, &ch, 1)"]
+            READ --> KEY{ch}
+
+            KEY -->|"0x0A  Enter"| LINE_READY["status = 1\nline ready → exit loop"]
+            KEY -->|"0x03  Ctrl-C"| CTRLC["clear buffer\nstatus = CONTINUE"]
+            CTRLC --> CHAR_LOOP
+            KEY -->|"0x04  Ctrl-D"| CTRLD{buffer empty?}
+            CTRLD -->|Yes| SHELL_EXIT([Exit shell])
+            CTRLD -->|No| LINE_READY
+            KEY -->|"0x0C  Ctrl-L"| CTRLL["clear screen\nredraw prompt"]
+            CTRLL --> CHAR_LOOP
+            KEY -->|"0x01  Ctrl-A"| CTRLA["cursor = 0"]
+            CTRLA --> CHAR_LOOP
+            KEY -->|"0x05  Ctrl-E"| CTRLE["cursor = len"]
+            CTRLE --> CHAR_LOOP
+            KEY -->|"0x7F  Backspace"| BACK["delete char at cursor-1"]
+            BACK --> CHAR_LOOP
+            KEY -->|"0x1B  Up ↑"| HIST_UP["history → load prev entry\nsave current input to history.curr"]
+            HIST_UP --> CHAR_LOOP
+            KEY -->|"0x1B  Down ↓"| HIST_DOWN["history → load next entry\nor restore history.curr"]
+            HIST_DOWN --> CHAR_LOOP
+            KEY -->|"0x1B  Left ←  Right →"| CURSOR_MOVE["adjust cursor position"]
+            CURSOR_MOVE --> CHAR_LOOP
+            KEY -->|Other char| APPEND["insert char at cursor\nincrement len"]
+            APPEND --> CHAR_LOOP
+
+            TTY_CHECK -->|No| GETLINE["getline(stdin)"]
+        end
+
+        LINE_READY --> SERIALIZE["serialize()\ntrim leading/trailing whitespace"]
+        GETLINE --> SERIALIZE
+        SERIALIZE --> ADD_HIST["add_to_history(buffer)\nappend to ~/.c_zsh_history"]
+        ADD_HIST --> EXEC_CMD["execute_command(buffer)"]
+
+        %% ─────────────────────────────────────────────────────────────
+        %% LOOP 3 — Separator (execute_command.c)
+        %% ─────────────────────────────────────────────────────────────
+        subgraph SEP ["LOOP 3 — Separator Loop  ·  split on ';'  ·  src/execution/dispatch/execute_command.c"]
+            direction TB
+            EXEC_CMD --> SPLIT_SEMI["my_str_to_word_array(line, ';')"]
+            SPLIT_SEMI --> SEMI_LOOP(["for i=0; commands[i] != NULL"])
+            SEMI_LOOP --> DETECT{Operator detected?}
+            DETECT -->|"contains '|'"| GOTO_PIPE["→ LOOP 6: Pipeline"]
+            DETECT -->|"contains '&&' or '||'"| GOTO_OP["→ LOOP 4: Operator"]
+            DETECT -->|plain command| GOTO_SINGLE["→ LOOP 5: Single Command"]
+            GOTO_PIPE --> SEMI_LOOP
+            GOTO_OP --> SEMI_LOOP
+            GOTO_SINGLE --> SEMI_LOOP
+        end
+
+        SEMI_LOOP -->|all done| UPDATE_STATUS["update last_exit_status"]
+        UPDATE_STATUS --> PROMPT_DRAW
+    end
+
+    %% ─────────────────────────────────────────────────────────────────
+    %% LOOP 4 — Logical Operator (execute_operation.c)
+    %% ─────────────────────────────────────────────────────────────────
+    subgraph OPEXEC ["LOOP 4 — Operator Loop  ·  && / ||  ·  src/execution/dispatch/execute_operation.c"]
+        direction TB
+        GOTO_OP --> OP_SPLIT["split on '&&' / '||'\nbuild commands[] + operators[]"]
+        OP_SPLIT --> OP_EXEC0["execute commands[0] → status"]
+        OP_EXEC0 --> OP_LOOP(["for i=1; commands[i] != NULL"])
+        OP_LOOP --> OP_CHECK{"operators[i-1]"}
+        OP_CHECK -->|"'&&' and status=0"| OP_RUN["execute commands[i]"]
+        OP_CHECK -->|"'||' and status≠0"| OP_RUN
+        OP_CHECK -->|condition not met| OP_SKIP["skip — keep current status"]
+        OP_RUN --> OP_LOOP
+        OP_SKIP --> OP_LOOP
+    end
+
+    %% ─────────────────────────────────────────────────────────────────
+    %% LOOP 5 — Single Command path
+    %% ─────────────────────────────────────────────────────────────────
+    subgraph SCMD ["LOOP 5 — Single Command  ·  src/execution/dispatch/execute_single_command.c"]
+        direction TB
+        GOTO_SINGLE --> PARSE_CTX["parse_command_context()\n→ command_ctx_t {command, argv, redirection}"]
+        PARSE_CTX --> ENV_LOOP
+
+        subgraph ENVLOOP ["LOOP 5a — $VAR Substitution  ·  for each argv token  ·  src/parsing/env_var_management/"]
+            direction LR
+            ENV_LOOP(["for i=0; argv[i] != NULL"])
+            ENV_LOOP --> FIND_DOLLAR["find '$VAR' or '${VAR}' in token"]
+            FIND_DOLLAR --> ENV_LOOKUP["walk stock_env linked list\nuntil key matches"]
+            ENV_LOOKUP --> ENV_REPLACE["replace token with value\n(or '' if unset)"]
+            ENV_REPLACE --> ENV_LOOP
+        end
+
+        ENV_LOOP -->|done| BUILTIN_REG
+
+        subgraph BREG ["LOOP 5b — Builtin Registry  ·  linear search  ·  src/execution/dispatch/execute_builtin.c"]
+            direction LR
+            BUILTIN_REG(["for i=0; command_shell[i].name != NULL"])
+            BUILTIN_REG --> NAME_CMP["strcmp(cmd, command_shell[i].name)"]
+            NAME_CMP -->|match| CALL_BUILTIN["call handler(main_stock, ctx)\nreturn exit_code"]
+            NAME_CMP -->|no match| NEXT_ENTRY["i++"]
+            NEXT_ENTRY --> BUILTIN_REG
+        end
+
+        BUILTIN_REG -->|exhausted| EXEC_EXT["exec_any() → LOOP 9: External"]
+        CALL_BUILTIN -->|foreach| FOREACH_ENTRY["→ LOOP 7: foreach"]
+        CALL_BUILTIN -->|repeat| REPEAT_ENTRY["→ LOOP 8: repeat"]
+        CALL_BUILTIN -->|other builtin| BUILTIN_DONE["return exit_code"]
+    end
+
+    %% ─────────────────────────────────────────────────────────────────
+    %% LOOP 6 — Pipeline (pipeline_execute.c)
+    %% ─────────────────────────────────────────────────────────────────
+    subgraph PLEX ["LOOP 6 — Pipeline  ·  src/execution/pipeline/"]
+        direction TB
+        GOTO_PIPE --> PL_SYNTAX["pipeline_syntax_check()\nreject empty segments"]
+        PL_SYNTAX --> PL_PARSE["pipeline_parse()\nsplit on '|' → pipeline_segment_t[]"]
+        PL_PARSE --> PL_ALLOC["alloc pipe() pairs\nalloc pids[]"]
+        PL_ALLOC --> PL_SPAWN_LOOP
+
+        subgraph PSPAWN ["LOOP 6a — Segment Spawn  ·  for i=0 to count-1  ·  pipeline_spawn.c"]
+            direction TB
+            PL_SPAWN_LOOP(["for i=0; i < count"])
+            PL_SPAWN_LOOP --> PL_PIPE["pipe(next_read, next_write)"]
+            PL_PIPE --> PL_FORK["fork()"]
+            PL_FORK -->|child| PL_CHILD["dup2(prev_read → STDIN)\ndup2(next_write → STDOUT)\nclose unused FDs\nexecve(segment)"]
+            PL_FORK -->|parent| PL_PARENT["close prev_read\nclose next_write\nprev_read = next_read\npids[i] = pid"]
+            PL_PARENT --> PL_SPAWN_LOOP
+        end
+
+        PL_SPAWN_LOOP -->|done| PL_WAIT_LOOP
+
+        subgraph PWAIT ["LOOP 6b — Wait All PIDs  ·  for i=0 to count-1  ·  pipeline_wait.c"]
+            direction LR
+            PL_WAIT_LOOP(["for i=0; i < count"])
+            PL_WAIT_LOOP --> PL_WAITPID["waitpid(pids[i], WUNTRACED)"]
+            PL_WAITPID --> PL_COLLECT["collect last segment status"]
+            PL_COLLECT --> PL_WAIT_LOOP
+        end
+
+        PL_WAIT_LOOP -->|done| PL_FREE["free pipeline_state_t\nreturn last status"]
+    end
+
+    %% ─────────────────────────────────────────────────────────────────
+    %% LOOP 7 — foreach (foreach.c)
+    %% ─────────────────────────────────────────────────────────────────
+    subgraph FOREACH ["LOOP 7 — foreach  ·  src/builtins/scripts/foreach.c"]
+        direction TB
+        FOREACH_ENTRY --> FE_READ["read body lines until 'end'\nbuild cmd[][] array"]
+        FE_READ --> FE_OUTER
+
+        subgraph FOREACH_OUTER ["LOOP 7a — Outer: iterate items  ·  for i=1 to n"]
+            direction TB
+            FE_OUTER(["for i=1; args[i] != NULL"])
+            FE_OUTER --> FE_SETVAR["setenv(loop_var, args[i])"]
+            FE_SETVAR --> FE_INNER
+
+            subgraph FOREACH_INNER ["LOOP 7b — Inner: execute body  ·  for j=0 to cmd_count"]
+                direction LR
+                FE_INNER(["for j=0; cmd[j] != NULL"])
+                FE_INNER --> FE_PARSE["parse_command_context(cmd[j])"]
+                FE_PARSE --> FE_EXEC["exec_any()\n($loop_var substituted via replace_env_vars)"]
+                FE_EXEC --> FE_CLEAR["clear_command_ctx()"]
+                FE_CLEAR --> FE_INNER
+            end
+
+            FE_INNER -->|done| FE_RESTORE["restore or unsetenv(loop_var)"]
+            FE_RESTORE --> FE_OUTER
+        end
+    end
+
+    %% ─────────────────────────────────────────────────────────────────
+    %% LOOP 8 — repeat (repeat.c)
+    %% ─────────────────────────────────────────────────────────────────
+    subgraph REPEAT ["LOOP 8 — repeat  ·  src/builtins/repeat/repeat.c"]
+        direction LR
+        REPEAT_ENTRY --> RP_PARSE["parse N as integer\nvalidate N ≥ 0"]
+        RP_PARSE --> RP_LOOP(["for i=0; i < N"])
+        RP_LOOP --> RP_EXEC["exec_any(repeated_ctx)"]
+        RP_EXEC --> RP_LOOP
+        RP_LOOP -->|done| RP_RET["return last exit_code"]
+    end
+
+    %% ─────────────────────────────────────────────────────────────────
+    %% LOOP 9 — External Execution (run_fork.c)
+    %% ─────────────────────────────────────────────────────────────────
+    subgraph FORKEXEC ["LOOP 9 — External Execution  ·  src/execution/external/"]
+        direction TB
+        EXEC_EXT --> CB["check_bin()\nwalk PATH entries until binary found"]
+        CB --> RF["run_fork()"]
+        RF --> FK{"fork()"}
+
+        FK -->|child| FK_CHILD["signal SIGTSTP/SIGTTOU/SIGTTIN → SIG_DFL\nsetpgid(0, 0)\ntcsetpgrp → child\napply_redirection()\nexecve(bin, argv, envp)"]
+
+        FK -->|parent| FK_PARENT["setpgid(pid, pid)\ntcsetpgrp → child\nwaitpid(pid, WUNTRACED)"]
+        FK_PARENT --> FK_STATUS{exit status}
+        FK_STATUS -->|WIFEXITED| FK_EXIT["return WEXITSTATUS(status)"]
+        FK_STATUS -->|WIFSTOPPED| FK_STOP["print 'Suspended'\nreturn 1"]
+        FK_STATUS -->|"WIFSIGNALED SIGINT"| FK_SIGINT["return 130"]
+        FK_STATUS -->|"WIFSIGNALED SIGSEGV"| FK_SEGV["print 'Segmentation fault (core dumped)'\nreturn 139"]
+        FK_STATUS -->|"WIFSIGNALED SIGFPE"| FK_FPE["print 'Floating exception (core dumped)'\nreturn 136"]
+        FK_PARENT --> FK_RESTORE["tcsetpgrp → shell\nrestore terminal"]
+    end
+
+    %% ─────────────────────────────────────────────────────────────────
+    %% Styles
+    %% ─────────────────────────────────────────────────────────────────
+    style REPL         fill:#e3f2fd,stroke:#1565c0,color:#000
+    style INPUT        fill:#fff8e1,stroke:#f57f17,color:#000
+    style SEP          fill:#f3e5f5,stroke:#6a1b9a,color:#000
+    style OPEXEC       fill:#fce4ec,stroke:#880e4f,color:#000
+    style SCMD         fill:#e8f5e9,stroke:#1b5e20,color:#000
+    style ENVLOOP      fill:#c8e6c9,stroke:#2e7d32,color:#000
+    style BREG         fill:#c8e6c9,stroke:#2e7d32,color:#000
+    style PLEX         fill:#e0f7fa,stroke:#006064,color:#000
+    style PSPAWN       fill:#b2ebf2,stroke:#00838f,color:#000
+    style PWAIT        fill:#b2ebf2,stroke:#00838f,color:#000
+    style FOREACH      fill:#fff3e0,stroke:#e65100,color:#000
+    style FOREACH_OUTER fill:#ffe0b2,stroke:#bf360c,color:#000
+    style FOREACH_INNER fill:#ffcc80,stroke:#e64a19,color:#000
+    style REPEAT       fill:#fbe9e7,stroke:#bf360c,color:#000
+    style FORKEXEC     fill:#ede7f6,stroke:#4527a0,color:#000

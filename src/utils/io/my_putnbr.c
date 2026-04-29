@@ -2,13 +2,11 @@
 ** EPITECH PROJECT, 2026
 ** 42sh
 ** File description:
-** The my_putnbr.c
+** Integer output: my_putnbr recursively decomposes an integer
+** into decimal digits (with INT_MIN handled separately) and
+** writes each digit to stdout with my_putchar.
+** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
-/**
- * @file my_putnbr.c
- * @brief The my_putnbr.c
- * @author Erwan Lo Presti
- */
 
 #include <unistd.h>
 

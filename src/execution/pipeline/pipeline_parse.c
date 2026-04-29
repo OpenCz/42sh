@@ -1,8 +1,11 @@
 /*
 ** EPITECH PROJECT, 2026
-** execute
+** 42sh
 ** File description:
-** pipeline parse
+** Pipeline state builder: parse_pipeline splits on '|' into a
+** pipeline_segment_t array; init_pipeline_state allocates pids[];
+** close_and_free releases all pipeline resources.
+** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 
 #include "c_zsh.h"

@@ -1,8 +1,11 @@
 /*
 ** EPITECH PROJECT, 2026
-** my_pputstr
+** 42sh
 ** File description:
-** my_putstr
+** Low-level I/O: my_putchar writes one char to a file descriptor
+** (1 stdout, 2 stderr); my_putstr iterates a string to stdout;
+** my_putstrerror writes the string to stderr (fd 2).
+** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 
 #include "c_zsh.h"

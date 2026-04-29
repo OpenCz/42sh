@@ -1,8 +1,11 @@
 /*
 ** EPITECH PROJECT, 2026
-** main
+** 42sh
 ** File description:
-** main
+** Shell state constructor: init_history loads ~/.c_zsh_history;
+** init_rc calls update_rc() for czshrc; init_main allocates
+** main_t and fills PATH, HOME, history, RC config.
+** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 
 #include "../../../include/c_zsh.h"
@@ -47,6 +50,7 @@ main_t *init_main(char **env)
     main_node->old_path = NULL;
     main_node->path = my_str_to_word_array(get_path(main_node->stock_env), ":");
     main_node->home = get_home(main_node->stock_env);
+    main_node->alias_stock = NULL;
     init_history(main_node);
     main_node->czshrc = init_rc();
     return main_node;

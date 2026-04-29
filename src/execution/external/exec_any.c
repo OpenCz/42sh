@@ -1,8 +1,11 @@
 /*
 ** EPITECH PROJECT, 2026
-** exec
+** 42sh
 ** File description:
-** exec
+** External command launcher: get_exec_path resolves absolute,
+** relative, or PATH-searched binary; build_env converts env_t
+** to char** envp; calls run_fork with resolved path.
+** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 
 #include "c_zsh.h"

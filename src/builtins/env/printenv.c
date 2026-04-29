@@ -2,13 +2,11 @@
 ** EPITECH PROJECT, 2026
 ** 42sh
 ** File description:
-** The printenv.c
+** printenv builtin: validates exactly one argument, walks
+** stock_env to find the matching key and prints its value,
+** or returns 1 with a tcsh error if the variable is unset.
+** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
-/**
- * @file printenv.c
- * @brief The printenv.c
- * @author Erwan Lo Presti
- */
 
 #include "c_zsh.h"
 

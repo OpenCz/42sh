@@ -1,8 +1,11 @@
 /*
 ** EPITECH PROJECT, 2026
-** error
+** 42sh
 ** File description:
-** error
+** Child-side execution: child_exec applies redirections and calls
+** execve; on failure prints a tcsh error and exits the child.
+** get_seg maps status: SIGINT->130, SIGSEGV->139, SIGFPE->136.
+** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 
 #include "c_zsh.h"
@@ -45,5 +48,7 @@ int get_seg(int status)
     }
     if (WCOREDUMP(status))
         write(1, " (core dumped)\n", 15);
+    if (WIFSTOPPED(status))
+        my_putstr("\nSuspended\n");
     return exit_value;
 }
