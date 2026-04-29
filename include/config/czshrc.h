@@ -1,8 +1,11 @@
 /*
 ** EPITECH PROJECT, 2026
-** 42_sh
+** 42sh
 ** File description:
-** czshrc
+** RC configuration structures: czshrc_t holds the full config;
+** prompt_t holds per-component flags and ANSI color codes.
+** Declares update_rc(), set_default_rc(), manage_prompt().
+** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 
 #ifndef CZ_SHRT_H
@@ -24,6 +27,7 @@ typedef struct infos_s {
 } infos_t;
 
 typedef struct prompt_s {
+    int len_prompt;
     infos_t git_branch;
     infos_t folder;
     infos_t user;
@@ -43,6 +47,6 @@ typedef struct buffer_s {
 
 void set_default_rc(czshrc_t *rc);
 void manage_prompt(czshrc_t *rc, char ***rc_parsed, int i);
-czshrc_t *update_rc(void);
+czshrc_t *update_rc(char *path);
 
 #endif

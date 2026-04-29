@@ -1,33 +1,45 @@
 /*
 ** EPITECH PROJECT, 2026
-** 42_sh
+** 42sh
 ** File description:
-** replace_env_vars
+** Variable substitution in argv: get_var_name_len reads the
+** identifier after '$'; find_value looks it up in stock_env;
+** replace_env_vars iterates all argv tokens and replaces each.
+** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 
-#include "c_zsh.h"
+#include "../../../include/c_zsh.h"
 
 static size_t get_var_name_len(const char *name)
 {
     size_t i = 0;
 
+    if (!name || !name[0])
+        return 0;
     if (name[0] == '{') {
         i = 1;
         for (; name[i] && name[i] != '}'; i++);
         return i;
     }
-    for (; name[i] && (isalnum(name[i]) || name[i] == '_'); i++);
-    return i;
+    if (isalnum((unsigned char)name[0]) || name[0] == '_') {
+        for (; name[i] &&
+            (isalnum((unsigned char)name[i]) || name[i] == '_'); i++);
+        return i;
+    }
+    return 1;
 }
 
-static char *is_hard(char *key)
+static char *is_hard(const char *key, size_t key_len, main_t *stock_main)
 {
-    char *hard_keys[] = {"0", "36", "117 354 889 550", "69", "8", "12", NULL};
+    char *hard_keys[] = {"0", "36", "117 354 889 550", "69", "8", "12", "?",
+        "$", NULL};
     char *hard_values[] = {"c_zsh", "Sasha Le Moins-Avalos", "Celenzo Peuch",
-        "Lukas Soigneux", "Jessym Gaddacha", "Erwan Lo Presti", NULL};
+        "Lukas Soigneux", "Jessym Gaddacha", "Erwan Lo Presti",
+        stock_main->last_exit, my_itoa(getpid()), NULL};
 
     for (int i = 0; hard_keys[i]; i++) {
-        if (my_strcmp(hard_keys[i], key) == 0)
+        if (strlen(hard_keys[i]) == key_len &&
+            strncmp(hard_keys[i], key, key_len) == 0)
             return hard_values[i];
     }
     return NULL;
@@ -42,12 +54,12 @@ static char *find_value(char *key, main_t *stock_main)
 
     if (!stock_main || key[0] != '$')
         return NULL;
-    value = is_hard(key + offset);
-    if (value)
-        return value;
     key_len = get_var_name_len(key + 1) - (is_braced ? 1 : 0);
     if (key_len == 0)
         return NULL;
+    value = is_hard(key + offset, key_len, stock_main);
+    if (value)
+        return value;
     for (env_t *e = stock_main->stock_env; e; e = e->next) {
         if (strlen(e->key) == key_len &&
             strncmp(e->key, key + offset, key_len) == 0)

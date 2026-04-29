@@ -1,8 +1,11 @@
 /*
 ** EPITECH PROJECT, 2026
-** execute
+** 42sh
 ** File description:
-** single command
+** Single command path: parses into command_ctx_t (replace_env_vars
+** and convert_quotes applied), tries execute_builtin; on -1
+** falls through to exec_any(); always calls clear_command_ctx.
+** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 
 #include "c_zsh.h"

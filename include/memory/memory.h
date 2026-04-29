@@ -1,8 +1,11 @@
 /*
 ** EPITECH PROJECT, 2026
-** minishell
+** 42sh
 ** File description:
-** memory api
+** Public API for memory cleanup: free_alloc (NULL-safe free),
+** free_array (char**), free_linked_list (env_t chain),
+** free_main (full main_t teardown including history and RC).
+** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 
 #ifndef MEMORY_H

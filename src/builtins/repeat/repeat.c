@@ -2,13 +2,11 @@
 ** EPITECH PROJECT, 2026
 ** 42sh
 ** File description:
-** The repeat.c
+** repeat builtin: builtin_repeat validates the count argument
+** with my_char_isnum; repeat() runs exec_any() in a for loop
+** 0..N-1 and returns the exit code of the last iteration.
+** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
-/**
- * @file repeat.c
- * @brief The repeat.c
- * @author Erwan Lo Presti
- */
 
 #include "../../../include/c_zsh.h"
 

@@ -2,13 +2,11 @@
 ** EPITECH PROJECT, 2026
 ** 42sh
 ** File description:
-** The get_user.c
+** USER query: get_user walks the env_t linked list looking for
+** the node whose key equals USER and returns its value pointer.
+** Used by the prompt renderer to display the current username.
+** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
-/**
- * @file get_user.c
- * @brief The get_user.c
- * @author Erwan Lo Presti
- */
 
 #include "c_zsh.h"
 

@@ -2,7 +2,10 @@
 ** EPITECH PROJECT, 2026
 ** 42sh
 ** File description:
-** manage_prompt
+** Prompt configuration parser: get_color/get_b_color convert
+** color name strings to ANSI codes; manage_format, manage_time,
+** manage_date, manage_branche, manage_folder, manage_user fill
+** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 
 #include "../../include/c_zsh.h"

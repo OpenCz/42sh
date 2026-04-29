@@ -1,8 +1,11 @@
 /*
 ** EPITECH PROJECT, 2026
-** minishell
+** 42sh
 ** File description:
-** builtins api
+** Public API for all builtin commands: declares builtin_handler_t,
+** builtin_command_t registry type, execute_builtin(), and every
+** handler (env, cd, foreach, repeat, history, source, jobs...).
+** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 
 #ifndef BUILTINS_H

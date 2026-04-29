@@ -1,8 +1,11 @@
 /*
 ** EPITECH PROJECT, 2026
-** run fork
+** 42sh
 ** File description:
-** run
+** Fork/exec/wait: handle_child restores signals, setpgid(0,0),
+** gives terminal, calls child_exec; handle_parent waits with
+** WUNTRACED and restores the terminal to the shell on return.
+** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 #include "c_zsh.h"
 

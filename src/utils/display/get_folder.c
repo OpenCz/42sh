@@ -2,7 +2,10 @@
 ** EPITECH PROJECT, 2026
 ** 42sh
 ** File description:
-** The get_folder.c
+** Working directory for the prompt: get_folder calls getcwd()
+** then shortens the path to its last two components
+** (e.g. 'project/src') for a compact prompt appearance.
+** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 
 #include "c_zsh.h"
