@@ -16,10 +16,9 @@ static int get_b_color(char *color)
 
     for (int k = 0; color && color[k]; k++)
         color[k] = (char)tolower((unsigned char)color[k]);
-    for (int i = 0; colors[i]; i++) {
+    for (int i = 0; colors[i]; i++)
         if (my_strcmp(colors[i], color) == 0)
             return int_colors[i];
-    }
     return DEFAULT;
 }
 
@@ -32,10 +31,9 @@ static int get_color(char *color)
 
     for (int k = 0; color && color[k]; k++)
         color[k] = (char)tolower((unsigned char)color[k]);
-    for (int i = 0; colors[i]; i++) {
+    for (int i = 0; colors[i]; i++)
         if (my_strcmp(colors[i], color) == 0)
             return int_colors[i];
-    }
     return DEFAULT;
 }
 
@@ -47,10 +45,9 @@ static void manage_format(czshrc_t *rc, char *infos)
 
     if (!user_infos)
         return;
-    for (int i = 0; formats_str[i]; i++) {
+    for (int i = 0; formats_str[i]; i++)
         if (my_strcmp(formats_str[i], user_infos[0]) == 0)
             rc->prompt->date_format = formats[i];
-    }
 }
 
 static void manage_time(czshrc_t *rc, char *infos)
@@ -130,10 +127,9 @@ static void redirect_infos(czshrc_t *rc, char ***rc_parsed, int i)
     void (*fcall[])(czshrc_t *rc, char *infos) = {manage_user, manage_folder,
         manage_branche, manage_date, manage_time, manage_format};
 
-    for (int j = 0; infos[j]; j++) {
+    for (int j = 0; infos[j]; j++)
         if (my_strcmp(rc_parsed[i][0], infos[j]) == 0)
             fcall[j](rc, rc_parsed[i][1]);
-    }
 }
 
 void manage_prompt(czshrc_t *rc, char ***rc_parsed, int i)

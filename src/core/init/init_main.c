@@ -5,7 +5,7 @@
 ** main
 */
 
-#include "c_zsh.h"
+#include "../../../include/c_zsh.h"
 
 static history_t *init_history(main_t *main)
 {
@@ -25,7 +25,7 @@ static history_t *init_history(main_t *main)
 
 static czshrc_t *init_rc(void)
 {
-    czshrc_t *rc = update_rc();
+    czshrc_t *rc = update_rc(".czshrc");
 
     if (!rc)
         return NULL;
