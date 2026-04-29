@@ -43,6 +43,19 @@ static bool handle_command_result(main_t *stock, loop_state_t *state)
     return false;
 }
 
+static void free_var_local(env_t **local_var)
+{
+    env_t *tmp = NULL;
+
+    while (*local_var) {
+        tmp = *local_var;
+        *local_var = (*local_var)->next;
+        free(tmp->key);
+        free(tmp->value);
+        free(tmp);
+    }
+}
+
 static void run_shell_loop(main_t *stock, loop_state_t *state)
 {
     stock->last_exit = my_itoa(state->last_exit);
