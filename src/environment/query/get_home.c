@@ -1,8 +1,11 @@
 /*
 ** EPITECH PROJECT, 2026
-** get
+** 42sh
 ** File description:
-** home
+** HOME query: get_home walks the env_t linked list looking for
+** the node whose key equals HOME and returns its value pointer,
+** or NULL if HOME is not set in the current environment.
+** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 
 #include "c_zsh.h"

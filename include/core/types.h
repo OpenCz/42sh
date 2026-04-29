@@ -1,8 +1,11 @@
 /*
 ** EPITECH PROJECT, 2026
-** minishell
+** 42sh
 ** File description:
-** core types
+** All shell data structures: env_t, main_t, command_ctx_t,
+** pipeline_segment_t, pipeline_state_t, history_t, history_cmd_t,
+** loop_state_t, czshrc_t, prompt_t, infos_t, buffer_t.
+** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 
 #ifndef CORE_TYPES_H

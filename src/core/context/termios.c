@@ -1,8 +1,11 @@
 /*
 ** EPITECH PROJECT, 2026
-** ~/epitech/delivery/42sh/src/core/context
+** 42sh
 ** File description:
-** termios
+** Terminal raw mode: init_termios saves the original termios
+** state and clears ICANON and ECHO flags for character-by-
+** character input; caller must restore the saved state after.
+** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 
 #include "c_zsh.h"

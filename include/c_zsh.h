@@ -1,8 +1,11 @@
 /*
 ** EPITECH PROJECT, 2026
-** minishell
+** 42sh
 ** File description:
-** shell
+** Aggregator facade: single include that pulls in every domain
+** header (core, builtins, execution, parsing, environment,
+** memory, utils). Include in all .c files for the full API.
+** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 
 #ifndef MINISHELL_H

@@ -1,8 +1,11 @@
 /*
 ** EPITECH PROJECT, 2026
-** execute
+** 42sh
 ** File description:
-** command
+** Interactive input loop: create_command reads chars one by one
+** in raw mode; check_char dispatches each byte to a key handler;
+** get_command picks TTY path or falls back to getline().
+** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 
 #include "c_zsh.h"

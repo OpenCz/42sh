@@ -2,7 +2,10 @@
 ** EPITECH PROJECT, 2026
 ** 42sh
 ** File description:
-** foreach_input
+** foreach body reader: foreach_read_commands collects stdin
+** lines until 'end' into cmd[]; handle_bracket validates
+** the ( items ) list syntax in the foreach header line.
+** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 
 #include "../../../include/c_zsh.h"

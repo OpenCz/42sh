@@ -1,8 +1,11 @@
 /*
 ** EPITECH PROJECT, 2026
-** my_strlen
+** 42sh
 ** File description:
-** my_strlne
+** String length: iterates the string until the null terminator
+** and returns the character count before it.
+** Returns 0 if the input pointer is NULL.
+** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 
 #include "c_zsh.h"

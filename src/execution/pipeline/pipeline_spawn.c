@@ -1,8 +1,11 @@
 /*
 ** EPITECH PROJECT, 2026
-** execute
+** 42sh
 ** File description:
-** pipeline spawn
+** Segment forking: launch_segment forks a child, dup2s prev_read
+** to STDIN and next_write to STDOUT, closes unused FDs, executes.
+** push_segment drives one iteration and records the child PID.
+** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 
 #include "c_zsh.h"

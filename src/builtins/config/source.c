@@ -1,8 +1,11 @@
 /*
 ** EPITECH PROJECT, 2026
-** 42SH
+** 42sh
 ** File description:
-** source
+** source / . builtin: opens the file with openator(), splits it
+** into lines with str_to_array_of_word_array(), then executes
+** each line via exec_any() in the current shell context.
+** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 
 #include "../../../include/c_zsh.h"

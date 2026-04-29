@@ -1,8 +1,11 @@
 /*
 ** EPITECH PROJECT, 2026
-** main
+** 42sh
 ** File description:
-** main
+** Shell entry point: main() calls init_main, setup_shell_signals,
+** run_shell_loop; serialize() trims trailing newline; the loop
+** calls get_command then execute_command until 'exit' or EOF.
+** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 
 #include "../../include/c_zsh.h"

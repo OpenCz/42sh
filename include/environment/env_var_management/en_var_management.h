@@ -1,8 +1,11 @@
 /*
 ** EPITECH PROJECT, 2026
-** 42_sh
+** 42sh
 ** File description:
-** en_var_management
+** Public API for variable substitution.
+** Declares replace_env_vars(char **args, main_t *) which replaces
+** every $VAR and ${VAR} token in argv before execution.
+** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 
 #include "c_zsh.h"

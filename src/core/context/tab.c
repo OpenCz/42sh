@@ -1,8 +1,11 @@
 /*
 ** EPITECH PROJECT, 2026
-** ~/epitech/delivery/42sh/src/core/context
+** 42sh
 ** File description:
-** tab
+** Tab completion stub: get_display_width returns char display
+** width; get_buffer_display_width sums widths for cursor math;
+** write_tab_spaces is a placeholder for future completion.
+** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 
 #include "c_zsh.h"

@@ -1,8 +1,11 @@
 /*
 ** EPITECH PROJECT, 2026
-** execute
+** 42sh
 ** File description:
-** builtin
+** Builtin registry and dispatcher: command_shell[] maps command
+** name strings to handler pointers; execute_builtin searches
+** linearly and calls the match, or returns -1 if not found.
+** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 
 #include "../../../include/c_zsh.h"
