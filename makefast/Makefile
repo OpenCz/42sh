@@ -109,7 +109,6 @@ SRC = \
 	$(SRC_MEMORY) \
 	$(SRC_CONFIG)
 
-OBJ = $(SRC:.c=.o)
 
 WFLAGS      = -Wall -Wextra -Werror -Wshadow -Wno-unused-parameter
 CFLAGS      = -I../include $(WFLAGS)
@@ -122,10 +121,12 @@ WEBGCOVRFLAGS = --html-theme $(GCOVRSTYLE) --html --html-nested -o $(COVERAGE_HT
 GCOVRFLAGS  = --gcov-executable "llvm-cov-20 gcov" --exclude tests/
 
 RM           = rm -rf
-ECC          = epiclang
+CC          = epiclang
 ARGUMENTS    =
 DEBUG_STRICT ?= 0
 LOCAL_BIN   ?= $(HOME)/.local/bin
+
+OBJ = $(SRC:.c=.o)
 
 # ─── Misc ────────────────────────────────────────────────────────────────
 TO_RM = *.gcda *.gcno unit_tests *.html *.css *.log $(LOGS_DIR)
@@ -140,7 +141,7 @@ TO_RM = *.gcda *.gcno unit_tests *.html *.css *.log $(LOGS_DIR)
 all: $(NAME)
 
 $(NAME): $(OBJ)
-	@$(ECC) $(CFLAGS) -Wno-unused-command-line-argument -o $(NAME) $(OBJ)
+	@$(CC) $(CFLAGS) -Wno-unused-command-line-argument -o $(NAME) $(OBJ)
 
 install: $(NAME)
 	@mkdir -p $(LOCAL_BIN)
@@ -161,7 +162,7 @@ uninstall:
 debug: debug_build valgrind
 
 debug_build:
-	@$(ECC) $(DEBUGFLAGS) -Wno-unused-command-line-argument -o $(NAME) $(SRC)
+	@$(CC) $(DEBUGFLAGS) -Wno-unused-command-line-argument -o $(NAME) $(SRC)
 
 valgrind:
 	@mkdir -p $(LOGS_DIR)
@@ -205,12 +206,12 @@ functional_tests: all
 clean:
 	$(call pretty_header, Cleaning object files)
 	@$(RM) $(OBJ)
-	@$(MAKE) clean -C tests/
+# 	@$(MAKE) clean -C tests/
 
 fclean: clean
 	$(call pretty_header, Full clean: objects binary tests coverage)
 	@$(RM) $(NAME) $(TO_RM)
-	@$(MAKE) fclean -C tests/
+# 	@$(MAKE) fclean -C tests/
 
 re: fclean all
 
