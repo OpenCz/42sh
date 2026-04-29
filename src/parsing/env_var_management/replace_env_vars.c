@@ -60,6 +60,20 @@ static char *manage_substitution(main_t *stock_main, const char *key,
     return command_substitution(stock_main, command);
 }
 
+static char *is_env(const char *key, size_t key_len, main_t *stock_main,
+    int offset)
+{
+    for (env_t *e = stock_main->stock_local_var; e; e = e->next)
+        if (strlen(e->key) == key_len &&
+            strncmp(e->key, key + offset, key_len) == 0)
+            return e->value;
+    for (env_t *e = stock_main->stock_env; e; e = e->next)
+        if (strlen(e->key) == key_len &&
+            strncmp(e->key, key + offset, key_len) == 0)
+            return e->value;
+    return NULL;
+}
+
 static char *find_value(char *key, main_t *stock_main)
 {
     bool is_braced = key[1] == '{';
@@ -77,10 +91,9 @@ static char *find_value(char *key, main_t *stock_main)
     value = is_hard(key + offset, key_len, stock_main);
     if (value)
         return value;
-    for (env_t *e = stock_main->stock_env; e; e = e->next)
-        if (strlen(e->key) == key_len &&
-            strncmp(e->key, key + offset, key_len) == 0)
-            return e->value;
+    value = is_env(key, key_len, stock_main, offset);
+    if (value)
+        return value;
     return NULL;
 }
 
