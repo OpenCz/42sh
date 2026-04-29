@@ -1,0 +1,852 @@
+[901]
+NAME="Nothing"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin'"
+CLEAN=""
+TESTS=
+  echo ''
+[901-END]
+
+[902]
+NAME="Exec two command"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin'"
+CLEAN=""
+TESTS=
+  echo 'ls /etc'
+  echo 'cat /etc/resolv.conf'
+[902-END]
+
+[903]
+NAME="Testing with /usr/bin PATH"
+SETUP="export TERM=xterm ; PATH='/usr/bin'"
+CLEAN=""
+TESTS=
+  echo 'pwd'
+[903-END]
+
+[904]
+NAME="Testing with /bin PATH"
+SETUP="export TERM=xterm ; PATH='/bin'"
+CLEAN=""
+TESTS=
+  echo 'pwd'
+[904-END]
+
+[905]
+NAME="run commands"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin'"
+CLEAN=""
+TESTS=
+  echo 'cat /etc/resolv.conf'
+  sleep 0.5
+  echo 'ls -l /etc'
+  sleep 0.5
+  echo 'pwd'
+[905-END]
+
+[906]
+NAME="setenv and unsetenv"
+SETUP="/usr/bin/env > .lstenv ; while read varenv ; do unset $varenv ; done < <(/bin/cat .lstenv | /usr/bin/cut -f1 -d=) ; export PATH=/bin:/usr/bin ; export _=ls ; export LS_COLORS=RID ; export MYBG=4 ; export LVL=4 ; export NOTE=2"
+CLEAN="while read varenv ; do export "$varenv" 2>/dev/null ; done  < <(/bin/cat .lstenv) ; /bin/rm -f .lstenv"
+TESTS=
+  echo 'unsetenv HOSTTYPE'
+  echo 'unsetenv VENDOR'
+  echo 'unsetenv OSTYPE'
+  echo 'unsetenv MACHTYPE'
+  echo 'unsetenv SHLVL'
+  echo 'unsetenv PWD'
+  echo 'unsetenv LOGNAME'
+  echo 'unsetenv USER'
+  echo 'unsetenv GROUP'
+  echo 'unsetenv HOST'
+  echo 'unsetenv REMOTEHOST'
+  echo 'unsetenv _'
+  echo 'unsetenv LS_COLORS'
+  echo 'unsetenv NOTE'
+  echo 'setenv titi'
+  echo 'setenv tata coucou'
+  echo 'env'
+  echo '/usr/bin/env'
+  echo 'setenv var1 val1'
+  echo 'setenv var2 val2'
+[906-END]
+
+[907]
+NAME="builtin cd"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin'"
+CLEAN=""
+TESTS=
+  echo 'cd ..'
+  echo 'ls -l'
+  echo 'cd /usr'
+  echo 'ls -l'
+[907-END]
+
+[908]
+NAME="many tab and space"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin'"
+CLEAN=""
+TESTS=
+  echo -e "\t\t    ls\t     \t-l    \t\t  \t -a /usr   \t\t"
+[908-END]
+
+[909]
+NAME="Launch DivZero program with core dump"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin'"
+CLEAN=""
+TESTS=
+  echo "./my_divzero"
+[909-END]
+
+[910]
+NAME="cd no arg"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin'"
+CLEAN=""
+TESTS=
+  echo 'cd'
+  echo 'ls -l'
+[910-END]
+
+[911]
+NAME="cd -"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin'"
+CLEAN=""
+TESTS=
+  echo 'cd /home'
+  echo 'ls -l'
+  echo 'cd /etc'
+  echo 'cd -'
+  echo 'ls -l'
+[911-END]
+
+[912]
+NAME="Check executable permission"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin'"
+CLEAN=""
+TESTS=
+  echo 'ls -l /bin'
+[912-END]
+
+[913]
+NAME="Test ls with multiple flags"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin'"
+CLEAN=""
+TESTS=
+  echo 'ls -l -a'
+  echo 'ls -lh'
+[913-END]
+
+[914]
+NAME="Test ls with no path"
+SETUP="export TERM=xterm ; PATH=''"
+CLEAN=""
+TESTS=
+  echo 'ls -l src'
+[914-END]
+
+[915]
+NAME="Test multiple commands"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin'"
+CLEAN=""
+TESTS=
+  echo 'ls ; pwd'
+[915-END]
+
+[916]
+NAME="Semicolon with cd and commands"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin' ; mkdir -p /tmp/test_dir"
+CLEAN="rm -rf /tmp/test_dir"
+TESTS=
+  echo 'ls -l ; ls ; ls ; ls ; ls'
+[916-END]
+
+[917]
+NAME="Simple Pipe command"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin' ; mkdir -p /tmp/test_dir"
+CLEAN="rm -rf /tmp/test_dir"
+TESTS=
+  echo 'ls -l /dev | grep tty'
+  echo 'ls -l; ls -l | wc -l'
+[917-END]
+
+[918]
+NAME="Simple Redirection Out"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin' ; mkdir -p /tmp/test_dir"
+CLEAN="rm -rf /tmp/test_dir ; rm a"
+TESTS=
+  echo 'ls -l /dev > a'
+  echo 'cat a'
+[918-END]
+
+[919]
+NAME="Hard Combination command"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin' ; mkdir -p /tmp/test_dir"
+CLEAN="rm -rf /tmp/test_dir"
+TESTS=
+  echo 'mkdir test ; cd test ; ls -a ; ls | cat | wc -c > tutu ; cat tutu'
+[919-END]
+
+[920]
+NAME="Simple Redirection In"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin' ; mkdir -p /tmp/test_dir"
+CLEAN="rm -rf /tmp/test_dir ; rm file"
+TESTS=
+  echo 'ls > file'
+  echo 'cat < file'
+[920-END]
+
+[921]
+NAME="Test multiple pipe"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin'"
+CLEAN=""
+TESTS=
+  echo 'ls -l | grep '.c' | wc -l'
+[921-END]
+
+[922]
+NAME="Pipe and redirection"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin'"
+CLEAN="rm c_files.txt"
+TESTS=
+  echo 'ls -l /home | grep ".c" > c_files.txt'
+  echo 'cat c_files.txt'
+[922-END]
+
+[923]
+NAME="*.c globbing"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin'"
+TESTS=
+  echo 'ls -l src/*.c'
+[923-END]
+
+[924]
+NAME="*many globbing"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin'"
+TESTS=
+  echo 'ls -l src/*.c'
+  echo 'ls -l src/*e'
+  echo 'ls -l *e'
+  echo 'ls *e'
+  echo 'ls *e'
+  echo 'ls *e'
+  echo 'ls *e'
+[924-END]
+
+[925]
+NAME="Variables locales - création de base"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin'"
+TESTS=
+  echo 'set test1=value'
+  echo 'set | grep test1'
+[925-END]
+
+[926]
+NAME="Variables locales - modification"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin'"
+TESTS=
+  echo 'set var1=initial'
+  echo 'set | grep var1'
+  echo 'set var1=modified'
+  echo 'set | grep var1'
+[926-END]
+
+[927]
+NAME="Variables locales - unset"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin'"
+TESTS=
+  echo 'set to_remove=value'
+  echo 'set | grep to_remove'
+  echo 'unset to_remove'
+  echo 'set | grep to_remove'
+[927-END]
+
+[928]
+NAME="Variables locales - multiple"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin'"
+TESTS=
+  echo 'set var1=value1 var2=value2 var3=value3'
+  echo 'set | grep var1'
+  echo 'set | grep var2'
+  echo 'set | grep var3'
+[928-END]
+
+[929]
+NAME="Variables locales - unset multiples"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin'"
+TESTS=
+  echo 'set var1=val1 var2=val2 var3=val3'
+  echo 'set | grep var'
+  echo 'unset var1 var3'
+  echo 'set | grep var1'
+  echo 'set | grep var2'
+  echo 'set | grep var3'
+[929-END]
+
+[930]
+NAME="Variables locales - unset inexistante"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin'"
+TESTS=
+  echo 'unset nonexistent_var'
+[930-END]
+
+[932]
+NAME="Variables locales - nom invalide"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin'"
+TESTS=
+  echo 'set 123invalid=value'
+[932-END]
+
+[940]
+NAME="where simple"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin'"
+TESTS=
+  echo 'where ls'
+[940-END]
+
+[941]
+NAME="where hard (builtin and binary, multiple args)"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin'"
+TESTS=
+  echo 'where cd ls echo false true'
+[941-END]
+
+[950]
+NAME="Inhibitors - Simple quoting"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin'"
+CLEAN=""
+TESTS=
+echo 'echo "Hello World"'
+echo 'echo "Escaped"'
+
+[950-END]
+
+[951]
+NAME="Inhibitors - Complex escaping"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin'"
+CLEAN=""
+TESTS=
+echo 'echo "Nested "quotes" and \\backslashes\\"'
+echo 'echo '''Single quoted $PATH''''
+
+[951-END]
+
+[952]
+NAME="Job Control - Background job"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin'"
+CLEAN=""
+TESTS=
+echo 'sleep 2 &'
+echo 'jobs'
+sleep 1
+
+[952-END]
+
+[954]
+NAME="Backticks - Simple substitution"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin'"
+CLEAN=""
+TESTS=
+echo 'echo "Date: date +%Y"'
+
+[954-END]
+
+[955]
+NAME="Backticks - Nested and pipes"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin'"
+CLEAN=""
+TESTS=
+echo 'echo "Files: ls *.c | wc -l; Hash: md5sum \ls | head -1``"'
+
+[955-END]
+
+[956]
+NAME="Parentheses - Command grouping"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin'"
+CLEAN=""
+TESTS=
+echo '(ls ; pwd) > output'
+echo 'cat output'
+
+[956-END]
+
+[957]
+NAME="Parentheses - Redirection in group"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin'"
+CLEAN="rm output_combined"
+TESTS=
+echo '(ls /bin | grep "^a" ; ls /usr/bin | grep "^z") > output_combined'
+echo 'cat output_combined'
+
+[957-END]
+
+[958]
+NAME="Special Variables - $cwd"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin'"
+CLEAN=""
+TESTS=
+echo 'cd /tmp ; echo $cwd'
+
+[958-END]
+
+[959]
+NAME="Special Variables - cwdcmd hook"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin'"
+CLEAN=""
+TESTS=
+echo 'set cwdcmd="echo Directory changed to $cwd"'
+echo 'cd /tmp'
+
+[959-END]
+
+[962]
+NAME="Aliases - Basic usage"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin'"
+CLEAN=""
+TESTS=
+echo 'alias lsa ls -a'
+echo 'lsa'
+
+[962-END]
+
+[963]
+NAME="UNALIAS: Simple test (ls)"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin'"
+CLEAN=""
+TESTS=
+  echo 'unalias ls'
+  echo 'ls'
+
+[963-END]
+
+[964]
+NAME="ALIAS: Unknown command (a -> ls)"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin'"
+CLEAN=""
+TESTS=
+  echo 'alias a ls'
+  echo 'a'
+  echo 'alias a ls -l'
+  echo 'a'
+  echo 'alias a ls -l -a'
+  echo 'a'
+[964-END]
+
+[965]
+NAME="Scripting - Execute .sh file"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin' ; echo 'ls -l' > test_script.sh"
+CLEAN="rm test_script.sh"
+TESTS=
+echo './test_script.sh'
+
+[965-END]
+
+[966]
+NAME="Scripting - Variables and loops"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin' ; echo 'for i in 1 2 3; do echo $i; done' > loop.sh"
+CLEAN="rm loop.sh"
+TESTS=
+echo './loop.sh'
+
+[966-END]
+
+[967]
+NAME="Redirection append"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin'"
+CLEAN="rm -f /tmp/42sh_append.txt"
+TESTS=
+  echo 'echo first > /tmp/42sh_append.txt'
+  echo 'echo second >> /tmp/42sh_append.txt'
+  echo 'cat /tmp/42sh_append.txt'
+[967-END]
+
+[968]
+NAME="Heredoc basic"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin'"
+CLEAN=""
+TESTS=
+  echo 'cat << EOF'
+  echo 'line1'
+  echo 'line2'
+  echo 'EOF'
+[968-END]
+
+[969]
+NAME="Pipeline with tr"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin'"
+CLEAN=""
+TESTS=
+  echo 'printf "a b c" | tr " " "_"'
+[969-END]
+
+[970]
+NAME="Repeat builtin"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin'"
+CLEAN=""
+TESTS=
+  echo 'repeat 3 echo hello'
+[970-END]
+
+[971]
+NAME="Foreach loop simple"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin'"
+CLEAN=""
+TESTS=
+  echo 'foreach i (a b c)'
+  echo 'echo $i'
+  echo 'end'
+[971-END]
+
+[972]
+NAME="Foreach loop with command list"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin'"
+CLEAN=""
+TESTS=
+  echo 'foreach i (1 2)'
+  echo 'echo num:$i'
+  echo 'echo again:$i'
+  echo 'end'
+[972-END]
+
+[973]
+NAME="Source builtin"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin' ; echo 'echo from_source' > /tmp/42sh_source.csh ; echo 'setenv SRCVAR ok' >> /tmp/42sh_source.csh"
+CLEAN="rm -f /tmp/42sh_source.csh"
+TESTS=
+  echo 'source /tmp/42sh_source.csh'
+  echo 'printenv SRCVAR'
+[973-END]
+
+[974]
+NAME="Setenv and printenv single var"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin' ; unsetenv TEST_ENV"
+CLEAN="unsetenv TEST_ENV"
+TESTS=
+  echo 'setenv TEST_ENV hello'
+  echo 'printenv TEST_ENV'
+  echo 'unsetenv TEST_ENV'
+  echo 'printenv TEST_ENV'
+[974-END]
+
+[975]
+NAME="Which simple"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin'"
+CLEAN=""
+TESTS=
+  echo 'which ls'
+[975-END]
+
+[976]
+NAME="Absolute command exec"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin'"
+CLEAN=""
+TESTS=
+  echo '/bin/echo absolute'
+[976-END]
+
+[977]
+NAME="Quoted spaces"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin'"
+CLEAN=""
+TESTS=
+  echo 'echo "a  b   c"'
+  echo "echo 'x  y'"
+[977-END]
+
+[978]
+NAME="Chained commands with output"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin'"
+CLEAN=""
+TESTS=
+  echo 'echo one ; echo two | wc -c'
+[978-END]
+
+[979]
+NAME="Comments"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin'"
+CLEAN=""
+TESTS=
+  echo 'echo before # comment'
+  echo 'echo after'
+[979-END]
+
+[980]
+NAME="Backslash escaped space"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin'"
+CLEAN=""
+TESTS=
+  echo 'echo foo\ bar'
+[980-END]
+
+[981]
+NAME="Env expansion basic"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin' ; unsetenv VAR42"
+CLEAN="unsetenv VAR42"
+TESTS=
+  echo 'setenv VAR42 hello'
+  echo 'echo $VAR42'
+[981-END]
+
+[982]
+NAME="Env expansion double quotes"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin' ; unsetenv VAR42"
+CLEAN="unsetenv VAR42"
+TESTS=
+  echo 'setenv VAR42 hi'
+  echo 'echo "$VAR42 world"'
+[982-END]
+
+[983]
+NAME="Env expansion single quotes"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin' ; unsetenv VAR42"
+CLEAN="unsetenv VAR42"
+TESTS=
+  echo 'setenv VAR42 hi'
+  echo "echo '\$VAR42 world'"
+[983-END]
+
+[984]
+NAME="Backticks substitution"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin'"
+CLEAN=""
+TESTS=
+  echo 'echo `echo hi`'
+[984-END]
+
+[985]
+NAME="Backticks in pipeline"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin'"
+CLEAN=""
+TESTS=
+  echo 'echo `printf "a b"` | wc -w'
+[985-END]
+
+[986]
+NAME="Local var echo"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin'"
+CLEAN=""
+TESTS=
+  echo 'set local1=ok'
+  echo 'echo $local1'
+[986-END]
+
+[987]
+NAME="Local vars multiple"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin'"
+CLEAN=""
+TESTS=
+  echo 'set a=1 b=2'
+  echo 'echo $a $b'
+[987-END]
+
+[988]
+NAME="Status variable"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin'"
+CLEAN=""
+TESTS=
+  echo 'false'
+  echo 'echo $status'
+[988-END]
+
+[989]
+NAME="Redirection overwrite"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin'"
+CLEAN="rm -f /tmp/42sh_over.txt"
+TESTS=
+  echo 'echo first > /tmp/42sh_over.txt'
+  echo 'echo second > /tmp/42sh_over.txt'
+  echo 'cat /tmp/42sh_over.txt'
+[989-END]
+
+[990]
+NAME="Input redirection with pipe"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin' ; printf "a\nb\nb\n" > /tmp/42sh_in.txt"
+CLEAN="rm -f /tmp/42sh_in.txt"
+TESTS=
+  echo 'cat < /tmp/42sh_in.txt | grep b | wc -l'
+[990-END]
+
+[991]
+NAME="cd with spaces"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin' ; mkdir -p \"/tmp/42sh dir\""
+CLEAN="rm -rf \"/tmp/42sh dir\""
+TESTS=
+  echo 'cd "/tmp/42sh dir"'
+  echo 'pwd'
+[991-END]
+
+[992]
+NAME="Alias basic"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin'"
+CLEAN=""
+TESTS=
+  echo 'alias say echo'
+  echo 'say hello'
+[992-END]
+
+[993]
+NAME="Repeat zero"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin'"
+CLEAN=""
+TESTS=
+  echo 'repeat 0 echo hi'
+  echo 'echo done'
+[993-END]
+
+[994]
+NAME="Command chaining with grep"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin'"
+CLEAN=""
+TESTS=
+  echo 'printf "a\nb\n" | grep b ; echo end'
+[994-END]
+
+[995]
+NAME="Relative cd and pwd"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin' ; mkdir -p /tmp/42sh_rel/a/b"
+CLEAN="rm -rf /tmp/42sh_rel"
+TESTS=
+  echo 'cd /tmp/42sh_rel/a/b'
+  echo 'cd ..'
+  echo 'pwd'
+[995-END]
+
+[996]
+NAME="Tilde expansion"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin'"
+CLEAN=""
+TESTS=
+  echo 'echo ~'
+  echo 'echo ~/'
+[996-END]
+
+[997]
+NAME="Globbing no match"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin'"
+CLEAN=""
+TESTS=
+  echo 'ls /tmp/42sh_no_match_*'
+[997-END]
+
+[998]
+NAME="Missing redirection target"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin'"
+CLEAN=""
+TESTS=
+  echo 'echo hi >'
+[998-END]
+
+[999]
+NAME="Input redirection missing file"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin'"
+CLEAN=""
+TESTS=
+  echo 'cat < /tmp/42sh_missing_file'
+[999-END]
+
+[1000]
+NAME="Pipe without command"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin'"
+CLEAN=""
+TESTS=
+  echo 'echo hi |'
+[1000-END]
+
+[1001]
+NAME="Multiple redirections"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin'"
+CLEAN="rm -f /tmp/42sh_r1 /tmp/42sh_r2"
+TESTS=
+  echo 'echo hi > /tmp/42sh_r1 > /tmp/42sh_r2'
+  echo 'cat /tmp/42sh_r1'
+  echo 'cat /tmp/42sh_r2'
+[1001-END]
+
+[1002]
+NAME="Logical AND OR"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin'"
+CLEAN=""
+TESTS=
+  echo 'true && echo ok'
+  echo 'false || echo ok'
+[1002-END]
+
+[1003]
+NAME="Command substitution $( )"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin'"
+CLEAN=""
+TESTS=
+  echo 'echo $(echo hi)'
+[1003-END]
+
+[1004]
+NAME="Source missing file"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin'"
+CLEAN=""
+TESTS=
+  echo 'source /tmp/42sh_no_such_file'
+[1004-END]
+
+[1005]
+NAME="cd invalid path"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin'"
+CLEAN=""
+TESTS=
+  echo 'cd /tmp/42sh_no_such_dir'
+[1005-END]
+
+[1006]
+NAME="Which unknown"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin'"
+CLEAN=""
+TESTS=
+  echo 'which doesnotexist'
+[1006-END]
+
+[1007]
+NAME="Where unknown"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin'"
+CLEAN=""
+TESTS=
+  echo 'where doesnotexist'
+[1007-END]
+
+[1008]
+NAME="Unalias unknown"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin'"
+CLEAN=""
+TESTS=
+  echo 'unalias doesnotexist'
+[1008-END]
+
+[1009]
+NAME="Alias override"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin'"
+CLEAN=""
+TESTS=
+  echo 'alias ll ls'
+  echo 'alias ll ls -a'
+  echo 'll'
+[1009-END]
+
+[1010]
+NAME="setenv invalid name"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin'"
+CLEAN=""
+TESTS=
+  echo 'setenv 1ABC test'
+[1010-END]
+
+[1011]
+NAME="setenv too many args"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin'"
+CLEAN=""
+TESTS=
+  echo 'setenv A B C'
+[1011-END]
+
+[1012]
+NAME="unsetenv no args"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin'"
+CLEAN=""
+TESTS=
+  echo 'unsetenv'
+[1012-END]
