@@ -35,7 +35,7 @@ user        = true  : CYAN        : NONE
 folder      = true  : BLUE        : NONE
 
 # Affiche la branche git si dans un repo (ex: main)
-git_branch  = true  : LAVENDER    : NONE
+git_branch  = true  : BLUE    : NONE
 
 # Affiche la date — formats disponibles : LONG / EU / US / ISO
 #   LONG = Mardi 11 Septembre 2001
