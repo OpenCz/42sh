@@ -43,6 +43,8 @@ int builtin_foreach(main_t *main_stock, command_ctx_t *ctx);
 char **foreach_read_commands(void);
 int handle_error(command_ctx_t *ctx);
 int put_error_var(char *var);
+char *is_command(char *str);
+char *append_buffer(command_ctx_t *ctx, int *i);
 int builtin_printenv(main_t *main_stock, command_ctx_t *ctx);
 
 int my_env(main_t *main_stock);
