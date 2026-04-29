@@ -29,19 +29,24 @@ int child_exec(command_ctx_t *ctx, char *path, char **env)
     return SUCCESS;
 }
 
+static int print_error(char *mess, int code)
+{
+    write(1, mess, my_strlen(mess));
+    return code;
+}
+
 int get_seg(int status)
 {
     int sig = WTERMSIG(status);
     int exit_value = 0;
 
+    if (WIFEXITED(status))
+        return WEXITSTATUS(status);
     if (sig == SIGINT) {
-        write(1, "\n", 1);
-        return 130;
+        return print_error("\n", 130);
     }
-    if (sig == SIGFPE) {
-        write(1, "Floating exception\n", 19);
-        exit_value = 136;
-    }
+    if (sig == SIGFPE)
+        exit_value = print_error("Floating exception\n", 136);
     if (sig == SIGSEGV) {
         write(1, "Segmentation fault\n", 19);
         exit_value = 139;
