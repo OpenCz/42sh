@@ -24,6 +24,7 @@ typedef struct infos_s {
 } infos_t;
 
 typedef struct prompt_s {
+    int len_prompt;
     infos_t git_branch;
     infos_t folder;
     infos_t user;
