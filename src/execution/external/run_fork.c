@@ -34,7 +34,8 @@ static int handle_child(command_ctx_t *ctx, char *path, char **env)
     exit(child_exec(ctx, path, env));
 }
 
-static int handle_parent(pid_t pid, struct termios *term, main_t *stock_main, command_ctx_t *ctx)
+static int handle_parent(pid_t pid, struct termios *term,
+    main_t *stock_main, command_ctx_t *ctx)
 {
     int status = 0;
     int actual = 1;
@@ -43,8 +44,10 @@ static int handle_parent(pid_t pid, struct termios *term, main_t *stock_main, co
     if (command == NULL)
         return 1;
     command[0] = strdup(ctx->command);
-    for (int i = 0; ctx->arg_command[i] != NULL; i++, actual++)
+    for (int i = 0; ctx->arg_command[i] != NULL; i++) {
         command[actual] = strdup(ctx->arg_command[i]);
+        actual++;
+    }
     command[actual] = NULL;
     setpgid(pid, pid);
     tcsetpgrp(STDIN_FILENO, pid);

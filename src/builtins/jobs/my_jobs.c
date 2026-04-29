@@ -36,11 +36,12 @@ int builtin_jobs(main_t *main_stock, command_ctx_t *ctx)
     job_controler_t *controler = main_stock->controler;
     job_controler_t *tmp = controler->next;
 
-    for (int i = 1; tmp && tmp->job != NULL; tmp = tmp->next, i++) {
-        printf("[%i]  %c Suspended                     ", i, tmp->job->sign);
+    for (int i = 1; tmp && tmp->job != NULL; i++) {
+        printf("[%i]  %c Suspended\t\t\t", i, tmp->job->sign);
         for (int j = 0; tmp->job->command[j] != NULL; j++)
             printf(" %s", tmp->job->command[j]);
         printf("\n");
+        tmp = tmp->next;
     }
     return 0;
 }

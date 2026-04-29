@@ -26,6 +26,14 @@ int child_exec(command_ctx_t *ctx, char *path, char **env)
     return SUCCESS;
 }
 
+void wait_stop(int status, main_t *stock_main, int pid, char **command)
+{
+    if (WIFSTOPPED(status)) {
+        my_putstr("\nSuspended\n");
+        append_jobs(command, pid, stock_main);
+    }
+}
+
 int get_seg(int status, main_t *stock_main, int pid, char **command)
 {
     int sig = WTERMSIG(status);
@@ -45,9 +53,6 @@ int get_seg(int status, main_t *stock_main, int pid, char **command)
     }
     if (WCOREDUMP(status))
         write(1, " (core dumped)\n", 15);
-    if (WIFSTOPPED(status)) {
-        my_putstr("\nSuspended\n");
-        append_jobs(command, pid, stock_main);
-    }
+    wait_stop(status, stock_main, pid, command);
     return exit_value;
 }
