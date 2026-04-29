@@ -89,6 +89,7 @@ SRC_UTILS = \
 	src/utils/strings/my_str_to_word_array_quotes.c \
 	src/utils/strings/str_to_array_of_word_array.c \
 	src/utils/strings/my_wordarraylen.c \
+	src/utils/strings/my_itoa.c \
 	src/utils/validation/my_ischar_num.c \
 	src/utils/validation/my_str_is_alphanum.c \
 	src/utils/validation/my_char_is_alpha.c

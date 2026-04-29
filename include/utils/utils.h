@@ -36,5 +36,6 @@ int my_char_is_alpha(char key);
 void display_prompt(prompt_t *prompt, char *user);
 int my_putnbr(int nb);
 void display_time(void);
+char *my_itoa(int num);
 
 #endif
