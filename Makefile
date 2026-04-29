@@ -240,6 +240,7 @@ clean:
 fclean: clean
 	$(call pretty_header, Full clean: objects binary tests coverage)
 	@$(RM) $(NAME) $(TO_RM)
+	@$(RM) /tmp/test.* /tmp/.shell.* /tmp/.refer.* /tmp/.tester.* /tmp/.runner.* /tmp/.tmp.*
 	@$(MAKE) fclean -C tests/
 
 re: fclean all
