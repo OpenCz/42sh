@@ -222,7 +222,7 @@ coverage: re
 functional_tests: all
 	$(call pretty_header, Running Functional Tests)
 	@mkdir -p $(LOGS_DIR)/functional_tests
-	@./tests/tester.sh; EXIT_CODE=$$?; \
+	@python3 ./tests/tester.py; EXIT_CODE=$$?; \
 	echo" "; \
 	printf "%b\n" "$(H_CYAN)Functional tests finished.$(END)"; \
 	if [ $$EXIT_CODE -eq 0 ]; then \
@@ -240,7 +240,9 @@ clean:
 fclean: clean
 	$(call pretty_header, Full clean: objects binary tests coverage)
 	@$(RM) $(NAME) $(TO_RM)
+	@$(RM) $(LOGS_DIR)/functional_tests
 	@$(RM) /tmp/test.* /tmp/.shell.* /tmp/.refer.* /tmp/.tester.* /tmp/.runner.* /tmp/.tmp.*
+	@$(RM) "dir \"" "dir;" test output
 	@$(MAKE) fclean -C tests/
 
 re: fclean all
@@ -267,7 +269,7 @@ help:
 	@printf "%b\n" "  $(BOLD)make unit_tests$(END)             Build Criterion unit-tests binary"
 	@printf "%b\n" "  $(BOLD)make tests_run$(END)              Run tests → logs in $(LOGS_DIR)/"
 	@printf "%b\n" "  $(BOLD)make coverage$(END)               Run tests → HTML report at $(COVERAGE_HTML)"
-	@printf "%b\n" "  $(BOLD)make functional_tests$(END)       Run functional tests (tests/tester.sh)"
+	@printf "%b\n" "  $(BOLD)make functional_tests$(END)       Run functional tests (tests/tester.py)"
 	@printf "%b\n" ""
 	@printf "%b\n" "$(BOLD)$(H_CYAN)── Cleanup ───────────────────────────────────────────────────────$(END)"
 	@printf "%b\n" "  $(BOLD)make clean$(END)                  Remove .o files"
