@@ -10,17 +10,42 @@
 
 #include "../../../include/c_zsh.h"
 
+static void print_fg_color(int color)
+{
+    if (color == DEFAULT)
+        return;
+    if (color >= COLOR_256_BASE) {
+        my_putstr("\033[38;5;");
+        my_putnbr(color - COLOR_256_BASE);
+    } else {
+        my_putstr("\033[");
+        my_putnbr(color);
+    }
+    my_putstr("m");
+}
+
+static void print_bg_color(int b_color)
+{
+    if (b_color == DEFAULT)
+        return;
+    if (b_color >= COLOR_256_BASE) {
+        my_putstr("\033[48;5;");
+        my_putnbr(b_color - COLOR_256_BASE);
+    } else {
+        my_putstr("\033[");
+        my_putnbr(b_color);
+    }
+    my_putstr("m");
+}
+
 static int pwd(char *pwd_folder, infos_t *folder)
 {
     int len = 0;
 
     if (pwd_folder && folder->toggle) {
-        my_putstr("\033[");
-        my_putnbr(folder->b_color);
-        my_putstr("m");
-        my_putstr("\033[");
-        my_putnbr(folder->color);
-        my_putstr("m  ");
+        print_bg_color(folder->b_color);
+        print_fg_color(folder->color);
+        my_putstr("  ");
         my_putstr(pwd_folder);
         my_putstr(" \033[0m");
         len = my_strlen(pwd_folder) + 4;
@@ -34,12 +59,9 @@ static int username(char *user, infos_t *user_info)
     int len = 0;
 
     if (user && user_info->toggle) {
-        my_putstr("\033[");
-        my_putnbr(user_info->b_color);
-        my_putstr("m");
-        my_putstr("\033[");
-        my_putnbr(user_info->color);
-        my_putstr("m  ");
+        print_bg_color(user_info->b_color);
+        print_fg_color(user_info->color);
+        my_putstr("  ");
         my_putstr(user);
         len = my_strlen(user) + 4;
         my_putstr(" \033[0m");
@@ -52,12 +74,9 @@ static int git(char *git_branch, infos_t *git_info)
     int len = 0;
 
     if (git_branch && git_info->toggle) {
-        my_putstr("\033[");
-        my_putnbr(git_info->b_color);
-        my_putstr("m");
-        my_putstr("\033[");
-        my_putnbr(git_info->color);
-        my_putstr("m  ");
+        print_bg_color(git_info->b_color);
+        print_fg_color(git_info->color);
+        my_putstr("  ");
         my_putstr(git_branch);
         my_putstr(" \033[0m");
         len = my_strlen(git_branch) + 4;
