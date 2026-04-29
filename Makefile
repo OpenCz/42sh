@@ -222,13 +222,13 @@ coverage: re
 functional_tests: all
 	$(call pretty_header, Running Functional Tests)
 	@mkdir -p $(LOGS_DIR)/functional_tests
-	@./tests/run_tests.sh; EXIT_CODE=$$?; \
-	echo" ""; \
-	printf "%b\n" "$(H_CYAN)Functional test report saved to $(H_YELLOW)$(LOGS_DIR)/functional_tests/$(END)"; \
+	@./tests/tester.sh; EXIT_CODE=$$?; \
+	echo" "; \
+	printf "%b\n" "$(H_CYAN)Functional tests finished.$(END)"; \
 	if [ $$EXIT_CODE -eq 0 ]; then \
 	    printf "%b\n" "$(BOLD)$(H_GREEN)All functional tests passed!$(END)"; \
 	else \
-	    printf "%b\n" "$(BOLD)$(H_YELLOW)Some tests failed! Check $(LOGS_DIR)/functional_tests/ for details$(END)"; \
+	    printf "%b\n" "$(BOLD)$(H_YELLOW)Some tests failed! See /tmp/test.* for details$(END)"; \
 	fi; \
 	exit $$EXIT_CODE
 
@@ -266,7 +266,7 @@ help:
 	@printf "%b\n" "  $(BOLD)make unit_tests$(END)             Build Criterion unit-tests binary"
 	@printf "%b\n" "  $(BOLD)make tests_run$(END)              Run tests → logs in $(LOGS_DIR)/"
 	@printf "%b\n" "  $(BOLD)make coverage$(END)               Run tests → HTML report at $(COVERAGE_HTML)"
-	@printf "%b\n" "  $(BOLD)make functional_tests$(END)       Run functional tests (tests/run_tests.sh)"
+	@printf "%b\n" "  $(BOLD)make functional_tests$(END)       Run functional tests (tests/tester.sh)"
 	@printf "%b\n" ""
 	@printf "%b\n" "$(BOLD)$(H_CYAN)── Cleanup ───────────────────────────────────────────────────────$(END)"
 	@printf "%b\n" "  $(BOLD)make clean$(END)                  Remove .o files"
