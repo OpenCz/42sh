@@ -38,6 +38,7 @@ typedef struct env_s {
 
 typedef struct job_s {
     pid_t pid;
+    pid_t pgid;
     char **command;
     char sign;
 } job_t;

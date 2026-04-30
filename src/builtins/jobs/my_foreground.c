@@ -7,6 +7,28 @@
 
 #include "c_zsh.h"
 
+void set_foreground(job_controler_t *tmp, job_controler_t *prev)
+{
+    pid_t pgid = tmp->job->pgid;
+    int status = 0;
+    pid_t shell_pgid = getpgrp();
+    struct termios shell_tmodes;
+
+    tcgetattr(STDIN_FILENO, &shell_tmodes);
+    tcsetpgrp(STDIN_FILENO, pgid);
+    kill(-pgid, SIGCONT);
+    waitpid(pgid, &status, WUNTRACED);
+    tcsetpgrp(STDIN_FILENO, shell_pgid);
+    tcsetattr(STDIN_FILENO, TCSADRAIN, &shell_tmodes);
+    if (!WIFSTOPPED(status)) {
+        prev->next = tmp->next;
+        free_array(tmp->job->command);
+        free_alloc(tmp->job);
+        free_alloc(tmp);
+        tmp = NULL;
+    }
+}
+
 int builtin_foreground(main_t *main_stock, command_ctx_t *ctx)
 {
     job_controler_t *curr = main_stock->controler;
@@ -21,11 +43,6 @@ int builtin_foreground(main_t *main_stock, command_ctx_t *ctx)
         prev = tmp;
         tmp = tmp->next;
     }
-    kill(tmp->job->pid, SIGCONT);
-    prev->next = tmp->next;
-    free_array(tmp->job->command);
-    free_alloc(tmp->job);
-    free_alloc(tmp);
-    tmp = NULL;
+    set_foreground(tmp, prev);
     return 0;
 }

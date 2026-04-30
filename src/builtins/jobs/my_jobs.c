@@ -7,6 +7,14 @@
 
 #include "c_zsh.h"
 
+void assign_job(job_t *job, char **command, int pid)
+{
+    job->command = command;
+    job->pid = pid;
+    job->pgid = getpgid(pid);
+    job->sign = '+';
+}
+
 int append_jobs(char **command, int pid, main_t *main_stock)
 {
     job_controler_t *new_controler = malloc(sizeof(job_controler_t));
@@ -15,9 +23,7 @@ int append_jobs(char **command, int pid, main_t *main_stock)
 
     if (!job || !new_controler || !command)
         return 1;
-    job->command = command;
-    job->pid = pid;
-    job->sign = '+';
+    assign_job(job, command, pid);
     new_controler->job = job;
     new_controler->next = NULL;
     if (!main_stock->controler) {
