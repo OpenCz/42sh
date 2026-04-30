@@ -41,6 +41,7 @@ typedef struct job_s {
     pid_t pgid;
     char **command;
     char sign;
+    int status;
 } job_t;
 
 typedef struct job_controler_s {

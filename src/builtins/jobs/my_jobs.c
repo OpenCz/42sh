@@ -12,7 +12,8 @@ void assign_job(job_t *job, char **command, int pid)
     job->command = command;
     job->pid = pid;
     job->pgid = getpgid(pid);
-    job->sign = '+';
+    job->status = -1;
+    job->sign = '\0';
 }
 
 int append_jobs(char **command, int pid, main_t *main_stock)
@@ -43,7 +44,8 @@ int builtin_jobs(main_t *main_stock, command_ctx_t *ctx)
     job_controler_t *tmp = controler->next;
 
     for (int i = 1; tmp && tmp->job != NULL; i++) {
-        printf("[%i]  %c Suspended\t\t\t", i, tmp->job->sign);
+        printf("[%i]  %c %s\t\t\t", i, tmp->job->sign,
+            tmp->job->status == -1 ? "Suspended" : "Done");
         for (int j = 0; tmp->job->command[j] != NULL; j++)
             printf(" %s", tmp->job->command[j]);
         printf("\n");
