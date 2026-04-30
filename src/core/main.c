@@ -50,9 +50,9 @@ static void free_var_local(env_t **local_var)
     while (*local_var) {
         tmp = *local_var;
         *local_var = (*local_var)->next;
-        free(tmp->key);
-        free(tmp->value);
-        free(tmp);
+        free_alloc(tmp->key);
+        free_alloc(tmp->value);
+        free_alloc(tmp);
     }
 }
 
@@ -71,8 +71,10 @@ static void run_shell_loop(main_t *stock, loop_state_t *state)
         }
         if (handle_command_result(stock, state))
             break;
+        free_alloc(stock->last_exit);
         stock->last_exit = my_itoa(state->last_exit);
     }
+    free_alloc(stock->last_exit);
     free_var_local(&stock->stock_local_var);
     write_tty("exit\n");
 }

@@ -1,11 +1,8 @@
 /*
 ** EPITECH PROJECT, 2026
-** 42sh
+** error
 ** File description:
-** Child-side execution: child_exec applies redirections and calls
-** execve; on failure prints a tcsh error and exits the child.
-** get_seg maps status: SIGINT->130, SIGSEGV->139, SIGFPE->136.
-** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
+** error
 */
 
 #include "c_zsh.h"
@@ -29,31 +26,35 @@ int child_exec(command_ctx_t *ctx, char *path, char **env)
     return SUCCESS;
 }
 
-static int print_error(char *mess, int code)
+void wait_stop(int status, main_t *stock_main, int pid, char **command)
 {
-    write(1, mess, my_strlen(mess));
-    return code;
+    if (WIFSTOPPED(status)) {
+        my_putstr("\nSuspended\n");
+        append_jobs(command, pid, stock_main);
+    } else {
+        free_array(command);
+    }
 }
 
-int get_seg(int status)
+int get_seg(int status, main_t *stock_main, int pid, char **command)
 {
     int sig = WTERMSIG(status);
     int exit_value = 0;
 
-    if (WIFEXITED(status))
-        return WEXITSTATUS(status);
     if (sig == SIGINT) {
-        return print_error("\n", 130);
+        write(1, "\n", 1);
+        return 130;
     }
-    if (sig == SIGFPE)
-        exit_value = print_error("Floating exception\n", 136);
+    if (sig == SIGFPE) {
+        write(1, "Floating exception\n", 19);
+        exit_value = 136;
+    }
     if (sig == SIGSEGV) {
         write(1, "Segmentation fault\n", 19);
         exit_value = 139;
     }
     if (WCOREDUMP(status))
         write(1, " (core dumped)\n", 15);
-    if (WIFSTOPPED(status))
-        my_putstr("\nSuspended\n");
+    wait_stop(status, stock_main, pid, command);
     return exit_value;
 }

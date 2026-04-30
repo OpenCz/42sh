@@ -67,6 +67,7 @@ static void manage_format(czshrc_t *rc, char *infos)
     for (int i = 0; formats_str[i]; i++)
         if (my_strcmp(formats_str[i], user_infos[0]) == 0)
             rc->prompt->date_format = formats[i];
+    free_array(user_infos);
 }
 
 static void manage_time(czshrc_t *rc, char *infos)
@@ -81,6 +82,7 @@ static void manage_time(czshrc_t *rc, char *infos)
         rc->prompt->time.color = get_color(user_infos[1]);
     if (user_infos[2])
         rc->prompt->time.b_color = get_b_color(user_infos[2]);
+    free_array(user_infos);
 }
 
 static void manage_date(czshrc_t *rc, char *infos)
@@ -95,6 +97,7 @@ static void manage_date(czshrc_t *rc, char *infos)
         rc->prompt->date.color = get_color(user_infos[1]);
     if (user_infos[2])
         rc->prompt->date.b_color = get_b_color(user_infos[2]);
+    free_array(user_infos);
 }
 
 static void manage_branche(czshrc_t *rc, char *infos)
@@ -109,6 +112,7 @@ static void manage_branche(czshrc_t *rc, char *infos)
         rc->prompt->git_branch.color = get_color(user_infos[1]);
     if (user_infos[2])
         rc->prompt->git_branch.b_color = get_b_color(user_infos[2]);
+    free_array(user_infos);
 }
 
 static void manage_folder(czshrc_t *rc, char *infos)
@@ -123,6 +127,7 @@ static void manage_folder(czshrc_t *rc, char *infos)
         rc->prompt->folder.color = get_color(user_infos[1]);
     if (user_infos[2])
         rc->prompt->folder.b_color = get_b_color(user_infos[2]);
+    free_array(user_infos);
 }
 
 static void manage_user(czshrc_t *rc, char *infos)
@@ -137,6 +142,7 @@ static void manage_user(czshrc_t *rc, char *infos)
         rc->prompt->user.color = get_color(user_infos[1]);
     if (user_infos[2])
         rc->prompt->user.b_color = get_b_color(user_infos[2]);
+    free_array(user_infos);
 }
 
 static void redirect_infos(czshrc_t *rc, char ***rc_parsed, int i)

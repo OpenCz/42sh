@@ -45,13 +45,19 @@ static history_cmd_t *push_front(history_t *his,
     return new;
 }
 
-int manage_history(history_t *history, char *cmd)
+int manage_history(history_t *history, char **cmd)
 {
     history_cmd_t *history_cmd = NULL;
 
-    if (!cmd || cmd[0] == '\0' || (cmd[0] == '\n' && cmd[1] == '\0'))
+    if (!(*cmd) || (*cmd)[0] == '\0' ||
+        ((*cmd)[0] == '\n' && (*cmd)[1] == '\0')) {
+        if (*cmd) {
+            free_alloc(*cmd);
+            *cmd = NULL;
+        }
         return 1;
-    history_cmd = push_front(history, &history->history_cmd, cmd);
+    }
+    history_cmd = push_front(history, &history->history_cmd, *cmd);
     if (!history_cmd)
         return 1;
     add_to_history(history, history_cmd);
