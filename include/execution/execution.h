@@ -28,14 +28,15 @@ int create_pipe(int segment_count, int i, int pipefd[2]);
 pid_t launch_segment(main_t *stock_main,
     char *command, int in_fd, int out_fd);
 int push_segment(pipeline_state_t *state, int i);
-int normalize_status(int status);
-int wait_pipeline(pid_t *pids, int count);
-int finalize_pipeline(pipeline_state_t *state);
+int normalize_status(int status, main_t *stock_main, int pid, char *command);
+int wait_pipeline(pid_t *pids, int count, main_t *stock_main, char *command);
+int finalize_pipeline(pipeline_state_t *state, char *command);
 
 int exec_any(main_t *main_stock, command_ctx_t *ctx);
 int run_fork(main_t *main_stock, command_ctx_t *ctx, char *path, char **env);
 int child_exec(command_ctx_t *ctx, char *path, char **env);
-int get_seg(int status);
+int get_seg(int status, main_t *stock_main, int pid, char **command);
+int append_jobs(char **command, int pid, main_t *main_stock);
 
 int apply_redirection(command_ctx_t *ctx);
 
