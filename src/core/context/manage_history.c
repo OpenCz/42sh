@@ -52,7 +52,7 @@ int manage_history(history_t *history, char **cmd)
     if (!(*cmd) || (*cmd)[0] == '\0' ||
         ((*cmd)[0] == '\n' && (*cmd)[1] == '\0')) {
         if (*cmd) {
-            free(*cmd);
+            free_alloc(*cmd);
             *cmd = NULL;
         }
         return 1;

@@ -39,6 +39,7 @@ static void write_reverse_history(char *file, command_ctx_t *ctx)
         printf("%s\n", str);
         str = strtok(NULL, "\n");
     }
+    free_alloc(str);
 }
 
 int builtin_history(main_t *main_stock, command_ctx_t *ctx)
@@ -47,10 +48,10 @@ int builtin_history(main_t *main_stock, command_ctx_t *ctx)
 
     if (!file)
         return 1;
-    if (ctx->argv[1] && strcmp(ctx->argv[1], "-r") == 0) {
+    if (ctx->argv[1] && strcmp(ctx->argv[1], "-r") == 0)
         write_reverse_history(file, ctx);
-    } else
+    else
         write_history(file, ctx);
-    free(file);
+    free_alloc(file);
     return 0;
 }

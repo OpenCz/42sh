@@ -88,7 +88,7 @@ static int get_tty_command(main_t *stock_main, char **buffer,
     }
     if (create_cmd == CONTINUE)
         return CONTINUE;
-    manage_history(history, *buffer);
+    manage_history(history, buffer);
     return 0;
 }
 
@@ -99,12 +99,9 @@ int get_command(main_t *stock_main, char **buffer, history_t *history,
     size_t buffer_size = BUFFER_SIZE;
 
     if (isatty(0)) {
-        create_cmd = create_command(history, buffer, user);
-        if (create_cmd == -1)
-            return -1;
-        if (create_cmd == CONTINUE)
-            return CONTINUE;
-        manage_history(history, buffer);
+        status = get_tty_command(stock_main, buffer, history, user);
+        if (status != 0)
+            return status;
     } else {
         if (getline(buffer, &buffer_size, stdin) == -1)
             return -1;

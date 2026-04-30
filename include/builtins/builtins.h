@@ -12,7 +12,6 @@
     #define BUILTINS_H
 
     #include "core/types.h"
-    #define HISTORY 100
 
 typedef int (*builtin_handler_t)(main_t *main_stock, command_ctx_t *ctx);
 

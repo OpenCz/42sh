@@ -17,6 +17,7 @@
 
     #define CONTINUE -5
     #define TAB_WIDTH 4
+    #define HISTORY 100
 
 typedef struct alias_stock_s {
     char *new_name;
@@ -99,5 +100,11 @@ typedef struct loop_env_state_s {
     env_t *created_node;
     char *saved_value;
 } loop_env_state_t;
+
+typedef struct history_rc_s {
+    int history;
+    int savehist;
+    bool enabled;
+} history_rc_t;
 
 #endif
