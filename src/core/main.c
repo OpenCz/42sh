@@ -51,7 +51,8 @@ int main(int argc, char **argv, char **env)
         last_exit = execute_command(stock, buffer);
     }
     write_tty("exit\n", cmd);
-    free_alloc(buffer);
+    if (cmd == -1)
+        free_alloc(buffer);
     free_main(stock);
     return last_exit;
 }
