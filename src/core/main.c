@@ -71,8 +71,10 @@ static void run_shell_loop(main_t *stock, loop_state_t *state)
         }
         if (handle_command_result(stock, state))
             break;
+        free_alloc(stock->last_exit);
         stock->last_exit = my_itoa(state->last_exit);
     }
+    free_alloc(stock->last_exit);
     free_var_local(&stock->stock_local_var);
     write_tty("exit\n");
 }
