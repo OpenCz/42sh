@@ -23,6 +23,7 @@ SRC_BUILTINS = \
 	$(wildcard ../src/builtins/config/*.c) \
 	$(wildcard ../src/builtins/scripts/*.c) \
 	$(wildcard ../src/builtins/history/*.c) \
+	$(wildcard ../src/builtins/var_local/*.c)
 
 SRC_EXEC = \
 	$(wildcard ../src/execution/dispatch/*.c) \
@@ -40,7 +41,8 @@ SRC_CONFIG = \
 SRC_PARSING = \
 	$(wildcard ../src/parsing/redirection/*.c) \
 	$(wildcard ../src/parsing/env_var_management/*.c) \
-	$(wildcard ../src/parsing/quotes_management/*.c)
+	$(wildcard ../src/parsing/quotes_management/*.c) \
+	$(wildcard ../src/parsing/command_substitution/*.c)
 
 SRC_UTILS = \
 	$(wildcard ../src/utils/io/*.c) \

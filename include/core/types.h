@@ -72,6 +72,7 @@ typedef struct main_s {
     history_t *history;
     alias_stock_t *alias_stock;
     struct env_s *stock_env;
+    struct env_s *stock_local_var;
     czshrc_t *czshrc;
     job_controler_t *controler;
 } main_t;

@@ -65,5 +65,6 @@ main_t *init_main(char **env)
     init_history(main_node);
     main_node->czshrc = init_rc();
     main_node->controler = init_job_controler();
+    main_node->stock_local_var = NULL;
     return main_node;
 }

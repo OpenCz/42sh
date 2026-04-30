@@ -36,6 +36,8 @@ SRC_BUILTINS = \
 	src/builtins/jobs/my_background.c \
 	src/builtins/repeat/repeat.c \
 	src/builtins/scripts/foreach.c \
+	src/builtins/scripts/scripts_if.c \
+	src/builtins/scripts/if_create_command.c \
 	src/builtins/scripts/foreach_input.c \
 	src/utils/errors/foreach.c \
 	src/builtins/fs/my_which.c \
@@ -43,7 +45,9 @@ SRC_BUILTINS = \
 	src/builtins/env/printenv.c \
 	src/builtins/history/history.c \
 	src/builtins/fs/my_alias.c \
-	src/builtins/config/source.c
+	src/builtins/config/source.c \
+	src/builtins/var_local/set.c \
+	src/builtins/var_local/unset.c
 
 SRC_EXEC = \
 	src/execution/dispatch/execute_builtin.c \
@@ -70,6 +74,7 @@ SRC_PARSING = \
 	src/parsing/redirection/get_redirection.c \
 	src/parsing/env_var_management/replace_env_vars.c \
 	src/parsing/quotes_management/manage_quotes.c \
+	src/parsing/command_substitution/command_substitution.c \
 
 SRC_UTILS = \
 	src/utils/io/my_putstr.c \

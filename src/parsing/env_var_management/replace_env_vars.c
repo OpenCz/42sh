@@ -21,6 +21,11 @@ static size_t get_var_name_len(const char *name)
         for (; name[i] && name[i] != '}'; i++);
         return i;
     }
+    if (name[0] == '(') {
+        i = 1;
+        for (; name[i] && name[i] != ')'; i++);
+        return i;
+    }
     if (isalnum((unsigned char)name[0]) || name[0] == '_') {
         for (; name[i] &&
             (isalnum((unsigned char)name[i]) || name[i] == '_'); i++);
@@ -45,6 +50,16 @@ static char *is_hard(const char *key, size_t key_len, main_t *stock_main)
     return NULL;
 }
 
+static char *manage_substitution(main_t *stock_main, const char *key,
+    int key_len)
+{
+    char *command = NULL;
+
+    command = strdup(key);
+    command[key_len] = '\0';
+    return command_substitution(stock_main, command);
+}
+
 static char *find_value(char *key, main_t *stock_main)
 {
     bool is_braced = key[1] == '{';
@@ -57,14 +72,15 @@ static char *find_value(char *key, main_t *stock_main)
     key_len = get_var_name_len(key + 1) - (is_braced ? 1 : 0);
     if (key_len == 0)
         return NULL;
+    if (key[1] == '(')
+        return manage_substitution(stock_main, key + 2, key_len - 1);
     value = is_hard(key + offset, key_len, stock_main);
     if (value)
         return value;
-    for (env_t *e = stock_main->stock_env; e; e = e->next) {
+    for (env_t *e = stock_main->stock_env; e; e = e->next)
         if (strlen(e->key) == key_len &&
             strncmp(e->key, key + offset, key_len) == 0)
             return e->value;
-    }
     return NULL;
 }
 
@@ -84,7 +100,7 @@ static int replace_single_arg(char **args, int i, main_t *stock_main)
         return 0;
     }
     suffix = args[i] + 1 + get_var_name_len(args[i] + 1)
-        + (args[i][1] == '{' ? 1 : 0);
+        + (args[i][1] == '{' || args[i][1] == '(' ? 1 : 0);
     new_val = my_strconcat(env_var, suffix);
     free_alloc(args[i]);
     args[i] = new_val;
