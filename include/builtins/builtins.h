@@ -57,5 +57,7 @@ int my_unsetenv(main_t *main_stock);
 int my_chdir(main_t *main_stock);
 int builtin_set(main_t *main_stock, command_ctx_t *ctx);
 int builtin_unset(main_t *stock, command_ctx_t *ctx);
+int builtin_limit(main_t *main_stock, command_ctx_t *ctx);
+int builtin_unlimit(main_t *main_stock, command_ctx_t *ctx);
 
 #endif

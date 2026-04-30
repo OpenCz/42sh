@@ -47,7 +47,9 @@ SRC_BUILTINS = \
 	src/builtins/fs/my_alias.c \
 	src/builtins/config/source.c \
 	src/builtins/var_local/set.c \
-	src/builtins/var_local/unset.c
+	src/builtins/var_local/unset.c \
+	src/builtins/limit/limit.c \
+	src/builtins/limit/unlimit.c
 
 SRC_EXEC = \
 	src/execution/dispatch/execute_builtin.c \
