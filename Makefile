@@ -104,6 +104,7 @@ SRC_UTILS = \
 	src/utils/io/my_len_nb.c \
 	src/utils/io/display_zero.c \
 	src/utils/display/format_date.c \
+	src/utils/validation/my_str_is_alpha.c \
 
 SRC_MEMORY = \
 	src/memory/free/free_function.c

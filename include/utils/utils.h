@@ -50,5 +50,6 @@ void long_date_format(struct tm *tm);
 void european_date_format(struct tm *tm);
 void us_date_format(struct tm *tm);
 void iso_date_format(struct tm *tm);
+int my_str_is_alpha(char *key);
 
 #endif

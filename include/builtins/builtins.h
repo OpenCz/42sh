@@ -31,6 +31,11 @@ typedef struct condition_s {
     struct condition_s **arr;
 } condition_t;
 
+typedef struct limit_s {
+    char *good_name;
+    int good_lim;
+} limit_t;
+
 int builtin_history(main_t *main_stock, command_ctx_t *ctx);
 int execute_builtin(main_t *main_stock, command_ctx_t *ctx);
 int builtin_env(main_t *main_stock, command_ctx_t *ctx);
