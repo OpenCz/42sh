@@ -1,58 +1,94 @@
 /*
 ** EPITECH PROJECT, 2026
-** main
+** 42sh
 ** File description:
-** main
+** Shell entry point: main() calls init_main, setup_shell_signals,
+** run_shell_loop; serialize() trims trailing newline; the loop
+** calls get_command then execute_command until 'exit' or EOF.
+** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 
-#include "c_zsh.h"
-
-static void write_print(main_t *stock)
-{
-    char *user = get_user(stock->stock_env);
-
-    if (isatty(0))
-        display_prompt(user);
-}
-
-static void write_tty(char *buffer, int cmd)
-{
-    if (cmd != -1 && isatty(0))
-        my_putstr(buffer);
-}
+#include "../../include/c_zsh.h"
 
 static char *serialize(char *buffer)
 {
-    size_t len = 0;
+    size_t start = 0;
+    size_t end = 0;
 
     if (!buffer)
         return NULL;
-    len = my_strlen(buffer);
-    if (len > 0 && buffer[len - 1] == '\n')
-        buffer[len - 1] = '\0';
+    end = my_strlen(buffer);
+    while (end > 0 && isspace((unsigned char)buffer[end - 1]))
+        end--;
+    buffer[end] = '\0';
+    while (buffer[start] != '\0' && isspace((unsigned char)buffer[start]))
+        start++;
+    if (start > 0)
+        memmove(buffer, buffer + start, end - start + 1);
     return buffer;
+}
+
+static bool handle_command_result(main_t *stock, loop_state_t *state)
+{
+    state->buffer = serialize(state->buffer);
+    if (state->cmd == -1 || my_strcmp(state->buffer, "exit") == 0)
+        return true;
+    state->last_exit = execute_command(stock, state->buffer);
+    if (state->last_exit == 130) {
+        display_prompt(stock->czshrc->prompt, get_user(stock->stock_env));
+        state->prompt_displayed = true;
+    } else {
+        state->prompt_displayed = false;
+    }
+    return false;
+}
+
+static void free_var_local(env_t **local_var)
+{
+    env_t *tmp = NULL;
+
+    while (*local_var) {
+        tmp = *local_var;
+        *local_var = (*local_var)->next;
+        free(tmp->key);
+        free(tmp->value);
+        free(tmp);
+    }
+}
+
+static void run_shell_loop(main_t *stock, loop_state_t *state)
+{
+    stock->last_exit = my_itoa(state->last_exit);
+    while (my_strcmp(state->buffer, "exit") != 0) {
+        if (!state->prompt_displayed)
+            write_print(stock);
+        state->prompt_displayed = true;
+        state->cmd = get_command(stock, &state->buffer, stock->history,
+            get_user(stock->stock_env));
+        if (state->cmd == CONTINUE) {
+            state->prompt_displayed = false;
+            continue;
+        }
+        if (handle_command_result(stock, state))
+            break;
+        stock->last_exit = my_itoa(state->last_exit);
+    }
+    free_var_local(&stock->stock_local_var);
+    write_tty("exit\n");
 }
 
 int main(int argc, char **argv, char **env)
 {
     main_t *stock = init_main(env);
-    char *buffer = NULL;
-    int last_exit = 0;
-    int cmd = 0;
+    loop_state_t state = {
+        .buffer = NULL,
+        .last_exit = 0,
+        .cmd = 0,
+        .prompt_displayed = false
+    };
 
-    while (my_strcmp(buffer, "exit") != 0) {
-        write_print(stock);
-        cmd = get_command(&buffer, stock->history, get_user(stock->stock_env));
-        if (cmd == CONTINUE)
-            continue;
-        buffer = serialize(buffer);
-        if (my_strcmp(buffer, "exit") == 0 || cmd == -1)
-            break;
-        last_exit = execute_command(stock, buffer);
-    }
-    write_tty("exit\n", cmd);
-    if (cmd == -1)
-        free_alloc(buffer);
+    setup_shell_signals();
+    run_shell_loop(stock, &state);
     free_main(stock);
-    return last_exit;
+    return state.last_exit;
 }

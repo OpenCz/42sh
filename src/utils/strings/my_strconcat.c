@@ -1,8 +1,11 @@
 /*
 ** EPITECH PROJECT, 2026
-** my_strconcat
+** 42sh
 ** File description:
-** strconcat
+** String concatenation: allocates strlen(s1)+strlen(s2)+1 bytes
+** and copies s1 then s2 into the new buffer.
+** Returns the heap-allocated result string.
+** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 
 #include "c_zsh.h"

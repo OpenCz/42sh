@@ -1,103 +1,300 @@
-# Flux D Execution
+# Execution Flow
 
-Ce document decrit pas a pas le runtime du minishell.
+This document walks through the 42sh runtime step by step, from shell startup
+to the return of a single command's exit status.
 
-## 1. Boucle Principale
+---
 
-Fichier: `src/core/main.c`
+## 1. Shell Startup
 
-- initialise `main_t` via `init_main`;
-- lit la ligne utilisateur;
-- normalise la fin de ligne;
-- appelle `execute_command`;
-- conserve le dernier status de sortie.
+File: `src/core/init/`
 
-## 2. Dispatch Niveau Ligne
+1. `init_main(env)` allocates the global `main_t` and calls:
+   - `init_env(env)` — walk `environ`, build a singly-linked `env_t` list.
+   - `get_path()` — split `PATH` into a `char **` array.
+   - `get_home()` — store `HOME` in `main_t.home`.
+   - `init_history()` — allocate `history_t`, load `~/.c_zsh_history`.
+2. `setup_shell_signals()` — the shell process ignores `SIGINT`, `SIGTSTP`,
+   `SIGTTOU`, `SIGTTIN`, `SIGQUIT`; calls `setpgid` and `tcsetpgrp` to
+   become the foreground process-group leader.
+3. `update_rc()` — load `.c_zshrc` or apply `set_default_rc()`.
 
-Fichier: `src/execution/dispatch/execute_command.c`
+---
 
-- split la ligne par `;`;
-- pour chaque sous-commande:
-  - si presence de `|`: envoie a `execute_pipeline`;
-  - sinon: envoie a `execute_single_command`.
+## 2. Main REPL Loop
 
-## 3. Commande Simple
+File: `src/core/main.c`
 
-Fichier: `src/execution/dispatch/execute_single_command.c`
+```
+while (buffer != "exit") {
+    write_print(stock)           // display styled prompt
+    cmd = get_command(...)       // read one line
+    if (cmd == CONTINUE) continue;
+    execute_command(buffer)
+}
+```
 
-- parse vers `command_ctx_t`;
-- tente un builtin via registre;
-- sinon execute en externe (`exec_any`);
-- nettoie le contexte avant retour.
+The `loop_state_t` struct tracks the current buffer, the last exit status,
+and a flag to avoid double-drawing the prompt after a Ctrl+C clear.
 
-## 4. Dispatch Builtins
+---
 
-Fichier: `src/execution/dispatch/execute_builtin.c`
+## 3. Interactive Input Loop
 
-- table `builtin_command_t` (`name` + handler);
-- comparaison du nom de commande;
-- execution du handler correspondant;
-- `-1` si commande non builtin.
+File: `src/core/context/get_command.c`
 
-## 5. Execution Externe
+When stdin is a TTY, `create_command()` switches the terminal to raw mode
+(`ICANON=0`, `ECHO=0`) and runs a character-by-character loop:
 
-Fichiers:
+```
+init_termios()       // disable ICANON + ECHO
+for (cursor = 0; status == 0;) {
+    print_command()  // redraw current buffer
+    read(STDIN, &ch, 1)
+    check_char()     // dispatch on ch
+}
+restore_termios()
+```
 
-- `src/execution/external/exec_any.c`
-- `src/execution/external/run_fork.c`
-- `src/execution/external/exec_error_case.c`
+Key dispatch table:
 
-Etapes:
+| Input | Action |
+|---|---|
+| `0x0A` Enter | `status = 1` → exit loop, line is ready |
+| `0x03` Ctrl+C | clear buffer, redisplay prompt, `status = CONTINUE` |
+| `0x04` Ctrl+D | exit shell (empty buffer) or submit line (non-empty) |
+| `0x0C` Ctrl+L | clear screen, redraw prompt |
+| `0x01` Ctrl+A | move cursor to start of line |
+| `0x05` Ctrl+E | move cursor to end of line |
+| `0x7F` Backspace | delete character before cursor |
+| `0x1B` Escape | enter `arrow_handling()` for escape sequences |
+| Up arrow `\x1b[A` | load previous history entry, save current input |
+| Down arrow `\x1b[B` | load next history entry or restore saved input |
+| Left/Right `\x1b[C/D` | move cursor within the line |
+| Other | insert character at cursor position |
 
-1. resolution du binaire (commande absolue/relative ou PATH)
-2. construction envp temporaire
-3. `fork`
-4. enfant: redirection puis `execve`
-5. parent: `waitpid` et normalisation status
+When stdin is not a TTY (script or pipe), `getline()` is used instead.
 
-## 6. Redirections
+---
 
-Fichier: `src/execution/redirection/apply_redirection.c`
+## 4. Line-Level Dispatch
 
-- detecte l index du token (`>`, `>>`, `<`)
-- ouvre le fd cible
-- bind `dup2` sur stdin/stdout
-- coupe `argv` au niveau du token de redirection
+File: `src/execution/dispatch/execute_command.c`
 
-## 7. Pipeline
+```c
+char **commands = my_str_to_word_array_quote(line, ";");
+for (int i = 0; commands[i]; i++)
+    last = execute_compound_command(stock, commands[i]);
+```
 
-Fichiers:
+Each semicolon-separated segment is dispatched based on what operators it contains:
 
-- `src/execution/pipeline/pipeline_parse.c`
-- `src/execution/pipeline/pipeline_spawn.c`
-- `src/execution/pipeline/pipeline_wait.c`
-- `src/execution/pipeline/pipeline_execute.c`
+| Contains | Dispatched to |
+|---|---|
+| `\|` pipe | `execute_pipeline()` |
+| `&&` or `\|\|` | `execute_operator()` |
+| neither | `execute_single_command()` |
 
-Etapes:
+---
 
-1. validation syntaxique des pipes
-2. parsing en `pipeline_segment_t[]`
-3. allocation `pids`
-4. creation des pipes intermediaires
-5. spawn de chaque segment
-6. attente et retour du status du dernier segment
-7. cleanup global de l etat pipeline
+## 5. Logical Operator Loop
 
-## 8. Builtins Env/Fs
+File: `src/execution/dispatch/execute_operation.c`
 
-- `builtin_env`: affiche la liste `stock_env`
-- `builtin_setenv`: ajoute/met a jour une variable
-- `builtin_unsetenv`: supprime une variable
-- `builtin_cd`: change de repertoire et gere `old_path`
+The input is split into a `commands[]` array and a parallel `operators[]`
+array (`"&&"` or `"||"`).
 
-## 9. Gestion Des Erreurs
+```c
+status = execute_single_command(commands[0]);
+for (int i = 1; commands[i]; i++) {
+    if (operators[i-1] == "&&" && status == 0)
+        status = execute_single_command(commands[i]);
+    if (operators[i-1] == "||" && status != 0)
+        status = execute_single_command(commands[i]);
+    // otherwise: skip
+}
+```
 
-- erreurs parsing: status non nul immediate
-- erreurs fork/exec: status conforme shell
-- erreurs signaux (segfault/fpe): normalisation via `get_seg`
+Short-circuit evaluation: a failing `&&` or passing `||` skips all remaining
+commands up to the next separator.
 
-## 10. Invariants Runtime
+---
 
-- un `command_ctx_t` est toujours nettoye en fin de commande simple
-- un `pipeline_state_t` est toujours libere en succes/erreur
-- aucune commande externe ne doit dependre de champs temporaires globaux
+## 6. Single Command Path
+
+File: `src/execution/dispatch/execute_single_command.c`
+
+1. `parse_command_context()` → builds `command_ctx_t` (command name, argv, redirection token).
+2. `replace_env_vars(argv)` — iterate every `argv` token, replace `$VAR` / `${VAR}` by looking up `stock_env`.
+3. `execute_builtin()` — linear search through the `builtin_command_t` registry.
+   - Match found → call the handler, return its exit code.
+   - No match → return `-1`, fall through to external execution.
+4. `exec_any()` → external execution path.
+5. `clear_command_ctx()` — free the ephemeral context.
+
+---
+
+## 7. Builtin Registry
+
+File: `src/execution/dispatch/execute_builtin.c`
+
+```c
+for (size_t i = 0; command_shell[i].name; i++) {
+    if (strcmp(cmd, command_shell[i].name) == 0)
+        return command_shell[i].func(main_stock, ctx);
+}
+return -1;
+```
+
+Registered builtins:
+
+| Name | Handler | Status |
+|---|---|---|
+| `env` | `builtin_env` | Implemented |
+| `setenv` | `builtin_setenv` | Implemented |
+| `unsetenv` | `builtin_unsetenv` | Implemented |
+| `printenv` | `builtin_printenv` | Implemented |
+| `cd` | `builtin_cd` | Implemented |
+| `which` | `builtin_which` | Implemented |
+| `where` | `builtin_where` | Implemented |
+| `repeat` | `builtin_repeat` | Implemented |
+| `foreach` | `builtin_foreach` | Implemented |
+| `history` | `builtin_history` | Implemented |
+| `source` | `source` | Implemented |
+| `jobs` | `builtin_jobs` | Stub |
+| `fg` | `builtin_foreground` | Stub |
+| `bg` | `builtin_background` | Stub |
+
+---
+
+## 8. External Execution
+
+Files: `src/execution/external/exec_any.c`, `run_fork.c`, `exec_error_case.c`
+
+1. `check_bin()` — resolve the binary: absolute/relative path or search every PATH entry.
+2. Build `envp` from `stock_env` linked list.
+3. `run_fork()`:
+   - **child**: restore default signals (`SIGTSTP`, `SIGTTOU`, `SIGTTIN`), call
+     `setpgid(0, 0)`, give terminal with `tcsetpgrp`, call
+     `apply_redirection()`, then `execve(bin, argv, envp)`.
+   - **parent**: `setpgid(pid, pid)`, `tcsetpgrp` to child,
+     `waitpid(pid, &status, WUNTRACED)`.
+4. Status normalization (`get_seg`):
+
+| Condition | Exit code |
+|---|---|
+| `WIFEXITED` | `WEXITSTATUS(status)` |
+| `WIFSTOPPED` | print `"Suspended"`, return `1` |
+| `WIFSIGNALED(SIGINT)` | `130` |
+| `WIFSIGNALED(SIGSEGV)` | print `"Segmentation fault (core dumped)"`, return `139` |
+| `WIFSIGNALED(SIGFPE)` | print `"Floating exception (core dumped)"`, return `136` |
+
+5. Parent restores the terminal with `tcsetpgrp(STDIN, shell_pgid)`.
+
+---
+
+## 9. Pipeline
+
+Files: `src/execution/pipeline/`
+
+1. `pipeline_syntax_check()` — reject leading/trailing/consecutive `|`.
+2. `pipeline_parse()` — split on `|` into `pipeline_segment_t[]`.
+3. Allocate `pipe()` pairs and `pids[]`.
+4. **Segment spawn loop** (`pipeline_spawn.c`):
+   ```c
+   for (int i = 0; i < count; i++) {
+       pipe(next_fds);
+       pid = fork();
+       // child: dup2 prev_read→STDIN, dup2 next_write→STDOUT, close unused FDs, execve
+       // parent: close prev_read, close next_write, prev_read = next_fds[0]
+   }
+   ```
+5. **Wait loop** (`pipeline_wait.c`):
+   ```c
+   for (int i = 0; i < count; i++)
+       waitpid(pids[i], &status, WUNTRACED);
+   // return last segment's normalized status
+   ```
+6. Free `pipeline_state_t`.
+
+---
+
+## 10. Redirections
+
+File: `src/execution/redirection/apply_redirection.c`
+
+Called inside the child process before `execve`:
+
+1. Scan `argv` for a redirection token (`>>`, `<<`, `>`, `<`).
+2. Open the target file with the appropriate flags:
+   - `>` → `O_WRONLY | O_CREAT | O_TRUNC`
+   - `>>` → `O_WRONLY | O_CREAT | O_APPEND`
+   - `<` → `O_RDONLY`
+   - `<<` → heredoc: write lines until delimiter to a temp FD
+3. `dup2(fd, STDOUT_FILENO)` or `dup2(fd, STDIN_FILENO)`.
+4. Truncate `argv` at the token position so `execve` does not see the redirection.
+
+---
+
+## 11. foreach Builtin
+
+File: `src/builtins/scripts/foreach.c`
+
+```
+foreach var (item1 item2 … itemN)
+    cmd1
+    cmd2
+end
+```
+
+Execution:
+
+1. Read all body lines until `"end"` into `cmd[][]`.
+2. **Outer loop** — for each item in the argument list:
+   ```c
+   for (int i = 1; args[i]; i++) {
+       setenv(loop_var, args[i]);
+       // inner loop:
+       for (int j = 0; cmd[j]; j++) {
+           parse_command_context(cmd[j]);
+           exec_any();
+       }
+       restore_or_unset(loop_var);
+   }
+   ```
+3. `$var` substitution inside the body resolves to the current item via
+   `replace_env_vars` on each inner iteration.
+
+---
+
+## 12. repeat Builtin
+
+File: `src/builtins/repeat/repeat.c`
+
+```c
+for (int i = 0; i < N; i++)
+    status = exec_any(main_stock, &ctx);
+return status;
+```
+
+Parses `N` as an integer, validates that it is non-negative, then calls
+`exec_any` with the same context on every iteration.
+
+---
+
+## 13. Error Handling
+
+- Parsing errors: immediate non-zero status returned to the REPL.
+- `execve` failures: `exec_error_case` prints a tcsh-compliant message and exits the child.
+- Signal-induced deaths: `get_seg` maps signal numbers to tcsh-standard exit codes.
+- Stopped children (`WIFSTOPPED`): print `"Suspended"`, return `1` to the REPL (full job control pending).
+
+---
+
+## 14. Runtime Invariants
+
+- A `command_ctx_t` is always cleaned up at the end of a single command.
+- A `pipeline_state_t` is always freed on both success and error paths.
+- No external command depends on temporary global fields in `main_t`.
+- The terminal (`tcsetpgrp`) is always restored to the shell after a child exits or stops.
+- The history file is flushed on each new entry.

@@ -1,16 +1,10 @@
 name: CI
 
 on:
-  workflow_dispatch:
   push:
     branches-ignore:
       - "no-ga/**"
   pull_request:
-    types:
-      - opened
-      - synchronize
-      - reopened
-      - ready_for_review
     branches-ignore:
       - "no-ga/**"
 
@@ -51,7 +45,7 @@ jobs:
     environment: production
     runs-on: ubuntu-latest
     container:
-      image: epitechcontent/epitest-docker
+      image: lukassgx/epi-docker:tek1-minimal
 
     steps:
       - uses: actions/checkout@v6
@@ -151,7 +145,7 @@ jobs:
     environment: production
     runs-on: ubuntu-latest
     container:
-      image: epitechcontent/epitest-docker
+      image: lukassgx/epi-docker:tek1-minimal
     needs:
       - check_mirror
       - check_compilation_and_coding_style
@@ -191,7 +185,6 @@ jobs:
           gh pr create \
             --title "merge: ${{ github.ref_name }} -> main" \
             --body "$COMMITS_LIST" \
-            --reviewer "lukas-sgx,copilot" \
             --base main \
             --head dev || echo "PR already exists or could not be created"
         env:

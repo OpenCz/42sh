@@ -1,8 +1,11 @@
 /*
 ** EPITECH PROJECT, 2026
-** redirection
+** 42sh
 ** File description:
-** apply redirection
+** I/O redirection engine (child-side, before execve):
+** open_redirection_fd opens file with correct flags; heredoc
+** path collects stdin until delimiter; bind_redirection_fd dup2s.
+** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 
 #include "c_zsh.h"

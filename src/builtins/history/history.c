@@ -1,8 +1,11 @@
 /*
 ** EPITECH PROJECT, 2026
-** minishell
+** 42sh
 ** File description:
-** shell
+** history builtin: iterates the history_cmd_t doubly-linked list
+** from oldest to newest and prints each entry as:
+**   ID  HH:MM  command
+** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 
 #include "c_zsh.h"

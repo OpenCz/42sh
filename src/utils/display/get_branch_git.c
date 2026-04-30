@@ -2,7 +2,10 @@
 ** EPITECH PROJECT, 2026
 ** 42sh
 ** File description:
-** The get_branch_git.c
+** Git branch detector: opens .git/HEAD with openator(), extracts
+** the name after 'ref: refs/heads/', strips the newline.
+** Returns NULL when not inside a git repository.
+** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 
 #include "c_zsh.h"

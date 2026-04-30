@@ -1,13 +1,16 @@
 /*
 ** EPITECH PROJECT, 2026
-** minishell
+** 42sh
 ** File description:
-** utils api
+** Public API for utilities: string helpers (strlen, strdup,
+** strcmp, strconcat, strstr, word arrays), I/O helpers
+** (putstr, putnbr, openator), display and validation helpers.
+** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 
 #ifndef UTILS_H
     #define UTILS_H
-
+    #include "../config/czshrc.h"
 typedef struct word_state_s {
     int in_word;
     int count;
@@ -23,6 +26,8 @@ char *my_strconcat(char *str1, char *str2);
 const char *my_strstr(const char *str, const char *to_f);
 char **my_str_to_word_array(char *str, char *separator);
 char **my_str_to_word_array_quote(char *str, char *separator);
+char ***my_str_to_array_of_word_array(char const *str, char const *sep_ext,
+    char const *sep_int);
 int my_wordarray_len(char **word_array);
 int my_char_isnum(char *str);
 int my_str_is_alphanum(char *key);
@@ -30,8 +35,13 @@ int get_file_size_stat(char const *filepath);
 char *openator(char const *filepath);
 char *get_folder(void);
 char *get_branch_git(void);
-void display_prompt(char *user);
+int my_char_is_alpha(char key);
+void display_prompt(prompt_t *prompt, char *user);
 int my_putnbr(int nb);
-void display_time(void);
+void display_time(infos_t *time_info, infos_t *date, date_format_t date_format,
+    int len_prompt);
+int len_nb(int nb);
+void display_zero(int nb);
+char *my_itoa(int num);
 
 #endif

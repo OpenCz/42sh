@@ -1,8 +1,11 @@
 /*
-** EPITECH PROJECT, 2025
-** bootstrap
+** EPITECH PROJECT, 2026
+** 42sh
 ** File description:
-** get_file_size
+** File size query: get_file_size_stat calls stat() on a filepath
+** and returns st_size in bytes on success, or -1 on error.
+** Used by openator() to pre-allocate an exact-size read buffer.
+** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 
 #include <sys/stat.h>

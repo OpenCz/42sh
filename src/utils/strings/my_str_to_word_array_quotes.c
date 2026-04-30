@@ -1,8 +1,11 @@
 /*
 ** EPITECH PROJECT, 2026
-** 42_sh
+** 42sh
 ** File description:
-** my_str_to_word_array_quote
+** Quote-aware word splitter: word_state_t tracks in_word and
+** in_quote; separator chars inside quotes are ignored; each
+** quoted section is kept as one token in the output array.
+** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 
 #include "c_zsh.h"

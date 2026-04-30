@@ -1,8 +1,11 @@
 /*
 ** EPITECH PROJECT, 2026
-** check_bin
+** 42sh
 ** File description:
-** bin
+** Binary path resolver: loop_bin iterates main_stock->path[]
+** calling check_bin on each directory; check_bin builds the full
+** path and calls is_executable_file to validate the binary.
+** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 #include "c_zsh.h"
 #include <stdlib.h>

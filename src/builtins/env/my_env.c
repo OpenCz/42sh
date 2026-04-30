@@ -1,8 +1,11 @@
 /*
 ** EPITECH PROJECT, 2026
-** my_env
+** 42sh
 ** File description:
-** my_env
+** env builtin (my_env + builtin_env wrapper).
+** Iterates the stock_env linked list and prints each node
+** as KEY=VALUE (or KEY= when value is NULL) to stdout.
+** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 
 #include "c_zsh.h"
