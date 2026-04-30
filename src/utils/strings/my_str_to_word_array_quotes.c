@@ -124,8 +124,10 @@ char **my_str_to_word_array_quote(char *str, char *separator)
     int in_quotes = 0;
     int i = 0;
 
-    if (!word_array || !str)
+    if (!word_array || !str) {
+        free_alloc(word_array);
         return NULL;
+    }
     while (i < words) {
         while (!in_quotes && is_separator(str[decalage], separator))
             decalage++;
