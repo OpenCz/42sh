@@ -54,54 +54,6 @@ static int get_size_date(struct tm *tm, date_format_t date_format)
     return 0;
 }
 
-static void long_date_format(struct tm *tm)
-{
-    char *days[7] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday",
-        "Friday", "Saturday"};
-    char *month[12] = {"January", "February", "March", "April", "May",
-        "June", "July", "August", "September", "October", "November",
-        "December"};
-
-    write(1, days[tm->tm_wday], my_strlen(days[tm->tm_wday]));
-    write(1, " ", 1);
-    write(1, month[tm->tm_mon], my_strlen(month[tm->tm_mon]));
-    write(1, " ", 1);
-    display_zero(tm->tm_mday);
-    write(1, " ", 1);
-    my_putnbr(tm->tm_year + 1900);
-    my_putstr(" ");
-}
-
-static void european_date_format(struct tm *tm)
-{
-    display_zero(tm->tm_mday);
-    write(1, "/", 1);
-    display_zero(tm->tm_mon + 1);
-    write(1, "/", 1);
-    my_putnbr(tm->tm_year + 1900);
-    my_putstr(" ");
-}
-
-static void us_date_format(struct tm *tm)
-{
-    display_zero(tm->tm_mon + 1);
-    write(1, "/", 1);
-    display_zero(tm->tm_mday);
-    write(1, "/", 1);
-    my_putnbr(tm->tm_year + 1900);
-    my_putstr(" ");
-}
-
-static void iso_date_format(struct tm *tm)
-{
-    my_putnbr(tm->tm_year + 1900);
-    write(1, "-", 1);
-    display_zero(tm->tm_mon + 1);
-    write(1, "-", 1);
-    display_zero(tm->tm_mday);
-    my_putstr(" ");
-}
-
 static int check_null_win(int has_win, struct winsize *w, int col)
 {
     if (has_win) {
@@ -130,6 +82,18 @@ static void choose_date(struct tm *tm, date_format_t date_format)
     }
 }
 
+static void display_date(infos_t *date, struct tm *tm,
+    date_format_t date_format)
+{
+    if (date->toggle) {
+        print_bg_color(date->b_color);
+        print_fg_color(date->color);
+        my_putstr(" 𝄜 ");
+        choose_date(tm, date_format);
+        my_putstr(" \033[0m");
+    }
+}
+
 void display_time(infos_t *time_info, infos_t *date, date_format_t date_format,
     int len_prompt)
 {
@@ -149,11 +113,5 @@ void display_time(infos_t *time_info, infos_t *date, date_format_t date_format,
     limit = w.ws_col - len_prompt - size_date - 5;
     for (i = 0; i < limit; i++)
         my_putstr(" ");
-    if (date->toggle) {
-        print_bg_color(date->b_color);
-        print_fg_color(date->color);
-        my_putstr(" 𝄜 ");
-        choose_date(tm, date_format);
-        my_putstr(" \033[0m");
-    }
+    display_date(date, tm, date_format);
 }

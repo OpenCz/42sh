@@ -11,6 +11,7 @@
 #ifndef UTILS_H
     #define UTILS_H
     #include "../config/czshrc.h"
+    #include <time.h>
 typedef struct word_state_s {
     int in_word;
     int count;
@@ -45,5 +46,9 @@ void display_zero(int nb);
 char *my_itoa(int num);
 void print_fg_color(int color);
 void print_bg_color(int b_color);
+void long_date_format(struct tm *tm);
+void european_date_format(struct tm *tm);
+void us_date_format(struct tm *tm);
+void iso_date_format(struct tm *tm);
 
 #endif

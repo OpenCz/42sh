@@ -100,7 +100,8 @@ SRC_UTILS = \
 	src/utils/validation/my_str_is_alphanum.c \
 	src/utils/validation/my_char_is_alpha.c \
 	src/utils/io/my_len_nb.c \
-	src/utils/io/display_zero.c
+	src/utils/io/display_zero.c \
+	src/utils/display/format_date.c \
 
 SRC_MEMORY = \
 	src/memory/free/free_function.c
