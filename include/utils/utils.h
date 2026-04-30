@@ -44,5 +44,6 @@ int len_nb(int nb);
 void display_zero(int nb);
 char *my_itoa(int num);
 char *my_word_array_to_str(char **array);
+int pre_cmd(main_t *stock_main);
 
 #endif
