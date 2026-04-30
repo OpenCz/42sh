@@ -43,5 +43,6 @@ void display_time(infos_t *time_info, infos_t *date, date_format_t date_format,
 int len_nb(int nb);
 void display_zero(int nb);
 char *my_itoa(int num);
+char *my_word_array_to_str(char **array);
 
 #endif
