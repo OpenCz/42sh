@@ -1,8 +1,11 @@
 /*
 ** EPITECH PROJECT, 2026
-** execute
+** 42sh
 ** File description:
-** pipeline wait
+** Pipeline completion: normalize_status converts raw waitpid
+** status to a tcsh exit code; wait_pipeline loops over pids[];
+** finalize_pipeline calls wait_pipeline then close_and_free.
+** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 
 #include "c_zsh.h"

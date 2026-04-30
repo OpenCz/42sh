@@ -1,8 +1,11 @@
 /*
 ** EPITECH PROJECT, 2026
-** my_str_to_alphanum
+** 42sh
 ** File description:
-** num
+** Full key name check: my_str_is_alphanum returns 1 if every
+** character is a letter, digit, or underscore, used by setenv
+** to validate the complete variable key name.
+** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 
 #include "c_zsh.h"

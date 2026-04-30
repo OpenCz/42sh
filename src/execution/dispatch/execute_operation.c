@@ -1,8 +1,11 @@
 /*
 ** EPITECH PROJECT, 2026
-** execute
+** 42sh
 ** File description:
-** execute
+** Logical operator chain evaluator: get_operator_array extracts
+** && and || tokens; execute_operator_loop short-circuits: next
+** command only runs when && (status 0) or || (status != 0).
+** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 
 #include "c_zsh.h"

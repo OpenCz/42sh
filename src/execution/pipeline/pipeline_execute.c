@@ -1,8 +1,11 @@
 /*
 ** EPITECH PROJECT, 2026
-** execute
+** 42sh
 ** File description:
-** pipeline
+** Pipeline orchestrator: validates syntax, then calls
+** parse_pipeline, init_pipeline_state, run_pipeline_segments
+** (spawn loop) and finalize_pipeline (wait + free).
+** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 
 #include "c_zsh.h"

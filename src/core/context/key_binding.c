@@ -1,8 +1,11 @@
 /*
 ** EPITECH PROJECT, 2026
-** ~/epitech/delivery/42sh/src/core/context
+** 42sh
 ** File description:
-** key_binding
+** Control-key handlers: Ctrl+D (EOF/submit), Ctrl+L (clear screen
+** and redraw), Ctrl+C (clear buffer + prompt), Ctrl+A/E (line
+** start/end), Backspace; handle_input_char dispatches per char.
+** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 
 #include "c_zsh.h"

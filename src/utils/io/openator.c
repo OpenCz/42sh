@@ -1,8 +1,11 @@
 /*
-** EPITECH PROJECT, 2025
-** bootstrap_setting_up
+** EPITECH PROJECT, 2026
+** 42sh
 ** File description:
-** openator
+** File reader: openator opens a file, allocates an exact buffer
+** with get_file_size_stat, reads the full content in one call.
+** check_open/check_read/check_buffer handle all error cases.
+** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 
 #include <fcntl.h>

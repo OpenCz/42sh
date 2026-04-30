@@ -1,8 +1,11 @@
 /*
 ** EPITECH PROJECT, 2026
-** minishell
+** 42sh
 ** File description:
-** core types
+** All shell data structures: env_t, main_t, command_ctx_t,
+** pipeline_segment_t, pipeline_state_t, history_t, history_cmd_t,
+** loop_state_t, czshrc_t, prompt_t, infos_t, buffer_t.
+** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 
 #ifndef CORE_TYPES_H
@@ -15,6 +18,13 @@
 
     #define CONTINUE -5
     #define TAB_WIDTH 4
+
+typedef struct alias_stock_s {
+    char *new_name;
+    char *command;
+    bool is_fixed;
+    struct alias_stock_s *next;
+} alias_stock_t;
 
 typedef struct history_cmd_s {
     int id;
@@ -58,7 +68,9 @@ typedef struct main_s {
     char **argv;
     char **arg_command;
     char *redirection;
+    char *last_exit;
     history_t *history;
+    alias_stock_t *alias_stock;
     struct env_s *stock_env;
     czshrc_t *czshrc;
     job_controler_t *controler;

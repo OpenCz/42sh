@@ -2,7 +2,10 @@
 ** EPITECH PROJECT, 2026
 ** 42sh
 ** File description:
-** set_default_rc
+** Default RC initializer: set_default_prompt enables folder,
+** branch, user and time flags with built-in ANSI color codes;
+** set_default_rc allocates prompt_t and calls set_default_prompt.
+** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 
 #include "../../include/c_zsh.h"
@@ -28,6 +31,7 @@ static void set_default_prompt(czshrc_t *rc)
     rc->prompt->user.color = DEFAULT;
     rc->prompt->user.b_color = DEFAULT;
     rc->prompt->date_format = LONG;
+    rc->prompt->len_prompt = 0;
 }
 
 void set_default_rc(czshrc_t *rc)

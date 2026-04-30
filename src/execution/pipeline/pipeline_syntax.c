@@ -1,8 +1,11 @@
 /*
 ** EPITECH PROJECT, 2026
-** execute
+** 42sh
 ** File description:
-** pipe syntax
+** Pipe syntax validation: has_pipe_syntax_error scans each '|'
+** and checks has_left_command / has_right_command; returns an
+** error code with a tcsh message on empty left or right segment.
+** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 
 #include "c_zsh.h"

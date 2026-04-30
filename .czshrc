@@ -26,10 +26,13 @@
 
 # --- Couleurs disponibles ---
 # Standards  : BLACK, RED, GREEN, YELLOW, BLUE, MAGENTA, CYAN, WHITE, GRAY
-# Pastel     : PINK, ROSE, PEACH, ORANGE, MINT, SKY, LAVENDER, PURPLE, SOFT_GRAY, LIGHT_GRAY
+# Vifs       : BRIGHT_RED, BRIGHT_GREEN, BRIGHT_YELLOW, BRIGHT_BLUE,
+#              BRIGHT_MAGENTA, BRIGHT_CYAN, BRIGHT_WHITE
+# Pastel     : PINK, ROSE, PEACH, ORANGE, PALE_YELLOW, MINT, SPRING_GREEN,
+#              SKY, LIGHT_BLUE, LAVENDER, PURPLE, SOFT_GRAY, LIGHT_GRAY
 
 # Affiche le nom de l'utilisateur (ex: sacha)
-user        = true  : CYAN        : NONE
+user        = true  : NONE        : LAVENDER
 
 # Affiche le dossier courant (ex: ~/projects/42sh)
 folder      = true  : BLUE        : NONE

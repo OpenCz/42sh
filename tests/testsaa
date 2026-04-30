@@ -1,0 +1,316 @@
+[901]
+NAME="Nothing"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin'"
+CLEAN=""
+TESTS=
+  echo ''
+[901-END]
+
+[902]
+NAME="Exec two command"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin'"
+CLEAN=""
+TESTS=
+  echo 'ls /etc'
+  echo 'cat /etc/resolv.conf'
+[902-END]
+
+[903]
+NAME="Testing with /usr/bin PATH"
+SETUP="export TERM=xterm ; PATH='/usr/bin'"
+CLEAN=""
+TESTS=
+  echo 'pwd'
+[903-END]
+
+[904]
+NAME="Testing with /bin PATH"
+SETUP="export TERM=xterm ; PATH='/bin'"
+CLEAN=""
+TESTS=
+  echo 'pwd'
+[904-END]
+
+[905]
+NAME="run commands"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin'"
+CLEAN=""
+TESTS=
+  echo 'cat /etc/resolv.conf'
+  sleep 0.5
+  echo 'ls -l /etc'
+  sleep 0.5
+  echo 'pwd'
+[905-END]
+
+[906]
+NAME="setenv and unsetenv"
+SETUP="/usr/bin/env > .lstenv ; while read varenv ; do unset $varenv ; done < <(/bin/cat .lstenv | /usr/bin/cut -f1 -d=) ; export PATH=/bin:/usr/bin ; export _=ls ; export LS_COLORS=RID ; export MYBG=4 ; export LVL=4 ; export NOTE=2"
+CLEAN="while read varenv ; do export "$varenv" 2>/dev/null ; done  < <(/bin/cat .lstenv) ; /bin/rm -f .lstenv"
+TESTS=
+  echo 'setenv TATA'
+  echo 'setenv CACA OUIII'
+  echo 'setenv LS OUII=13'
+[906-END]
+
+[907]
+NAME="builtin cd"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin'"
+CLEAN=""
+TESTS=
+  echo 'cd ..'
+  echo 'ls -l'
+  echo 'cd /usr'
+  echo 'ls -l'
+[907-END]
+
+[908]
+NAME="many tab and space"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin'"
+CLEAN=""
+TESTS=
+  echo -e "\t\t    ls\t     \t-l    \t\t  \t -a /usr   \t\t"
+[908-END]
+
+[909]
+NAME="Launch DivZero program with core dump"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin'"
+CLEAN=""
+TESTS=
+  echo "./my_divzero"
+[909-END]
+
+[910]
+NAME="Launch SegFault program without core dump"
+SETUP="ulimit -c 0 ; export TERM=xterm ; PATH='/bin:/usr/bin'"
+CLEAN=""
+TESTS=
+  echo "./my_segfault"
+[910-END]
+
+[911]
+NAME="Testing simple pipe"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin'"
+CLEAN=""
+TESTS=
+  echo "cd .. | ls -l /etc | grep sh"
+[911-END]
+
+[912]
+NAME="A pipe with a builtin ?"
+SETUP="export VAR1=VALEUR1 ; OLDPATH=$PATH ; PATH='/random'"
+CLEAN="PATH=$OLDPATH"
+TESTS=
+  echo 'setenv | /bin/grep VAR1'
+  echo '/bin/ls | cd /usr'
+  echo 'ls -l'
+  echo 'exit 45 | cat /etc/resolv.conf'
+[912-END]
+
+[914]
+NAME="Testing invalid command"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin'"
+CLEAN=""
+TESTS=
+  echo 'invalid_command_that_does_not_exist'
+[914-END]
+
+[915]
+NAME="Testing exit status"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin'"
+CLEAN=""
+TESTS=
+  echo 'exit'
+[915-END]
+
+[916]
+NAME="Testing background execution"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin'"
+CLEAN=""
+TESTS=
+  echo 'sleep 1 &'
+  echo 'echo "Job sent to background"'
+[916-END]
+
+[917]
+NAME="Testing chaining commands with semicolon"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin'"
+CLEAN=""
+TESTS=
+  echo 'echo "First command"; echo "Second command"'
+[917-END]
+
+[918]
+NAME="Testing chained pipes"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin'"
+CLEAN=""
+TESTS=
+  echo 'ls /etc | grep sh | wc -l'
+[918-END]
+
+[919]
+NAME="Testing a script execution"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin' ; echo -e '#!/bin/sh\necho "Hello from script"' > test_script.sh ; chmod +x test_script.sh"
+CLEAN="rm -f test_script.sh"
+TESTS=
+  echo './test_script.sh'
+[919-END]
+
+[920]
+NAME="Testing a long pipe chain"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin'"
+CLEAN=""
+TESTS=
+  echo 'ls /etc | grep .conf | sort | uniq | wc -l'
+[920-END]
+
+[921]
+NAME="Testing maximum pipe chaining"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin'"
+CLEAN=""
+TESTS=
+  echo 'echo "Hello" | tr "H" "J" | tr "e" "a" | tr "l" "m" | tr "o" "z" | rev | cat -e | wc -c'
+[921-END]
+
+[922]
+NAME="Testing pipes with background process"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin'"
+CLEAN=""
+TESTS=
+  echo 'sleep 1 | echo "Process started" &'
+[922-END]
+
+[923]
+NAME="Basic output redirection"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin'"
+CLEAN="rm -f output.txt"
+TESTS=
+  echo 'echo "Hello, world!" > output.txt'
+  echo 'cat output.txt'
+[923-END]
+
+[924]
+NAME="Append output with >>"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin'"
+CLEAN="rm -f output.txt"
+TESTS=
+  echo 'echo First line > output.txt'
+  echo 'echo "Second line" >> output.txt'
+  echo 'cat output.txt'
+[924-END]
+
+[925]
+NAME="Basic input redirection"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin' ; echo "Hello from file" > input.txt"
+CLEAN="rm -f input.txt"
+TESTS=
+  echo 'cat < input.txt'
+[925-END]
+
+[926]
+NAME="Input and output redirection"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin' ; echo "Hello from file" > input.txt"
+CLEAN="rm -f input.txt output.txt"
+TESTS=
+  echo 'cat < input.txt > output.txt'
+  echo 'cat output.txt'
+[926-END]
+
+[927]
+NAME="Pipe with output redirection"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin'"
+CLEAN="rm -f output.txt"
+TESTS=
+  echo 'ls /etc | grep sh > output.txt'
+  echo 'cat output.txt'
+[927-END]
+
+[928]
+NAME="Append output with echo"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin'"
+CLEAN="rm -f output.txt"
+TESTS=
+  echo 'echo "First line" >> output.txt'
+  echo 'echo "Second line" >> output.txt'
+  echo 'cat output.txt'
+[928-END]
+
+[929]
+NAME="Appending grep results with pipe"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin'"
+CLEAN="rm -f output.txt"
+TESTS=
+  echo 'ls /etc | grep sh >> output.txt'
+  echo 'ls /bin | grep ls >> output.txt'
+  echo 'cat output.txt'
+[929-END]
+
+[930]
+NAME="Appending input to a file"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin' ; echo "Hello from input file" > input.txt"
+CLEAN="rm -f input.txt output.txt"
+TESTS=
+  echo 'cat < input.txt >> output.txt'
+  echo 'cat output.txt'
+[930-END]
+
+[931]
+NAME="Simple cd with pipes and redirections"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin' ; mkdir -p /tmp/test_dir"
+CLEAN="rm -rf /tmp/test_dir output.txt"
+TESTS=
+  echo 'cd /tmp/test_dir ; pwd > output.txt'
+  echo 'ls /tmp | grep test > output.txt ; cd /tmp'
+  echo 'cat output.txt'
+[931-END]
+
+[932]
+NAME="Testing cd with pipes, redirections and semicolons"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin' ; mkdir -p /tmp/test_dir ; echo 'Initial content' > /tmp/test_dir/file.txt"
+CLEAN="rm -rf /tmp/test_dir output.txt"
+TESTS=
+  echo 'cd /tmp/test_dir ; ls -l | grep file > output.txt'
+  echo 'cat output.txt'
+  echo 'cd .. | echo "Changing dir" ; pwd > output.txt'
+  echo 'cat output.txt'
+  echo 'ls /tmp | grep test | wc -l > output.txt ; cd /tmp/test_dir'
+  echo 'cat output.txt'
+[932-END]
+
+[933]
+NAME="Semicolon with cd and commands"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin' ; mkdir -p /tmp/test_dir"
+CLEAN="rm -rf /tmp/test_dir"
+TESTS=
+  echo 'cd /tmp/test_dir ; ls -l ; pwd'
+  echo 'cd /tmp ; rm -rf test_dir ; pwd'
+  echo 'ls -l ; ls ; ls ; ls ; ls'
+  echo 'cd ; pwd ; cd - ; pwd'
+[933-END]
+
+[934]
+NAME="Semicolon with mixed execution"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin'"
+CLEAN=""
+TESTS=
+  echo 'echo "Starting" ; sleep 0.5 ; echo "Done"'
+  echo 'cd /usr ; ls -l | grep bin ; cd /'
+[934-END]
+
+[935]
+NAME="Simple semicolon sequence"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin'"
+CLEAN=""
+TESTS=
+  echo 'echo "First" ; echo "Second" ; echo "Third"'
+  echo 'cd /usr ; pwd ; cd /'
+[935-END]
+
+[936]
+NAME="Semicolon with cd and delays"
+SETUP="export TERM=xterm ; PATH='/bin:/usr/bin'"
+CLEAN=""
+TESTS=
+  echo 'cd /tmp ; sleep 0.5 ; pwd'
+  echo 'echo "Begin" ; sleep 0.2 ; echo "End" ; ls -l'
+[936-END]

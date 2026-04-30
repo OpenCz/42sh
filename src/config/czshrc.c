@@ -2,7 +2,10 @@
 ** EPITECH PROJECT, 2026
 ** 42sh
 ** File description:
-** czshrc
+** RC file loader: update_rc opens ~/.c_zshrc with openator(),
+** trims each line, dispatches key=value pairs to manage_prompt()
+** and returns a heap-allocated czshrc_t* (or defaults).
+** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 
 #include "../../include/c_zsh.h"
@@ -55,9 +58,10 @@ static void parse_and_fill_struct(czshrc_t *rc, char *rc_content)
         }
     }
     free_parsed_rc(rc_parsed);
+    free_alloc(rc_content);
 }
 
-czshrc_t *update_rc(void)
+czshrc_t *update_rc(char *path)
 {
     czshrc_t *rc = malloc(sizeof(czshrc_t));
     char *rc_content = NULL;
@@ -65,12 +69,17 @@ czshrc_t *update_rc(void)
     if (!rc)
         return NULL;
     set_default_rc(rc);
-    if (access(".czshrc", F_OK) == -1)
-        return rc;
-    rc_content = openator(".czshrc");
+    if (path) {
+        if (access(path, F_OK) == -1)
+            return rc;
+        rc_content = openator(path);
+    } else {
+        if (access(".czshrc", F_OK) == -1)
+            return rc;
+        rc_content = openator(".czshrc");
+    }
     if (!rc_content)
         return rc;
     parse_and_fill_struct(rc, rc_content);
-    free_alloc(rc_content);
     return rc;
 }
