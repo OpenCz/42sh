@@ -56,7 +56,6 @@ static char *manage_substitution(main_t *stock_main, const char *key,
     char *command = NULL;
     char *result = NULL;
 
-
     command = strdup(key);
     if (!command)
         return NULL;
