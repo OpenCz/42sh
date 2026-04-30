@@ -43,5 +43,7 @@ void display_time(infos_t *time_info, infos_t *date, date_format_t date_format,
 int len_nb(int nb);
 void display_zero(int nb);
 char *my_itoa(int num);
+void print_fg_color(int color);
+void print_bg_color(int b_color);
 
 #endif

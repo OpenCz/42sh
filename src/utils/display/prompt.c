@@ -10,7 +10,7 @@
 
 #include "../../../include/c_zsh.h"
 
-static void print_fg_color(int color)
+void print_fg_color(int color)
 {
     if (color == DEFAULT)
         return;
@@ -24,7 +24,7 @@ static void print_fg_color(int color)
     my_putstr("m");
 }
 
-static void print_bg_color(int b_color)
+void print_bg_color(int b_color)
 {
     if (b_color == DEFAULT)
         return;

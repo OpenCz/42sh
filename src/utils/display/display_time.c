@@ -146,8 +146,14 @@ void display_time(infos_t *time_info, infos_t *date, date_format_t date_format,
     has_win = (ioctl(STDOUT_FILENO, TIOCGWINSZ, &w) == 0);
     strftime(time_str, sizeof(time_str), "%H:%M:%S", tm);
     col = check_null_win(has_win, &w, col);
-    limit = w.ws_col - len_prompt - size_date - 1;
+    limit = w.ws_col - len_prompt - size_date - 5;
     for (i = 0; i < limit; i++)
         my_putstr(" ");
-    choose_date(tm, date_format);
+    if (date->toggle) {
+        print_bg_color(date->b_color);
+        print_fg_color(date->color);
+        my_putstr(" 𝄜 ");
+        choose_date(tm, date_format);
+        my_putstr(" \033[0m");
+    }
 }
