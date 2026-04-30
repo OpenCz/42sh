@@ -31,6 +31,8 @@ void wait_stop(int status, main_t *stock_main, int pid, char **command)
     if (WIFSTOPPED(status)) {
         my_putstr("\nSuspended\n");
         append_jobs(command, pid, stock_main);
+    } else {
+        free_array(command);
     }
 }
 

@@ -28,11 +28,9 @@ void free_linked_list(env_t *env)
 
 void free_array(char **array)
 {
-    int i = 0;
-
     if (!array)
         return;
-    for (; array[i] != NULL; i++)
+    for (int i = 0; array[i] != NULL; i++)
         free_alloc(array[i]);
     free_alloc(array);
 }
@@ -50,6 +48,21 @@ static void free_history(history_t *his, history_cmd_t *history)
     free_alloc(his);
 }
 
+static void free_jobs(job_controler_t *controler)
+{
+    job_controler_t *curr = controler;
+    job_controler_t *next = NULL;
+
+    for (; curr; curr = next) {
+        next = curr->next;
+        if (curr->job) {
+            free_array(curr->job->command);
+            free_alloc(curr->job);
+        }
+        free_alloc(curr);
+    }
+}
+
 void free_main(main_t *stock)
 {
     if (!stock)
@@ -60,6 +73,7 @@ void free_main(main_t *stock)
     free_array(stock->argv);
     free_alloc(stock->redirection);
     free_alloc(stock->old_path);
+    free_jobs(stock->controler);
     free_linked_list(stock->stock_env);
     free_history(stock->history, stock->history->history_cmd);
     free_alloc(stock);

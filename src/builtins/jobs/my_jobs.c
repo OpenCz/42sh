@@ -13,7 +13,7 @@ int append_jobs(char **command, int pid, main_t *main_stock)
     job_t *job = malloc(sizeof(job_t));
     job_controler_t *tmp = NULL;
 
-    if (!job || !new_controler)
+    if (!job || !new_controler || !command)
         return 1;
     job->command = command;
     job->pid = pid;
