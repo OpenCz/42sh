@@ -10,6 +10,7 @@
 
     #include <sys/types.h>
     #include <stdbool.h>
+    #include <signal.h>
     #include "../config/czshrc.h"
 
     #define CONTINUE -5
