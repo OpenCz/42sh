@@ -152,7 +152,7 @@ int get_command(char **buffer, history_t *history, char *user)
             return -1;
         if (create_cmd == CONTINUE)
             return CONTINUE;
-        manage_history(history, *buffer);
+        manage_history(history, buffer);
     } else {
         if (getline(buffer, &buffer_size, stdin) == -1)
             return -1;
