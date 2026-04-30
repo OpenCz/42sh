@@ -13,8 +13,8 @@ static void pwd(char *pwd_folder, infos_t *folder)
         my_putstr("\033[102m  ");
         my_putstr(pwd_folder);
         my_putstr(" \033[0m");
-        free(pwd_folder);
     }
+    free_alloc(pwd_folder);
 }
 
 static void username(char *user, infos_t *user_info)
@@ -32,8 +32,8 @@ static void git(char *git_branch, infos_t *git_info)
         my_putstr("\033[104m  ");
         my_putstr(git_branch);
         my_putstr(" \033[0m");
-        free(git_branch);
     }
+    free_alloc(git_branch);
 }
 
 void display_prompt(prompt_t *prompt, char *user)
