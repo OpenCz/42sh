@@ -27,12 +27,12 @@ int check_read(char *buffer, int bytes_read)
 {
     if (bytes_read < 0) {
         write(2, "READ FAILURE\n", 13);
-        free(buffer);
+        free_alloc(buffer);
         return FAILURE;
     }
     if (bytes_read == 0) {
         write(2, "FILE IS EMPTY\n", 14);
-        free(buffer);
+        free_alloc(buffer);
         return FAILURE;
     }
     return SUCCESS;

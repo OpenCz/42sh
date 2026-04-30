@@ -38,7 +38,10 @@ char *get_branch_git(void);
 int my_char_is_alpha(char key);
 void display_prompt(prompt_t *prompt, char *user);
 int my_putnbr(int nb);
-void display_time(void);
+void display_time(infos_t *time_info, infos_t *date, date_format_t date_format,
+    int len_prompt);
+int len_nb(int nb);
+void display_zero(int nb);
 char *my_itoa(int num);
 
 #endif

@@ -21,5 +21,6 @@ char *append_buffer(command_ctx_t *ctx, int *i)
         buffer = strcat(buffer, ctx->argv[*i + 1]);
         *i += 1;
     }
+    *i += 2;
     return buffer;
 }
