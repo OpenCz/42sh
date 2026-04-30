@@ -50,9 +50,9 @@ static void free_var_local(env_t **local_var)
     while (*local_var) {
         tmp = *local_var;
         *local_var = (*local_var)->next;
-        free(tmp->key);
-        free(tmp->value);
-        free(tmp);
+        free_alloc(tmp->key);
+        free_alloc(tmp->value);
+        free_alloc(tmp);
     }
 }
 

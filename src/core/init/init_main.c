@@ -12,14 +12,9 @@
 
 static history_t *init_history(main_t *main)
 {
-    FILE *file = NULL;
-
     main->history = calloc(1, sizeof(history_t));
     if (!main->history)
         free(main);
-    file = fopen(".c_zsh_history", "w+");
-    if (file)
-        fclose(file);
     main->history->curr = malloc(BUFFER_SIZE + 1);
     if (!main->history->curr)
         return NULL;
