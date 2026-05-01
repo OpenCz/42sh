@@ -77,7 +77,7 @@ static char *verif_value(main_t *main, char **str)
 static int is_else_condition(command_ctx_t *ctx)
 {
     for (int i = 0; ctx->argv[i]; i++) {
-        if (strcmp("else", ctx->argv[i]))
+        if (strcmp("else", ctx->argv[i]) == 0)
             return 1;
     }
     return 0;
@@ -99,8 +99,9 @@ static char *create_condition(main_t *main, command_ctx_t *ctx,
         buffer = strcat(buffer, verif_value(main, &ctx->argv[i]));
     }
     *to_exec = append_buffer(ctx, &i);
-    if (is_else)
+    if (is_else) {
         *else_cmd = append_buffer(ctx, &i);
+    }
     return buffer;
 }
 

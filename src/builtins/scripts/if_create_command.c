@@ -14,12 +14,11 @@ char *append_buffer(command_ctx_t *ctx, int *i)
     if (!buffer)
         return NULL;
     buffer = strcpy(buffer, ctx->argv[*i]);
-    while (ctx->argv[*i + 1] && strcmp(ctx->argv[*i + 1], "else") &&
+    for (; ctx->argv[*i + 1] && strcmp(ctx->argv[*i + 1], "else") &&
         (!is_command(ctx->argv[*i]) &&
-            !is_command(ctx->argv[*i + 1]))) {
+            !is_command(ctx->argv[*i + 1])); *i += 1) {
         buffer = strcat(buffer, " ");
         buffer = strcat(buffer, ctx->argv[*i + 1]);
-        *i += 1;
     }
     *i += 2;
     return buffer;
