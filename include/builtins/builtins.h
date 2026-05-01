@@ -12,6 +12,7 @@
     #define BUILTINS_H
 
     #include "core/types.h"
+    #include <sys/resource.h>
 
 typedef int (*builtin_handler_t)(main_t *main_stock, command_ctx_t *ctx);
 
@@ -64,5 +65,7 @@ int builtin_set(main_t *main_stock, command_ctx_t *ctx);
 int builtin_unset(main_t *stock, command_ctx_t *ctx);
 int builtin_limit(main_t *main_stock, command_ctx_t *ctx);
 int builtin_unlimit(main_t *main_stock, command_ctx_t *ctx);
+void verif_time(char *name, struct rlimit *rl);
+limit_t *get_good_limit(char *name);
 
 #endif

@@ -9,22 +9,6 @@
 #include <sys/time.h>
 #include <sys/resource.h>
 
-static void verif_time(char *name, struct rlimit *rl)
-{
-    if (my_strcmp(name, "cputime") == 0) {
-        my_putnbr(rl->rlim_cur / 3600);
-        my_putstr(":");
-        if ((rl->rlim_cur / 60) % 60 < 10)
-            my_putstr("0");
-        my_putnbr((rl->rlim_cur / 60) % 60);
-        my_putstr(":");
-        if (rl->rlim_cur % 60 < 10)
-            my_putstr("0");
-        my_putnbr(rl->rlim_cur % 60);
-    } else
-        my_putnbr(rl->rlim_cur);
-}
-
 static int display_infos(int lim[], char *lim_name[], struct rlimit *rl, int i)
 {
     int size = 0;
@@ -64,43 +48,6 @@ static int display_limit(struct rlimit *rl)
         if (display_infos(lim, lim_name, rl, i) == FAILURE)
             return FAILURE;
     return SUCCESS;
-}
-
-static int verif_name(char *name, char *lim_name, int lim, limit_t *limit)
-{
-    if (my_strncmp(name, lim_name, 2) == 0) {
-        if (limit->good_name) {
-            my_putstr("limit: Ambiguous.\n");
-            return FAILURE;
-        }
-        limit->good_name = lim_name;
-        limit->good_lim = lim;
-    }
-    return SUCCESS;
-}
-
-static limit_t *get_good_limit(char *name)
-{
-    int lim[16] = {RLIMIT_CPU, RLIMIT_FSIZE, RLIMIT_DATA, RLIMIT_STACK,
-        RLIMIT_CORE, RLIMIT_RSS, RLIMIT_AS, RLIMIT_NOFILE, RLIMIT_MEMLOCK,
-        RLIMIT_NPROC, RLIMIT_LOCKS, RLIMIT_SIGPENDING, RLIMIT_MSGQUEUE,
-        RLIMIT_NICE, RLIMIT_RTPRIO, RLIMIT_RTTIME};
-    char *lim_name[17] = {"cputime", "filesize", "datasize", "stacksize",
-        "coredumpsize", "memoryuse", "vmemoryuse", "descriptors",
-        "memorylocked", "maxproc", "maxlocks", "maxsignal",
-        "maxmessage", "maxnice", "maxrtprio", "maxrttime", NULL};
-    limit_t *limit = malloc(sizeof(limit_t));
-
-    limit->good_name = NULL;
-    for (int i = 0; lim_name[i] != NULL; i++) {
-        if (verif_name(name, lim_name[i], lim[i], limit) == FAILURE)
-            return NULL;
-    }
-    if (!limit->good_name) {
-        my_putstr("limit: No such limit.\n");
-        return NULL;
-    }
-    return limit;
 }
 
 static int check_limit_name(char *name, struct rlimit *rl, limit_t *limit)

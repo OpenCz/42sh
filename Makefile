@@ -49,7 +49,9 @@ SRC_BUILTINS = \
 	src/builtins/var_local/set.c \
 	src/builtins/var_local/unset.c \
 	src/builtins/limit/limit.c \
-	src/builtins/limit/unlimit.c
+	src/builtins/limit/unlimit.c \
+	src/builtins/limit/verif_time.c \
+	src/builtins/limit/get_good_limit.c
 
 SRC_EXEC = \
 	src/execution/dispatch/execute_builtin.c \
