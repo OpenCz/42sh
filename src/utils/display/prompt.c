@@ -65,6 +65,7 @@ static int username(char *user, infos_t *user_info)
         my_putstr(user);
         len = my_strlen(user) + 4;
         my_putstr(" \033[0m");
+        free(user);
     }
     return len;
 }
