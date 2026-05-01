@@ -30,6 +30,8 @@ const builtin_command_t command_shell[] = {
     {"source", source},
     {"set", builtin_set},
     {"unset", builtin_unset},
+    {"limit", builtin_limit},
+    {"unlimit", builtin_unlimit},
     {NULL, NULL}
 };
 
