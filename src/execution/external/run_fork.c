@@ -57,6 +57,8 @@ static int handle_parent(pid_t pid, struct termios *term,
     waitpid(pid, &status, WUNTRACED);
     tcsetpgrp(STDIN_FILENO, getpgrp());
     tcsetattr(STDIN_FILENO, TCSADRAIN, term);
+    if (WIFEXITED(status))
+        return WEXITSTATUS(status);
     return get_seg(status, stock_main, pid, command);
 }
 
