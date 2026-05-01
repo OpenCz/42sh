@@ -7,26 +7,36 @@
 
 #include "../../../include/c_zsh.h"
 
+static void substitute_backticks(main_t *main, char **parsed, int len)
+{
+    char *content = NULL;
+    char *result = NULL;
+    int i = 1;
+
+    for (; i < len; i = i + 2) {
+        content = parsed[i];
+        result = command_substitution(main, content);
+        free_alloc(content);
+        parsed[i] = result ? result : my_strdup("");
+    }
+}
+
 char *manage_backticks(char *cmd, main_t *stock_main)
 {
-    char **parsed_backticks = my_str_to_word_array(cmd, "`");
-    char *result = NULL;
+    char **parsed = NULL;
     int len = 0;
+    char *result = NULL;
 
-    if (!parsed_backticks)
+    parsed = my_str_to_word_array(cmd, "`");
+    if (!parsed)
         return NULL;
-    len = my_wordarray_len(parsed_backticks);
-    if (len == 1) {
-        free_array(parsed_backticks);
+    len = my_wordarray_len(parsed);
+    if (len <= 1) {
+        free_array(parsed);
         return my_strdup(cmd);
     }
-    for (int i = 1; i < len; i = i + 2) {
-        parsed_backticks[i] = command_substitution(stock_main,
-            parsed_backticks[i]);
-        if (!parsed_backticks[i])
-            parsed_backticks[i] = my_strdup("");
-    }
-    result = my_word_array_to_str(parsed_backticks);
-    free_array(parsed_backticks);
+    substitute_backticks(stock_main, parsed, len);
+    result = my_word_array_to_str(parsed);
+    free_array(parsed);
     return result;
 }
