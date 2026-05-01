@@ -9,6 +9,25 @@
 #include <sys/time.h>
 #include <sys/resource.h>
 
+static int is_kbytes_limit(int lim)
+{
+    return lim == RLIMIT_STACK || lim == RLIMIT_MEMLOCK
+        || lim == RLIMIT_FSIZE || lim == RLIMIT_DATA
+        || lim == RLIMIT_AS || lim == RLIMIT_CORE
+        || lim == RLIMIT_RSS;
+}
+
+static void display_value(int resource, char *name, struct rlimit *rl)
+{
+    if (is_kbytes_limit(resource)) {
+        my_putnbr(rl->rlim_cur / 1024);
+        my_putstr(" kbytes\n");
+    } else {
+        verif_time(name, rl);
+        my_putstr(" \n");
+    }
+}
+
 static int display_infos(int lim[], char *lim_name[], struct rlimit *rl, int i)
 {
     int size = 0;
@@ -23,13 +42,7 @@ static int display_infos(int lim[], char *lim_name[], struct rlimit *rl, int i)
         my_putstr("unlimited\n");
         return SUCCESS;
     }
-    if (lim[i] == RLIMIT_STACK || lim[i] == RLIMIT_MEMLOCK) {
-        my_putnbr(rl->rlim_cur / 1024);
-        my_putstr(" kbytes\n");
-    } else {
-        verif_time(lim_name[i], rl);
-        my_putstr(" \n");
-    }
+    display_value(lim[i], lim_name[i], rl);
     return SUCCESS;
 }
 
@@ -61,13 +74,7 @@ static int check_limit_name(char *name, struct rlimit *rl, limit_t *limit)
         my_putstr("unlimited\n");
         return SUCCESS;
     }
-    if (limit->good_lim == RLIMIT_STACK || limit->good_lim == RLIMIT_MEMLOCK) {
-        my_putnbr(rl->rlim_cur / 1024);
-        my_putstr(" kbytes\n");
-    } else {
-        verif_time(limit->good_name, rl);
-        my_putstr(" \n");
-    }
+    display_value(limit->good_lim, limit->good_name, rl);
     return SUCCESS;
 }
 
@@ -99,8 +106,9 @@ static int change_limit(char *name, char *new_lim, struct rlimit *rl,
         return 1;
     }
     nbr = strtoull(new_lim, NULL, 10);
-    rl->rlim_cur = nbr;
-    if (setrlimit(limit->good_lim, rl) == -1)
+    rl->rlim_cur = is_kbytes_limit(limit->good_lim) ? nbr * 1024 : nbr;
+    if ((rl->rlim_max != RLIM_INFINITY && rl->rlim_cur > rl->rlim_max)
+        || setrlimit(limit->good_lim, rl) == -1)
         return 1;
     return SUCCESS;
 }
@@ -113,6 +121,10 @@ static int return_value(int value, limit_t *limit)
 
 static int handle_limit(command_ctx_t *ctx, struct rlimit *rl, limit_t *limit)
 {
+    if (my_wordarray_len(ctx->arg_command) > 2) {
+        my_putstr("limit: Bad scaling factor.\n");
+        return 1;
+    }
     if (my_wordarray_len(ctx->arg_command) == 1) {
         if (check_limit_name(ctx->arg_command[0], rl, limit) == 1) {
             return 1;
