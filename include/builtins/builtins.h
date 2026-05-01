@@ -49,6 +49,7 @@ int put_error_var(char *var);
 char *is_command(char *str);
 char *append_buffer(command_ctx_t *ctx, int *i);
 int builtin_printenv(main_t *main_stock, command_ctx_t *ctx);
+int is_valid_formating(char **arr);
 int source(main_t *stock_main, command_ctx_t *ctx);
 
 int my_env(main_t *main_stock);

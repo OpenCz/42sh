@@ -108,6 +108,8 @@ static int check_if_format(command_ctx_t *ctx)
 {
     int len = my_wordarray_len(ctx->argv);
 
+    if (is_valid_formating(ctx->argv) == -1)
+        return -1;
     if (len == 1) {
         printf("if: Too few arguments.\n");
         return -1;
