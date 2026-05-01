@@ -99,16 +99,26 @@ static char *create_condition(main_t *main, command_ctx_t *ctx,
         buffer = strcat(buffer, verif_value(main, &ctx->argv[i]));
     }
     *to_exec = append_buffer(ctx, &i);
-    if (is_else) {
+    if (is_else)
         *else_cmd = append_buffer(ctx, &i);
-    }
     return buffer;
 }
 
 static int check_if_format(command_ctx_t *ctx)
 {
-    if (my_wordarray_len(ctx->argv) < 2)
+    int len = my_wordarray_len(ctx->argv);
+
+    if (len == 1) {
+        printf("if: Too few arguments.\n");
         return -1;
+    }
+    if (len == 2) {
+        if (!is_command(ctx->argv[1]) || is_operator(ctx->argv[1]))
+            printf("if: Expression Syntax.\n");
+        else
+            printf("Empty if.\n");
+        return -1;
+    }
     return 0;
 }
 
