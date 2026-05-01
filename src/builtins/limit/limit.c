@@ -24,7 +24,7 @@ static void display_value(int resource, char *name, struct rlimit *rl)
         my_putstr(" kbytes\n");
     } else {
         verif_time(name, rl);
-        my_putstr(" \n");
+        my_putstr("\n");
     }
 }
 
@@ -100,10 +100,6 @@ static int change_limit(char *name, char *new_lim, struct rlimit *rl,
         if (handle_infinity(rl, limit) == 1)
             return 1;
         return SUCCESS;
-    }
-    if (my_str_is_alpha(new_lim) == 1) {
-        my_putstr("limit: Bad scaling factor.\n");
-        return 1;
     }
     nbr = strtoull(new_lim, NULL, 10);
     rl->rlim_cur = is_kbytes_limit(limit->good_lim) ? nbr * 1024 : nbr;
