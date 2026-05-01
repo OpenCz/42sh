@@ -122,4 +122,17 @@ typedef struct history_rc_s {
     bool enabled;
 } history_rc_t;
 
+typedef struct word_state_s {
+    int in_word;
+    int count;
+    int in_quotes;
+    int in_backticks;
+} word_state_t;
+
+typedef struct word_iter_s {
+    int pos;
+    int iq;
+    int ib;
+} word_iter_t;
+
 #endif
