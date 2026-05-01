@@ -10,21 +10,30 @@
 
 #include "c_zsh.h"
 
+static char *free_value(char *value)
+{
+    if (value)
+        free(value);
+    return NULL;
+}
+
 char *get_branch_git(void)
 {
-    char *new_str = NULL;
-    char *str = NULL;
+    FILE *fp = NULL;
+    char *line = NULL;
+    size_t len = 0;
+    ssize_t read = 0;
 
-    if (access(".git/HEAD", F_OK) == -1)
-        return str;
-    str = openator(".git/HEAD");
-    if (my_strncmp(str, "ref: refs/heads/", 16) == 0)
-        new_str = my_strdup(str + 16);
-    if (!new_str) {
-        free(str);
+    fp = popen("git rev-parse --abbrev-ref HEAD 2>/dev/null", "r");
+    if (!fp)
         return NULL;
-    }
-    free(str);
-    new_str[my_strlen(new_str) - 1] = '\0';
-    return new_str;
+    read = getline(&line, &len, fp);
+    pclose(fp);
+    if (read <= 0)
+        return free_value(line);
+    if (line[read - 1] == '\n')
+        line[read - 1] = '\0';
+    if (strcmp(line, "HEAD") == 0)
+        return free_value(line);
+    return line;
 }
