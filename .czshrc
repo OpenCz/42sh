@@ -32,24 +32,24 @@
 #              SKY, LIGHT_BLUE, LAVENDER, PURPLE, SOFT_GRAY, LIGHT_GRAY
 
 # Affiche le nom de l'utilisateur (ex: sacha)
-user        = true  : NONE        : LAVENDER
+user        = true  : BLACK        : WHITE
 
 # Affiche le dossier courant (ex: ~/projects/42sh)
-folder      = true  : BLUE        : NONE
+folder      = true  : BLACK        : BLUE
 
 # Affiche la branche git si dans un repo (ex: main)
-git_branch  = true  : BLUE    : NONE
+git_branch  = true  : BLACK        : RED
 
 # Affiche la date — formats disponibles : LONG / EU / US / ISO
 #   LONG = Mardi 11 Septembre 2001
 #   EU   = 11/09/2001
 #   US   = 09/11/2001
 #   ISO  = 2001-09-11
-date        = true  : SOFT_GRAY   : NONE
-date_format = ISO
+date        = true  : BLACK   : WHITE
+date_format = LONG
 
-# Affiche l'heure (ex: 14:32)
-time        = true  : SOFT_GRAY   : NONE
+# Affiche l'heure (ex: 14:32:07)
+time        = true  : BLACK   : GREEN
 
 # ============================================================
 

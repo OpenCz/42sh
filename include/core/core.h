@@ -15,7 +15,7 @@
     #define BUFFER_SIZE 4096
     #define ARROW_START '\x1b'
 
-int manage_history(history_t *history, char *cmd);
+int manage_history(history_t *history, char **cmd);
 int arrow_handling(history_t *history, char **buffer, int *cursor, int *len);
 int get_command(main_t *stock_main, char **buffer, history_t *history,
     char *user);

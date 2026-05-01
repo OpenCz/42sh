@@ -54,10 +54,29 @@ static char *manage_substitution(main_t *stock_main, const char *key,
     int key_len)
 {
     char *command = NULL;
+    char *result = NULL;
 
     command = strdup(key);
+    if (!command)
+        return NULL;
     command[key_len] = '\0';
-    return command_substitution(stock_main, command);
+    result = command_substitution(stock_main, command);
+    free_alloc(command);
+    return result;
+}
+
+static char *is_env(const char *key, size_t key_len, main_t *stock_main,
+    int offset)
+{
+    for (env_t *e = stock_main->stock_local_var; e; e = e->next)
+        if (strlen(e->key) == key_len &&
+            strncmp(e->key, key + offset, key_len) == 0)
+            return e->value;
+    for (env_t *e = stock_main->stock_env; e; e = e->next)
+        if (strlen(e->key) == key_len &&
+            strncmp(e->key, key + offset, key_len) == 0)
+            return e->value;
+    return NULL;
 }
 
 static char *find_value(char *key, main_t *stock_main)
@@ -77,11 +96,20 @@ static char *find_value(char *key, main_t *stock_main)
     value = is_hard(key + offset, key_len, stock_main);
     if (value)
         return value;
-    for (env_t *e = stock_main->stock_env; e; e = e->next)
-        if (strlen(e->key) == key_len &&
-            strncmp(e->key, key + offset, key_len) == 0)
-            return e->value;
+    value = is_env(key, key_len, stock_main, offset);
+    if (value)
+        return value;
     return NULL;
+}
+
+static int undefined_var(char *env_var, char **args, int i)
+{
+    if (!env_var) {
+        my_putstr(args[i] + 1);
+        free_alloc(args[i]);
+        args[i] = my_strdup(": Undefined variable.");
+    }
+    return 0;
 }
 
 static int replace_single_arg(char **args, int i, main_t *stock_main)
@@ -89,21 +117,21 @@ static int replace_single_arg(char **args, int i, main_t *stock_main)
     char *env_var = NULL;
     char *suffix = NULL;
     char *new_val = NULL;
+    int is_subst = 0;
 
     if (args[i][0] != '$')
         return 0;
+    if (args[i][1] == '(' || (args[i][1] == '{' && args[i][2] == '('))
+        is_subst = 1;
     env_var = find_value(args[i], stock_main);
-    if (!env_var) {
-        my_putstr(args[i] + 1);
-        free_alloc(args[i]);
-        args[i] = my_strdup(": Undefined variable.");
-        return 0;
-    }
+    undefined_var(env_var, args, i);
     suffix = args[i] + 1 + get_var_name_len(args[i] + 1)
         + (args[i][1] == '{' || args[i][1] == '(' ? 1 : 0);
     new_val = my_strconcat(env_var, suffix);
     free_alloc(args[i]);
     args[i] = new_val;
+    if (is_subst)
+        free_alloc(env_var);
     return 0;
 }
 

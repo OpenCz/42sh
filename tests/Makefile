@@ -43,7 +43,8 @@ SRC_PARSING = \
 	$(wildcard ../src/parsing/redirection/*.c) \
 	$(wildcard ../src/parsing/env_var_management/*.c) \
 	$(wildcard ../src/parsing/quotes_management/*.c) \
-	$(wildcard ../src/parsing/command_substitution/*.c)
+	$(wildcard ../src/parsing/command_substitution/*.c) \
+	$(wildcard ../src/parsing/manage_backticks/*.c) \
 
 SRC_UTILS = \
 	$(wildcard ../src/utils/io/*.c) \

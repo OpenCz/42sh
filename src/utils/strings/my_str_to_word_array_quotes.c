@@ -11,38 +11,30 @@
 #include "c_zsh.h"
 #include <stdlib.h>
 
-static int separator_has_space(char *separator)
-{
-    for (int i = 0; separator[i] != '\0'; i++) {
-        if (separator[i] == ' ')
-            return 1;
-    }
-    return 0;
-}
-
 static int is_separator(char c, char *separator)
 {
-    if (separator_has_space(separator) && isspace((unsigned char)c))
-        return 1;
     for (int i = 0; separator[i] != '\0'; i++) {
         if (separator[i] == c)
             return 1;
+        if (isspace((unsigned char)separator[i]) &&
+            isspace((unsigned char)c))
+            return 1;
     }
     return 0;
 }
 
-static int my_strlen_word_quote(char *str, char *separator)
+static int my_strlen_word_quote(char *str, char *sep)
 {
     int count = 0;
     int in_quotes = 0;
+    int in_backticks = 0;
 
-    for (int i = 0; str[i] != '\0'; i++) {
-        if (str[i] == '"') {
+    for (int i = 0; str[i]; i++) {
+        if (str[i] == '"')
             in_quotes = !in_quotes;
-            count++;
-            continue;
-        }
-        if (!in_quotes && is_separator(str[i], separator))
+        if (str[i] == '`')
+            in_backticks = !in_backticks;
+        if (!in_quotes && !in_backticks && is_separator(str[i], sep))
             return count;
         count++;
     }
@@ -51,11 +43,16 @@ static int my_strlen_word_quote(char *str, char *separator)
 
 static void update_word_state(char c, char *sep, word_state_t *state)
 {
-    if (c == '"') {
-        state->in_quotes = !(state->in_quotes);
+    int is_quote = (c == '"' || c == '`');
+
+    if (is_quote) {
+        if (c == '"')
+            state->in_quotes = !(state->in_quotes);
+        else
+            state->in_backticks = !(state->in_backticks);
         return;
     }
-    if (!state->in_quotes && is_separator(c, sep)) {
+    if (!state->in_quotes && !state->in_backticks && is_separator(c, sep)) {
         state->in_word = 0;
         return;
     }
@@ -67,7 +64,7 @@ static void update_word_state(char c, char *sep, word_state_t *state)
 
 static int count_word_quote(char *str, char *separator)
 {
-    word_state_t state = {0, 0, 0};
+    word_state_t state = {0, 0, 0, 0};
 
     if (!str)
         return 0;
@@ -76,62 +73,73 @@ static int count_word_quote(char *str, char *separator)
     return state.count;
 }
 
-static void fill_word(char *to_dup, char *separator, char *word, int len)
+static void fill_word(char *src, char *sep, char *dst, int len)
 {
-    int in_quotes = 0;
+    int quotes = 0;
+    int ticks = 0;
     int j = 0;
+    int i = 0;
 
-    for (int i = 0; j < len; i++) {
-        if (to_dup[i] == '"') {
-            in_quotes = !in_quotes;
-            word[j] = to_dup[i];
-            j++;
-            continue;
-        }
-        if (!in_quotes && is_separator(to_dup[i], separator))
+    while (j < len && src[i]) {
+        if (src[i] == '"')
+            quotes = !quotes;
+        if (src[i] == '`')
+            ticks = !ticks;
+        if (!quotes && !ticks && is_separator(src[i], sep))
             break;
-        word[j] = to_dup[i];
-        j++;
+        dst[j] = src[i];
+        j = j + 1;
+        i = i + 1;
     }
-    word[j] = '\0';
+    dst[j] = '\0';
 }
 
-static char *my_strdup_word_quote(char *to_dup, char *separator)
+static char *my_strdup_word_quote(char *src, char *sep)
 {
-    int len = my_strlen_word_quote(to_dup, separator);
+    int len = my_strlen_word_quote(src, sep);
     char *word = malloc(sizeof(char) * (len + 1));
 
     if (!word)
         return NULL;
-    fill_word(to_dup, separator, word, len);
+    fill_word(src, sep, word, len);
     return word;
 }
 
-static void advance_decalage(char *str, char *sep, int *decalage, int *iq)
+static void advance_word_iter(char *str, char *sep, word_iter_t *iter)
 {
-    while (str[*decalage] && (*iq || !is_separator(str[*decalage], sep))) {
-        if (str[*decalage] == '"')
-            *iq = !(*iq);
-        (*decalage)++;
+    for (; str[iter->pos]; iter->pos++) {
+        if (str[iter->pos] == '"')
+            iter->iq = !iter->iq;
+        if (str[iter->pos] == '`')
+            iter->ib = !iter->ib;
+        if (iter->iq || iter->ib) {
+            iter->pos++;
+            continue;
+        }
+        if (is_separator(str[iter->pos], sep))
+            break;
     }
+}
+
+static void skip_separators(char *str, char *sep, word_iter_t *iter)
+{
+    for (; !iter->iq && !iter->ib && str[iter->pos] &&
+        is_separator(str[iter->pos], sep); iter->pos++);
 }
 
 char **my_str_to_word_array_quote(char *str, char *separator)
 {
     int words = count_word_quote(str, separator);
     char **word_array = malloc(sizeof(char *) * (words + 1));
-    int decalage = 0;
-    int in_quotes = 0;
+    word_iter_t iter = {0, 0, 0};
     int i = 0;
 
-    if (!word_array || !str)
+    if (!str || !word_array)
         return NULL;
-    while (i < words) {
-        while (!in_quotes && is_separator(str[decalage], separator))
-            decalage++;
-        word_array[i] = my_strdup_word_quote(str + decalage, separator);
-        advance_decalage(str, separator, &decalage, &in_quotes);
-        i++;
+    for (; i < words; i++) {
+        skip_separators(str, separator, &iter);
+        word_array[i] = my_strdup_word_quote(str + iter.pos, separator);
+        advance_word_iter(str, separator, &iter);
     }
     word_array[i] = NULL;
     return word_array;

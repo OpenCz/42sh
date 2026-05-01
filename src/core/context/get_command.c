@@ -88,7 +88,7 @@ static int get_tty_command(main_t *stock_main, char **buffer,
     }
     if (create_cmd == CONTINUE)
         return CONTINUE;
-    manage_history(history, *buffer);
+    manage_history(history, buffer);
     return 0;
 }
 

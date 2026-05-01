@@ -14,6 +14,7 @@
 char *get_redirection(const char *command);
 char *convert_quotes(char *cmd);
 char *command_substitution(main_t *stock_main, char *command);
+char *manage_backticks(char *cmd, main_t *stock_main);
 
 
 #endif
