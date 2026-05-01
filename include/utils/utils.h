@@ -12,11 +12,7 @@
     #define UTILS_H
     #include "../config/czshrc.h"
     #include <time.h>
-typedef struct word_state_s {
-    int in_word;
-    int count;
-    int in_quotes;
-} word_state_t;
+
 int my_strlen(char *str);
 void my_putstr(char *str);
 void my_putstrerror(char *str);
@@ -50,5 +46,6 @@ void long_date_format(struct tm *tm);
 void european_date_format(struct tm *tm);
 void us_date_format(struct tm *tm);
 void iso_date_format(struct tm *tm);
+char *my_word_array_to_str(char **array);
 
 #endif
