@@ -50,6 +50,9 @@ char *is_command(char *str);
 char *append_buffer(command_ctx_t *ctx, int *i);
 int builtin_printenv(main_t *main_stock, command_ctx_t *ctx);
 int is_valid_formating(char **arr);
+char *create_condition(main_t *main, command_ctx_t *ctx,
+    char **else_cmd, char **to_exec);
+int redirect_command(main_t *main, char *str);
 int source(main_t *stock_main, command_ctx_t *ctx);
 
 int my_env(main_t *main_stock);
