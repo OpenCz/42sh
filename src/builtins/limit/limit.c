@@ -133,10 +133,6 @@ int builtin_limit(main_t *main_stock, command_ctx_t *ctx)
 
     if (!ctx->arg_command[0])
         return display_limit(&rl);
-    if (my_strlen(ctx->arg_command[0]) == 1) {
-        my_putstr("limit: No such limit.\n");
-        return FAILURE;
-    }
     limit = get_good_limit(ctx->arg_command[0]);
     if (!limit || limit->good_name == NULL)
         return 1;

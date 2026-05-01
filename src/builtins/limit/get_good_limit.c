@@ -9,7 +9,7 @@
 
 static int verif_name(char *name, char *lim_name, int lim, limit_t *limit)
 {
-    if (my_strncmp(name, lim_name, 2) == 0) {
+    if (my_strncmp(name, lim_name, 1) == 0) {
         if (limit->good_name) {
             my_putstr("limit: Ambiguous.\n");
             return FAILURE;
