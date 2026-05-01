@@ -19,23 +19,21 @@ static char *free_value(char *value)
 
 char *get_branch_git(void)
 {
-    FILE *fp;
+    FILE *fp = NULL;
     char *line = NULL;
     size_t len = 0;
-    ssize_t read;
+    ssize_t read = 0;
 
     fp = popen("git rev-parse --abbrev-ref HEAD 2>/dev/null", "r");
     if (!fp)
         return NULL;
     read = getline(&line, &len, fp);
     pclose(fp);
-    if (read <= 0) {
+    if (read <= 0)
         return free_value(line);
-    }
     if (line[read - 1] == '\n')
         line[read - 1] = '\0';
-    if (strcmp(line, "HEAD") == 0) {
+    if (strcmp(line, "HEAD") == 0)
         return free_value(line);
-    }
     return line;
 }
