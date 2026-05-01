@@ -49,8 +49,8 @@ static int pwd(char *pwd_folder, infos_t *folder)
         my_putstr(pwd_folder);
         my_putstr(" \033[0m");
         len = my_strlen(pwd_folder) + 4;
-        free(pwd_folder);
     }
+    free_alloc(pwd_folder);
     return len;
 }
 
@@ -63,8 +63,8 @@ static int username(char *user, infos_t *user_info)
         print_fg_color(user_info->color);
         my_putstr("  ");
         my_putstr(user);
-        len = my_strlen(user) + 4;
         my_putstr(" \033[0m");
+        len = my_strlen(user) + 4;
     }
     return len;
 }
@@ -80,8 +80,8 @@ static int git(char *git_branch, infos_t *git_info)
         my_putstr(git_branch);
         my_putstr(" \033[0m");
         len = my_strlen(git_branch) + 4;
-        free(git_branch);
     }
+    free_alloc(git_branch);
     return len;
 }
 
