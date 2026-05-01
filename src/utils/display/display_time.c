@@ -90,7 +90,43 @@ static void display_date(infos_t *date, struct tm *tm,
         print_fg_color(date->color);
         my_putstr(" 𝄜 ");
         choose_date(tm, date_format);
+        my_putstr("\033[0m");
+    }
+}
+
+static void displauy_time(infos_t *time_info, struct tm *tm, infos_t *date)
+{
+    if (time_info->toggle) {
+        print_bg_color(time_info->b_color);
+        print_fg_color(time_info->color);
+        my_putstr(" 🕜");
+        if (tm->tm_hour < 10)
+            my_putstr("0");
+        my_putnbr(tm->tm_hour);
+        my_putstr(":");
+        if (tm->tm_min < 10)
+            my_putstr("0");
+        my_putnbr(tm->tm_min);
+        my_putstr(":");
+        if (tm->tm_sec < 10)
+            my_putstr("0");
+        my_putnbr(tm->tm_sec);
         my_putstr(" \033[0m");
+    }
+}
+
+static void calculate_limit(infos_t *time_info, infos_t *date, int *limit,
+    int size_date)
+{
+    if (date->toggle) {
+        if (!time_info->toggle)
+            *limit += 2;
+        *limit = *limit - 5 - size_date;
+    }
+    if (time_info->toggle) {
+        if (!date->toggle)
+            *limit -= 1;
+        *limit -= 10;
     }
 }
 
@@ -110,8 +146,10 @@ void display_time(infos_t *time_info, infos_t *date, date_format_t date_format,
     has_win = (ioctl(STDOUT_FILENO, TIOCGWINSZ, &w) == 0);
     strftime(time_str, sizeof(time_str), "%H:%M:%S", tm);
     col = check_null_win(has_win, &w, col);
-    limit = w.ws_col - len_prompt - size_date - 5;
+    limit = w.ws_col - len_prompt - 1;
+    calculate_limit(time_info, date, &limit, size_date);
     for (i = 0; i < limit; i++)
         my_putstr(" ");
+    displauy_time(time_info, tm, date);
     display_date(date, tm, date_format);
 }

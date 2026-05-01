@@ -45,11 +45,11 @@ git_branch  = true  : BLACK        : RED
 #   EU   = 11/09/2001
 #   US   = 09/11/2001
 #   ISO  = 2001-09-11
-date        = true  : SOFT_GRAY   : NONE
-date_format = ISO
+date        = true  : BLACK   : WHITE
+date_format = LONG
 
-# Affiche l'heure (ex: 14:32)
-time        = true  : SOFT_GRAY   : NONE
+# Affiche l'heure (ex: 14:32:07)
+time        = true  : BLACK   : GREEN
 
 # ============================================================
 
