@@ -34,37 +34,6 @@ static size_t get_var_name_len(const char *name)
     return 1;
 }
 
-static char *is_hard(const char *key, size_t key_len, main_t *stock_main)
-{
-    char *hard_keys[] = {"0", "36", "117 354 889 550", "69", "8", "12", "?",
-        "$", NULL};
-    char *hard_values[] = {"c_zsh", "Sasha Le Moins-Avalos", "Celenzo Peuch",
-        "Lukas Soigneux", "Jessym Gaddacha", "Erwan Lo Presti",
-        stock_main->last_exit, my_itoa(getpid()), NULL};
-
-    for (int i = 0; hard_keys[i]; i++) {
-        if (strlen(hard_keys[i]) == key_len &&
-            strncmp(hard_keys[i], key, key_len) == 0)
-            return hard_values[i];
-    }
-    return NULL;
-}
-
-static char *manage_substitution(main_t *stock_main, const char *key,
-    int key_len)
-{
-    char *command = NULL;
-    char *result = NULL;
-
-    command = strdup(key);
-    if (!command)
-        return NULL;
-    command[key_len] = '\0';
-    result = command_substitution(stock_main, command);
-    free_alloc(command);
-    return result;
-}
-
 static char *is_env(const char *key, size_t key_len, main_t *stock_main,
     int offset)
 {
@@ -77,6 +46,19 @@ static char *is_env(const char *key, size_t key_len, main_t *stock_main,
             strncmp(e->key, key + offset, key_len) == 0)
             return e->value;
     return NULL;
+}
+
+static char *manage_substitution(main_t *stock_main, const char *key,
+    int key_len)
+{
+    char *command = strndup(key, key_len);
+    char *result = NULL;
+
+    if (!command)
+        return NULL;
+    result = command_substitution(stock_main, command);
+    free(command);
+    return result;
 }
 
 static char *find_value(char *key, main_t *stock_main)
@@ -96,42 +78,70 @@ static char *find_value(char *key, main_t *stock_main)
     value = is_hard(key + offset, key_len, stock_main);
     if (value)
         return value;
-    value = is_env(key, key_len, stock_main, offset);
-    if (value)
-        return value;
-    return NULL;
+    return is_env(key, key_len, stock_main, offset);
 }
 
-static int undefined_var(char *env_var, char **args, int i)
+static void undefined_var(char *env_var, char **args, int i, int doll_pos)
 {
-    if (!env_var) {
-        my_putstr(args[i] + 1);
-        free_alloc(args[i]);
-        args[i] = my_strdup(": Undefined variable.");
-    }
-    return 0;
+    if (env_var)
+        return;
+    my_putstr(args[i] + doll_pos + 1);
+    free(args[i]);
+    args[i] = strdup(": Undefined variable.");
+}
+
+static int find_doll(char *arg)
+{
+    int i = 0;
+
+    for (; arg[i] && arg[i] != '$'; i++);
+    return i;
+}
+
+static char *compute_suffix(char *arg, int doll_pos)
+{
+    char *after_doll = arg + doll_pos + 1;
+    size_t name_len = get_var_name_len(after_doll);
+    int closing = (after_doll[0] == '{' || after_doll[0] == '(') ? 1 : 0;
+
+    return after_doll + name_len + closing;
+}
+
+static char *build_new_val(char *arg, int doll_pos, char *env_var,
+    char *suffix)
+{
+    size_t plen = doll_pos;
+    size_t vlen = env_var ? strlen(env_var) : 0;
+    size_t slen = strlen(suffix);
+    char *new_val = malloc(plen + vlen + slen + 1);
+
+    if (!new_val)
+        return NULL;
+    memcpy(new_val, arg, plen);
+    if (vlen)
+        memcpy(new_val + plen, env_var, vlen);
+    memcpy(new_val + plen + vlen, suffix, slen + 1);
+    return new_val;
 }
 
 static int replace_single_arg(char **args, int i, main_t *stock_main)
 {
     char *env_var = NULL;
     char *suffix = NULL;
-    char *new_val = NULL;
     int is_subst = 0;
+    int doll_pos = find_doll(args[i]);
 
-    if (args[i][0] != '$')
-        return 0;
-    if (args[i][1] == '(' || (args[i][1] == '{' && args[i][2] == '('))
+    if (args[i][doll_pos + 1] == '(' || (args[i][doll_pos + 1] == '{'
+            && args[i][doll_pos + 2] == '('))
         is_subst = 1;
-    env_var = find_value(args[i], stock_main);
-    undefined_var(env_var, args, i);
-    suffix = args[i] + 1 + get_var_name_len(args[i] + 1)
-        + (args[i][1] == '{' || args[i][1] == '(' ? 1 : 0);
-    new_val = my_strconcat(env_var, suffix);
-    free_alloc(args[i]);
-    args[i] = new_val;
+    env_var = find_value(args[i] + doll_pos, stock_main);
+    undefined_var(env_var, args, i, doll_pos);
+    if (!env_var)
+        return 0;
+    suffix = compute_suffix(args[i], doll_pos);
+    args[i] = build_new_val(args[i], doll_pos, env_var, suffix);
     if (is_subst)
-        free_alloc(env_var);
+        free(env_var);
     return 0;
 }
 
@@ -140,6 +150,7 @@ char **replace_env_vars(char **args, main_t *stock_main)
     if (!args)
         return args;
     for (int i = 0; args[i] != NULL; i++)
-        replace_single_arg(args, i, stock_main);
+        while (args[i] && strstr(args[i], "$") != NULL)
+            replace_single_arg(args, i, stock_main);
     return args;
 }
