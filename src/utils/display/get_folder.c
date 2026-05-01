@@ -11,26 +11,34 @@
 #include "c_zsh.h"
 #include <unistd.h>
 
+static char *free_value(char *value, char **array, char *return_value)
+{
+    free(value);
+    free_array(array);
+    return return_value;
+}
+
 char *get_folder(void)
 {
     char *pwd = getcwd(NULL, 0);
     char *folder = NULL;
-    char **array = my_str_to_word_array(pwd, "/");
+    char **array = NULL;
+    int len = 0;
 
-    if (!array || !pwd) {
-        if (pwd)
-            free(pwd);
-        if (array)
-            free_array(array);
+    if (!pwd)
         return NULL;
-    }
-    folder = my_strdup(array[my_wordarray_len(array) - 1]);
-    if (!folder) {
-        free_array(array);
+    array = my_str_to_word_array(pwd, "/");
+    if (!array) {
         free(pwd);
         return NULL;
     }
-    free_array(array);
-    free(pwd);
-    return folder;
+    len = my_wordarray_len(array);
+    if (len == 0) {
+        return free_value(pwd, array, NULL);
+    }
+    folder = my_strdup(array[len - 1]);
+    if (!folder) {
+        return free_value(pwd, array, NULL);
+    }
+    return free_value(pwd, array, folder);
 }
