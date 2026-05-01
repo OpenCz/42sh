@@ -43,65 +43,36 @@ static char *init_cmd(void)
     return cmd;
 }
 
-static int redirect_command(main_t *main, char *str)
+static void handle_child(pid_t pid, main_t *main, int pipefd[2], char *str)
 {
-    int status = 0;
-    int pipefd[2];
-    pid_t pid;
-    char buffer[2];
-
-    if (pipe(pipefd) == -1)
-        return 0;
-    pid = fork();
     if (pid == 0) {
         close(pipefd[0]);
         dup2(pipefd[1], STDOUT_FILENO);
         close(pipefd[1]);
         exit(execute_command(main, str));
     }
-    if (read(pipefd[0], buffer, 2) == -1)
-        return -1;
+}
+
+int redirect_command(main_t *main, char *str)
+{
+    int status = 0;
+    int pipefd[2];
+    pid_t pid;
+    char buffer[BUFFER_SIZE + 1];
+    int size = 0;
+
+    if (pipe(pipefd) == -1)
+        return 0;
+    pid = fork();
+    handle_child(pid, main, pipefd, str);
     close(pipefd[1]);
-    close(pipefd[0]);
     waitpid(pid, &status, 0);
+    size = read(pipefd[0], buffer, BUFFER_SIZE);
+    close(pipefd[0]);
+    if (size <= 0)
+        return -1;
+    buffer[size] = '\0';
     return atoi(buffer);
-}
-
-static char *verif_value(main_t *main, char **str)
-{
-    if (!is_command(*str))
-        sprintf(*str, "%d", redirect_command(main, *str));
-    return *str;
-}
-
-static int is_else_condition(command_ctx_t *ctx)
-{
-    for (int i = 0; ctx->argv[i]; i++) {
-        if (strcmp("else", ctx->argv[i]) == 0)
-            return 1;
-    }
-    return 0;
-}
-
-static char *create_condition(main_t *main, command_ctx_t *ctx,
-    char **else_cmd, char **to_exec)
-{
-    char *buffer = calloc(1, BUFFER_SIZE);
-    int i = 1;
-    int is_else = is_else_condition(ctx);
-
-    if (!buffer)
-        return NULL;
-    for (; ctx->argv[i + 1] &&
-        strcmp(ctx->argv[i + 1], "endif") != 0; i++) {
-        if (!is_command(ctx->argv[i]) && !is_command(ctx->argv[i + 1]))
-            break;
-        buffer = strcat(buffer, verif_value(main, &ctx->argv[i]));
-    }
-    *to_exec = append_buffer(ctx, &i);
-    if (is_else)
-        *else_cmd = append_buffer(ctx, &i);
-    return buffer;
 }
 
 static int check_if_format(command_ctx_t *ctx)
