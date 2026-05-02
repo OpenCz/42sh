@@ -2,9 +2,7 @@
 ** EPITECH PROJECT, 2026
 ** 42sh
 ** File description:
-** Variable substitution in argv: get_var_name_len reads the
-** identifier after '$'; find_value looks it up in stock_env;
-** replace_env_vars iterates all argv tokens and replaces each.
+** Variable substitution in argv
 ** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 
@@ -17,129 +15,137 @@ static size_t get_var_name_len(const char *name)
     if (!name || !name[0])
         return 0;
     if (name[0] == '{') {
-        i = 1;
-        for (; name[i] && name[i] != '}'; i++);
+        for (i = 1; name[i] && name[i] != '}'; i++);
         return i;
     }
     if (name[0] == '(') {
-        i = 1;
-        for (; name[i] && name[i] != ')'; i++);
+        for (i = 1; name[i] && name[i] != ')'; i++);
         return i;
     }
     if (isalnum((unsigned char)name[0]) || name[0] == '_') {
         for (; name[i] &&
             (isalnum((unsigned char)name[i]) || name[i] == '_'); i++);
-        return i;
     }
-    return 1;
+    return i ? i : 1;
 }
 
-static char *is_hard(const char *key, size_t key_len, main_t *stock_main)
+static char *is_env(const char *key, size_t klen, main_t *m, int off)
 {
-    char *hard_keys[] = {"0", "36", "117 354 889 550", "69", "8", "12", "?",
-        "$", NULL};
-    char *hard_values[] = {"c_zsh", "Sasha Le Moins-Avalos", "Celenzo Peuch",
-        "Lukas Soigneux", "Jessym Gaddacha", "Erwan Lo Presti",
-        stock_main->last_exit, my_itoa(getpid()), NULL};
-
-    for (int i = 0; hard_keys[i]; i++) {
-        if (strlen(hard_keys[i]) == key_len &&
-            strncmp(hard_keys[i], key, key_len) == 0)
-            return hard_values[i];
-    }
+    for (env_t *e = m->stock_local_var; e; e = e->next)
+        if (strlen(e->key) == klen &&
+            strncmp(e->key, key + off, klen) == 0)
+            return e->value;
+    for (env_t *e = m->stock_env; e; e = e->next)
+        if (strlen(e->key) == klen &&
+            strncmp(e->key, key + off, klen) == 0)
+            return e->value;
     return NULL;
 }
 
-static char *manage_substitution(main_t *stock_main, const char *key,
-    int key_len)
+static char *manage_substitution(main_t *m, const char *key, int klen)
 {
-    char *command = NULL;
+    char *command = strndup(key, klen);
     char *result = NULL;
 
-    command = strdup(key);
     if (!command)
         return NULL;
-    command[key_len] = '\0';
-    result = command_substitution(stock_main, command);
-    free_alloc(command);
+    result = command_substitution(m, command);
+    free(command);
     return result;
 }
 
-static char *is_env(const char *key, size_t key_len, main_t *stock_main,
-    int offset)
+static char *find_value(char *key, main_t *m)
 {
-    for (env_t *e = stock_main->stock_local_var; e; e = e->next)
-        if (strlen(e->key) == key_len &&
-            strncmp(e->key, key + offset, key_len) == 0)
-            return e->value;
-    for (env_t *e = stock_main->stock_env; e; e = e->next)
-        if (strlen(e->key) == key_len &&
-            strncmp(e->key, key + offset, key_len) == 0)
-            return e->value;
-    return NULL;
-}
+    bool braced = key[1] == '{';
+    int off = braced ? 2 : 1;
+    size_t klen = 0;
+    char *v = NULL;
 
-static char *find_value(char *key, main_t *stock_main)
-{
-    bool is_braced = key[1] == '{';
-    size_t key_len = 0;
-    int offset = is_braced ? 2 : 1;
-    char *value = NULL;
-
-    if (!stock_main || key[0] != '$')
+    if (!m || key[0] != '$')
         return NULL;
-    key_len = get_var_name_len(key + 1) - (is_braced ? 1 : 0);
-    if (key_len == 0)
+    klen = get_var_name_len(key + 1) - (braced ? 1 : 0);
+    if (klen == 0)
         return NULL;
     if (key[1] == '(')
-        return manage_substitution(stock_main, key + 2, key_len - 1);
-    value = is_hard(key + offset, key_len, stock_main);
-    if (value)
-        return value;
-    value = is_env(key, key_len, stock_main, offset);
-    if (value)
-        return value;
-    return NULL;
+        return manage_substitution(m, key + 2, klen - 1);
+    v = is_hard(key + off, klen, m);
+    return v ? v : is_env(key, klen, m, off);
 }
 
-static int undefined_var(char *env_var, char **args, int i)
+static char *build_new_val(char *arg, int dp, char *val, char *suffix)
 {
-    if (!env_var) {
-        my_putstr(args[i] + 1);
-        free_alloc(args[i]);
-        args[i] = my_strdup(": Undefined variable.");
+    size_t plen = dp;
+    size_t vlen = val ? strlen(val) : 0;
+    size_t slen = strlen(suffix);
+    char *new = malloc(plen + vlen + slen + 1);
+
+    if (!new)
+        return NULL;
+    memcpy(new, arg, plen);
+    if (vlen)
+        memcpy(new + plen, val, vlen);
+    memcpy(new + plen + vlen, suffix, slen + 1);
+    return new;
+}
+
+static void drop_current_dollar(char *arg, int dp)
+{
+    size_t tail_len = strlen(arg + dp + 1);
+
+    memmove(arg + dp, arg + dp + 1, tail_len + 1);
+}
+
+static void handle_undefined(char **args, int i, char *p, int dp)
+{
+    char *err = strdup(": Undefined variable.");
+
+    my_putstr(p + 1);
+    if (!err) {
+        drop_current_dollar(args[i], dp);
+        return;
     }
-    return 0;
+    free(args[i]);
+    args[i] = err;
 }
 
-static int replace_single_arg(char **args, int i, main_t *stock_main)
+static void apply_substitution(char **args, int i, int dp, char *val)
 {
-    char *env_var = NULL;
-    char *suffix = NULL;
-    char *new_val = NULL;
-    int is_subst = 0;
+    char *after = args[i] + dp + 1;
+    size_t nlen = get_var_name_len(after);
+    int closing = (after[0] == '{' || after[0] == '(') ? 1 : 0;
+    char *new = build_new_val(args[i], dp, val, after + nlen + closing);
 
-    if (args[i][0] != '$')
-        return 0;
-    if (args[i][1] == '(' || (args[i][1] == '{' && args[i][2] == '('))
-        is_subst = 1;
-    env_var = find_value(args[i], stock_main);
-    undefined_var(env_var, args, i);
-    suffix = args[i] + 1 + get_var_name_len(args[i] + 1)
-        + (args[i][1] == '{' || args[i][1] == '(' ? 1 : 0);
-    new_val = my_strconcat(env_var, suffix);
-    free_alloc(args[i]);
-    args[i] = new_val;
-    if (is_subst)
-        free_alloc(env_var);
-    return 0;
+    if (!new) {
+        drop_current_dollar(args[i], dp);
+        return;
+    }
+    free(args[i]);
+    args[i] = new;
 }
 
-char **replace_env_vars(char **args, main_t *stock_main)
+static void replace_single_arg(char **args, int i, main_t *m)
+{
+    char *p = strchr(args[i], '$');
+    int dp = p - args[i];
+    bool free_val = p[1] == '$' || p[1] == '(' ||
+        (p[1] == '{' && p[2] == '(');
+    char *val = find_value(p, m);
+
+    if (!val) {
+        handle_undefined(args, i, p, dp);
+        return;
+    }
+    apply_substitution(args, i, dp, val);
+    if (free_val)
+        free(val);
+}
+
+char **replace_env_vars(char **args, main_t *m)
 {
     if (!args)
         return args;
-    for (int i = 0; args[i] != NULL; i++)
-        replace_single_arg(args, i, stock_main);
+    for (int i = 0; args[i]; i++)
+        while (args[i] && strchr(args[i], '$'))
+            replace_single_arg(args, i, m);
     return args;
 }
