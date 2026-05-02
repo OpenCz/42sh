@@ -10,8 +10,6 @@
 */
 
 #include "c_zsh.h"
-#include <stdlib.h>
-#include <string.h>
 
 static char get_escape(char c)
 {
