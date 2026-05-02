@@ -37,11 +37,20 @@ static int handle_child(command_ctx_t *ctx, char *path, char **env)
     exit(child_exec(ctx, path, env));
 }
 
+static void check_child_signals(int status)
+{
+    if (WIFSIGNALED(status) && WTERMSIG(status) == SIGXFSZ)
+        my_putstrerror("filesize limit exceeded");
+    if (WIFSIGNALED(status) && WTERMSIG(status) == SIGXCPU)
+        my_putstrerror("cputime limit exceeded");
+}
+
 static void set_group_child(pid_t pid, int *status, struct termios *term)
 {
     setpgid(pid, pid);
     tcsetpgrp(STDIN_FILENO, pid);
     waitpid(pid, status, WUNTRACED);
+    check_child_signals(*status);
     tcsetpgrp(STDIN_FILENO, getpgrp());
     tcsetattr(STDIN_FILENO, TCSADRAIN, term);
 }
