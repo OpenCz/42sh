@@ -8,28 +8,36 @@
 
 #include "../../../include/c_zsh.h"
 
-char *is_hard(const char *key, size_t key_len, main_t *stock_main)
+static char *get_result(char **hard_keys, char **hard_values, const char *key,
+    size_t key_len)
 {
-    char *pid = NULL;
-    char *hard_keys[] = {"0", "?", "$", NULL};
-    char *hard_values[4];
+    char *result = NULL;
 
-    pid = malloc(32);
-    if (!pid)
-        return NULL;
-    snprintf(pid, 32, "%d", getpid());
-    hard_values[0] = "c_zsh";
-    hard_values[1] = stock_main->last_exit;
-    hard_values[2] = pid;
-    hard_values[3] = NULL;
     for (int i = 0; hard_keys[i]; i++) {
         if (strlen(hard_keys[i]) == key_len &&
             strncmp(hard_keys[i], key, key_len) == 0) {
-            if (i != 2)
-                free(pid);
-            return hard_values[i];
-            }
+            result = hard_values[i];
+            break;
+        }
     }
-    free(pid);
-    return NULL;
+    return result;
+}
+
+char *is_hard(const char *key, size_t key_len, main_t *stock_main)
+{
+    char *pid = my_itoa(getpid());
+    char *hard_keys[] = {"0", "36", "117 354 889 550", "69", "8",
+        "12", "?", "$", NULL};
+    char *hard_values[] = {"c_zsh", "Sasha Le Moins-Avalos",
+        "Celenzo Peuch", "Lukas Soigneux", "Jessym Gaddacha",
+        "Erwan Lo Presti", stock_main->last_exit, pid, NULL};
+    char *result = NULL;
+
+    if (!pid || !stock_main)
+        return NULL;
+    hard_values[1] = stock_main->last_exit;
+    result = get_result(hard_keys, hard_values, key, key_len);
+    if (result != pid)
+        free(pid);
+    return result;
 }
