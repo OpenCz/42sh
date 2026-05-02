@@ -22,10 +22,11 @@ static size_t get_var_name_len(const char *name)
         for (i = 1; name[i] && name[i] != ')'; i++);
         return i;
     }
-    if (isalnum((unsigned char)name[0]) || name[0] == '_')
+    if (isalnum((unsigned char)name[0]) || name[0] == '_') {
         for (; name[i] &&
             (isalnum((unsigned char)name[i]) || name[i] == '_'); i++);
-    return i;
+    }
+    return i ? i : 1;
 }
 
 static char *is_env(const char *key, size_t klen, main_t *m, int off)
@@ -71,15 +72,6 @@ static char *find_value(char *key, main_t *m)
     return v ? v : is_env(key, klen, m, off);
 }
 
-static char *compute_suffix(char *arg, int doll_pos)
-{
-    char *after = arg + doll_pos + 1;
-    size_t nlen = get_var_name_len(after);
-    int closing = (after[0] == '{' || after[0] == '(') ? 1 : 0;
-
-    return after + nlen + closing;
-}
-
 static char *build_new_val(char *arg, int dp, char *val, char *suffix)
 {
     size_t plen = dp;
@@ -96,6 +88,44 @@ static char *build_new_val(char *arg, int dp, char *val, char *suffix)
     return new;
 }
 
+static void drop_current_dollar(char *arg, int dp)
+{
+    size_t tail_len = strlen(arg + dp + 1);
+
+    memmove(arg + dp, arg + dp + 1, tail_len + 1);
+}
+
+static void handle_undefined(char **args, int i, char *p, int dp)
+{
+    char *err = strdup(": Undefined variable.");
+
+    my_putstr(p + 1);
+    if (!err) {
+        drop_current_dollar(args[i], dp);
+        return;
+    }
+    free(args[i]);
+    args[i] = err;
+}
+
+static void apply_substitution(char **args, int i, int dp,
+    char *val, bool free_val)
+{
+    char *after = args[i] + dp + 1;
+    size_t nlen = get_var_name_len(after);
+    int closing = (after[0] == '{' || after[0] == '(') ? 1 : 0;
+    char *new = build_new_val(args[i], dp, val, after + nlen + closing);
+
+    if (free_val)
+        free(val);
+    if (!new) {
+        drop_current_dollar(args[i], dp);
+        return;
+    }
+    free(args[i]);
+    args[i] = new;
+}
+
 static void replace_single_arg(char **args, int i, main_t *m)
 {
     char *p = strchr(args[i], '$');
@@ -103,21 +133,12 @@ static void replace_single_arg(char **args, int i, main_t *m)
     bool free_val = p[1] == '$' || p[1] == '(' ||
         (p[1] == '{' && p[2] == '(');
     char *val = find_value(p, m);
-    char *new = NULL;
 
     if (!val) {
-        my_putstr(p + 1);
-        free(args[i]);
-        args[i] = strdup(": Undefined variable.");
+        handle_undefined(args, i, p, dp);
         return;
     }
-    new = build_new_val(args[i], dp, val, compute_suffix(args[i], dp));
-    if (free_val)
-        free(val);
-    if (!new)
-        return;
-    free(args[i]);
-    args[i] = new;
+    apply_substitution(args, i, dp, val, free_val);
 }
 
 char **replace_env_vars(char **args, main_t *m)
