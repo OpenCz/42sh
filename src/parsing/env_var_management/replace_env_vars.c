@@ -2,9 +2,7 @@
 ** EPITECH PROJECT, 2026
 ** 42sh
 ** File description:
-** Variable substitution in argv: get_var_name_len reads the
-** identifier after '$'; find_value looks it up in stock_env;
-** replace_env_vars iterates all argv tokens and replaces each.
+** Variable substitution in argv
 ** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 
@@ -17,140 +15,117 @@ static size_t get_var_name_len(const char *name)
     if (!name || !name[0])
         return 0;
     if (name[0] == '{') {
-        i = 1;
-        for (; name[i] && name[i] != '}'; i++);
+        for (i = 1; name[i] && name[i] != '}'; i++);
         return i;
     }
     if (name[0] == '(') {
-        i = 1;
-        for (; name[i] && name[i] != ')'; i++);
+        for (i = 1; name[i] && name[i] != ')'; i++);
         return i;
     }
-    if (isalnum((unsigned char)name[0]) || name[0] == '_') {
+    if (isalnum((unsigned char)name[0]) || name[0] == '_')
         for (; name[i] &&
             (isalnum((unsigned char)name[i]) || name[i] == '_'); i++);
-        return i;
-    }
-    return 1;
+    return i;
 }
 
-static char *is_env(const char *key, size_t key_len, main_t *stock_main,
-    int offset)
+static char *is_env(const char *key, size_t klen, main_t *m, int off)
 {
-    for (env_t *e = stock_main->stock_local_var; e; e = e->next)
-        if (strlen(e->key) == key_len &&
-            strncmp(e->key, key + offset, key_len) == 0)
+    for (env_t *e = m->stock_local_var; e; e = e->next)
+        if (strlen(e->key) == klen &&
+            strncmp(e->key, key + off, klen) == 0)
             return e->value;
-    for (env_t *e = stock_main->stock_env; e; e = e->next)
-        if (strlen(e->key) == key_len &&
-            strncmp(e->key, key + offset, key_len) == 0)
+    for (env_t *e = m->stock_env; e; e = e->next)
+        if (strlen(e->key) == klen &&
+            strncmp(e->key, key + off, klen) == 0)
             return e->value;
     return NULL;
 }
 
-static char *manage_substitution(main_t *stock_main, const char *key,
-    int key_len)
+static char *manage_substitution(main_t *m, const char *key, int klen)
 {
-    char *command = strndup(key, key_len);
+    char *command = strndup(key, klen);
     char *result = NULL;
 
     if (!command)
         return NULL;
-    result = command_substitution(stock_main, command);
+    result = command_substitution(m, command);
     free(command);
     return result;
 }
 
-static char *find_value(char *key, main_t *stock_main)
+static char *find_value(char *key, main_t *m)
 {
-    bool is_braced = key[1] == '{';
-    size_t key_len = 0;
-    int offset = is_braced ? 2 : 1;
-    char *value = NULL;
+    bool braced = key[1] == '{';
+    int off = braced ? 2 : 1;
+    size_t klen = 0;
+    char *v = NULL;
 
-    if (!stock_main || key[0] != '$')
+    if (!m || key[0] != '$')
         return NULL;
-    key_len = get_var_name_len(key + 1) - (is_braced ? 1 : 0);
-    if (key_len == 0)
+    klen = get_var_name_len(key + 1) - (braced ? 1 : 0);
+    if (klen == 0)
         return NULL;
     if (key[1] == '(')
-        return manage_substitution(stock_main, key + 2, key_len - 1);
-    value = is_hard(key + offset, key_len, stock_main);
-    if (value)
-        return value;
-    return is_env(key, key_len, stock_main, offset);
-}
-
-static void undefined_var(char *env_var, char **args, int i, int doll_pos)
-{
-    if (env_var)
-        return;
-    my_putstr(args[i] + doll_pos + 1);
-    free(args[i]);
-    args[i] = strdup(": Undefined variable.");
-}
-
-static int find_doll(char *arg)
-{
-    int i = 0;
-
-    for (; arg[i] && arg[i] != '$'; i++);
-    return i;
+        return manage_substitution(m, key + 2, klen - 1);
+    v = is_hard(key + off, klen, m);
+    return v ? v : is_env(key, klen, m, off);
 }
 
 static char *compute_suffix(char *arg, int doll_pos)
 {
-    char *after_doll = arg + doll_pos + 1;
-    size_t name_len = get_var_name_len(after_doll);
-    int closing = (after_doll[0] == '{' || after_doll[0] == '(') ? 1 : 0;
+    char *after = arg + doll_pos + 1;
+    size_t nlen = get_var_name_len(after);
+    int closing = (after[0] == '{' || after[0] == '(') ? 1 : 0;
 
-    return after_doll + name_len + closing;
+    return after + nlen + closing;
 }
 
-static char *build_new_val(char *arg, int doll_pos, char *env_var,
-    char *suffix)
+static char *build_new_val(char *arg, int dp, char *val, char *suffix)
 {
-    size_t plen = doll_pos;
-    size_t vlen = env_var ? strlen(env_var) : 0;
+    size_t plen = dp;
+    size_t vlen = val ? strlen(val) : 0;
     size_t slen = strlen(suffix);
-    char *new_val = malloc(plen + vlen + slen + 1);
+    char *new = malloc(plen + vlen + slen + 1);
 
-    if (!new_val)
+    if (!new)
         return NULL;
-    memcpy(new_val, arg, plen);
+    memcpy(new, arg, plen);
     if (vlen)
-        memcpy(new_val + plen, env_var, vlen);
-    memcpy(new_val + plen + vlen, suffix, slen + 1);
-    return new_val;
+        memcpy(new + plen, val, vlen);
+    memcpy(new + plen + vlen, suffix, slen + 1);
+    return new;
 }
 
-static int replace_single_arg(char **args, int i, main_t *stock_main)
+static void replace_single_arg(char **args, int i, main_t *m)
 {
-    char *env_var = NULL;
-    char *suffix = NULL;
-    int is_subst = 0;
-    int doll_pos = find_doll(args[i]);
+    char *p = strchr(args[i], '$');
+    int dp = p - args[i];
+    bool free_val = p[1] == '$' || p[1] == '(' ||
+        (p[1] == '{' && p[2] == '(');
+    char *val = find_value(p, m);
+    char *new = NULL;
 
-    if (args[i][doll_pos + 1] == '(' || (args[i][doll_pos + 1] == '{'
-            && args[i][doll_pos + 2] == '('))
-        is_subst = 1;
-    env_var = find_value(args[i] + doll_pos, stock_main);
-    undefined_var(env_var, args, i, doll_pos);
-    if (!env_var)
-        return 0;
-    suffix = compute_suffix(args[i], doll_pos);
-    args[i] = build_new_val(args[i], doll_pos, env_var, suffix);
-    if (is_subst)
-        free(env_var);
-    return 0;
+    if (!val) {
+        my_putstr(p + 1);
+        free(args[i]);
+        args[i] = strdup(": Undefined variable.");
+        return;
+    }
+    new = build_new_val(args[i], dp, val, compute_suffix(args[i], dp));
+    if (free_val)
+        free(val);
+    if (!new)
+        return;
+    free(args[i]);
+    args[i] = new;
 }
 
-char **replace_env_vars(char **args, main_t *stock_main)
+char **replace_env_vars(char **args, main_t *m)
 {
     if (!args)
         return args;
-    for (int i = 0; args[i] != NULL; i++)
-        while (args[i] && strstr(args[i], "$") != NULL)
-            replace_single_arg(args, i, stock_main);
+    for (int i = 0; args[i]; i++)
+        while (args[i] && strchr(args[i], '$'))
+            replace_single_arg(args, i, m);
     return args;
 }
