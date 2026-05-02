@@ -10,7 +10,7 @@
 
 #ifndef UTILS_H
     #define UTILS_H
-    #include "../config/czshrc.h"
+    #include "../c_zsh.h"
 typedef struct word_state_s {
     int in_word;
     int count;
