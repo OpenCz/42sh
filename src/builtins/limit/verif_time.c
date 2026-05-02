@@ -15,7 +15,8 @@ void verif_time(char *name, struct rlimit *rl)
             my_putnbr(rl->rlim_cur / 3600);
             my_putstr(":");
         }
-        if (rl->rlim_cur / 3600 > 0)
+        if (rl->rlim_cur / 3600 > 0
+            && (rl->rlim_cur / 60) % 60 < 10)
             my_putstr("0");
         my_putnbr((rl->rlim_cur / 60) % 60);
         my_putstr(":");
