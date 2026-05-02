@@ -60,6 +60,12 @@ typedef struct job_controler_s {
     struct job_controler_s *next;
 } job_controler_t;
 
+typedef struct signal_s {
+    volatile sig_atomic_t g_sigxcpu;
+    int sfd;
+} signal_t;
+
+
 typedef struct main_s {
     char *home;
     char *old_path;
@@ -76,6 +82,7 @@ typedef struct main_s {
     struct env_s *stock_local_var;
     czshrc_t *czshrc;
     job_controler_t *controler;
+    signal_t *signal;
 } main_t;
 
 typedef struct command_ctx_s {
@@ -121,5 +128,18 @@ typedef struct history_rc_s {
     int savehist;
     bool enabled;
 } history_rc_t;
+
+typedef struct word_state_s {
+    int in_word;
+    int count;
+    int in_quotes;
+    int in_backticks;
+} word_state_t;
+
+typedef struct word_iter_s {
+    int pos;
+    int iq;
+    int ib;
+} word_iter_t;
 
 #endif

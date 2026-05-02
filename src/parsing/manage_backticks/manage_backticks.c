@@ -12,7 +12,7 @@
 
 static char *append_str(char *result, const char *src, int len)
 {
-    int rlen = result ? (int)strlen(result) : 0;
+    int rlen = result ? strlen(result) : 0;
     char *new_result = malloc(rlen + len + 1);
 
     if (!new_result)
@@ -26,10 +26,10 @@ static char *append_str(char *result, const char *src, int len)
 
 static void update_quote_state(char c, int *in_single, int *in_double)
 {
-    if (c == '\'' && !*in_double)
-        *in_single = !*in_single;
-    if (c == '"' && !*in_single)
-        *in_double = !*in_double;
+    if (c == '\'' && !(*in_double))
+        *in_single = !(*in_single);
+    if (c == '"' && !(*in_single))
+        *in_double = !(*in_double);
 }
 
 static char *do_subst_and_update(char *cmd, int i, int *bts, main_t *sm)
@@ -37,7 +37,7 @@ static char *do_subst_and_update(char *cmd, int i, int *bts, main_t *sm)
     char *inner = strndup(cmd + bts[0], i - bts[0]);
     char *s = inner ? command_substitution(sm, inner) : NULL;
 
-    free(inner);
+    free_alloc(inner);
     if (!s)
         s = my_strdup("");
     bts[1] = i + 1;
@@ -50,7 +50,7 @@ static char *handle_opening_backtick(char *cmd, char *result,
 {
     char *s = append_str(result, cmd + bts[1], i - bts[1]);
 
-    free(result);
+    free_alloc(result);
     if (!s)
         return NULL;
     bts[1] = i;
@@ -65,8 +65,8 @@ static char *do_append_subst(char *result, char *subst)
     if (!subst)
         return NULL;
     new = append_str(result, subst, strlen(subst));
-    free(subst);
-    free(result);
+    free_alloc(subst);
+    free_alloc(result);
     return new;
 }
 
@@ -74,7 +74,7 @@ static char *append_tail(char *cmd, char *result, int bts1)
 {
     char *s = append_str(result, cmd + bts1, strlen(cmd + bts1));
 
-    free(result);
+    free_alloc(result);
     return s;
 }
 

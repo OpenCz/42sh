@@ -37,6 +37,24 @@ static int handle_child(command_ctx_t *ctx, char *path, char **env)
     exit(child_exec(ctx, path, env));
 }
 
+static void check_child_signals(int status)
+{
+    if (WIFSIGNALED(status) && WTERMSIG(status) == SIGXFSZ)
+        my_putstrerror("filesize limit exceeded");
+    if (WIFSIGNALED(status) && WTERMSIG(status) == SIGXCPU)
+        my_putstrerror("cputime limit exceeded");
+}
+
+static void set_group_child(pid_t pid, int *status, struct termios *term)
+{
+    setpgid(pid, pid);
+    tcsetpgrp(STDIN_FILENO, pid);
+    waitpid(pid, status, WUNTRACED);
+    check_child_signals(*status);
+    tcsetpgrp(STDIN_FILENO, getpgrp());
+    tcsetattr(STDIN_FILENO, TCSADRAIN, term);
+}
+
 static int handle_parent(pid_t pid, struct termios *term,
     main_t *stock_main, command_ctx_t *ctx)
 {
@@ -52,11 +70,11 @@ static int handle_parent(pid_t pid, struct termios *term,
         actual++;
     }
     command[actual] = NULL;
-    setpgid(pid, pid);
-    tcsetpgrp(STDIN_FILENO, pid);
-    waitpid(pid, &status, WUNTRACED);
-    tcsetpgrp(STDIN_FILENO, getpgrp());
-    tcsetattr(STDIN_FILENO, TCSADRAIN, term);
+    set_group_child(pid, &status, term);
+    if (WIFEXITED(status)) {
+        free_array(command);
+        return WEXITSTATUS(status);
+    }
     return get_seg(status, stock_main, pid, command);
 }
 

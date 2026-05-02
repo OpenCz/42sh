@@ -11,3 +11,4 @@ Logs
 .c_zsh_history
 test/
 output
+vgcore*

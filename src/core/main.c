@@ -7,7 +7,6 @@
 ** calls get_command then execute_command until 'exit' or EOF.
 ** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
-
 #include "../../include/c_zsh.h"
 
 static char *serialize(char *buffer)
@@ -56,15 +55,23 @@ static void free_var_local(env_t **local_var)
     }
 }
 
+static void set_shell_prompt(loop_state_t *state, main_t *stock)
+{
+    if (!state->prompt_displayed)
+        write_print(stock);
+    state->prompt_displayed = true;
+    state->cmd = get_command(stock, &state->buffer, stock->history,
+        get_user(stock->stock_env));
+}
+
 static void run_shell_loop(main_t *stock, loop_state_t *state)
 {
     stock->last_exit = my_itoa(state->last_exit);
     while (my_strcmp(state->buffer, "exit") != 0) {
-        if (!state->prompt_displayed)
-            write_print(stock);
-        state->prompt_displayed = true;
-        state->cmd = get_command(stock, &state->buffer, stock->history,
-            get_user(stock->stock_env));
+        handle_limit_signals(stock->signal->sfd, stock->signal);
+        set_shell_prompt(state, stock);
+        if (check_limit_signals(stock->signal))
+            break;
         if (state->cmd == CONTINUE) {
             state->prompt_displayed = false;
             continue;
@@ -89,7 +96,9 @@ int main(int argc, char **argv, char **env)
         .prompt_displayed = false
     };
 
-    setup_shell_signals();
+    (void)argc;
+    (void)argv;
+    setup_shell_signals(stock->signal);
     run_shell_loop(stock, &state);
     free_main(stock);
     return state.last_exit;

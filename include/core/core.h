@@ -27,7 +27,7 @@ int parse_command_context(char *command, command_ctx_t *ctx,
 void clear_command_ctx(command_ctx_t *ctx);
 int bind_command_context(main_t *stock_main, command_ctx_t *ctx);
 void init_termios(struct termios *tr, struct termios *old);
-void setup_shell_signals(void);
+void setup_shell_signals(signal_t *signals);
 void write_tty(char *buffer);
 void write_print(main_t *stock);
 int handle_ctrl_l(main_t *stock_main, char *user);
@@ -39,5 +39,7 @@ int append_char(char **buffer, char ch, int *len, int *cursor);
 int get_display_width(char ch);
 void write_tab_spaces(void);
 int get_buffer_display_width(char *buffer, int len);
+int check_limit_signals(signal_t *signals);
+void handle_limit_signals(int sfd, signal_t *signals);
 
 #endif

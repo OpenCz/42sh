@@ -47,7 +47,11 @@ SRC_BUILTINS = \
 	src/builtins/fs/my_alias.c \
 	src/builtins/config/source.c \
 	src/builtins/var_local/set.c \
-	src/builtins/var_local/unset.c
+	src/builtins/var_local/unset.c \
+	src/builtins/limit/limit.c \
+	src/builtins/limit/unlimit.c \
+	src/builtins/limit/verif_time.c \
+	src/builtins/limit/get_good_limit.c
 
 SRC_EXEC = \
 	src/execution/dispatch/execute_builtin.c \
@@ -99,12 +103,15 @@ SRC_UTILS = \
 	src/utils/strings/str_to_array_of_word_array.c \
 	src/utils/strings/my_wordarraylen.c \
 	src/utils/strings/my_itoa.c \
+	src/utils/strings/error.c \
 	src/utils/strings/my_word_array_to_str.c \
 	src/utils/validation/my_ischar_num.c \
 	src/utils/validation/my_str_is_alphanum.c \
 	src/utils/validation/my_char_is_alpha.c \
 	src/utils/io/my_len_nb.c \
-	src/utils/io/display_zero.c
+	src/utils/io/display_zero.c \
+	src/utils/display/format_date.c \
+	src/utils/validation/my_str_is_alpha.c \
 
 SRC_MEMORY = \
 	src/memory/free/free_function.c
