@@ -41,6 +41,17 @@ static job_controler_t *init_job_controler(void)
     return controler;
 }
 
+static signal_t *init_signal(void)
+{
+    signal_t *signal = malloc(sizeof(signal_t));
+
+    if (!signal)
+        return NULL;
+    signal->g_sigxcpu = 0;
+    signal->sfd = 0;
+    return signal;
+}
+
 main_t *init_main(char **env)
 {
     main_t *main_node = malloc(sizeof(main_t));
@@ -60,6 +71,7 @@ main_t *init_main(char **env)
     init_history(main_node);
     main_node->czshrc = init_rc();
     main_node->controler = init_job_controler();
+    main_node->signal = init_signal();
     main_node->stock_local_var = NULL;
     return main_node;
 }
