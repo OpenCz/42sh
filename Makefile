@@ -47,7 +47,11 @@ SRC_BUILTINS = \
 	src/builtins/fs/my_alias.c \
 	src/builtins/config/source.c \
 	src/builtins/var_local/set.c \
-	src/builtins/var_local/unset.c
+	src/builtins/var_local/unset.c \
+	src/builtins/limit/limit.c \
+	src/builtins/limit/unlimit.c \
+	src/builtins/limit/verif_time.c \
+	src/builtins/limit/get_good_limit.c
 
 SRC_EXEC = \
 	src/execution/dispatch/execute_builtin.c \
@@ -104,6 +108,7 @@ SRC_UTILS = \
 	src/utils/io/my_len_nb.c \
 	src/utils/io/display_zero.c \
 	src/utils/display/format_date.c \
+	src/utils/validation/my_str_is_alpha.c \
 
 SRC_MEMORY = \
 	src/memory/free/free_function.c

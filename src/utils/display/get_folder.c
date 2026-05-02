@@ -9,12 +9,17 @@
 */
 
 #include "c_zsh.h"
-#include <unistd.h>
+
+static void *free_items(char *pwd, char **array)
+{
+    free_alloc(pwd);
+    free_array(array);
+    return NULL;
+}
 
 static char *free_value(char *value, char **array, char *return_value)
 {
-    free(value);
-    free_array(array);
+    free_items(value, array);
     return return_value;
 }
 
@@ -29,16 +34,14 @@ char *get_folder(void)
         return NULL;
     array = my_str_to_word_array(pwd, "/");
     if (!array) {
-        free(pwd);
+        free_alloc(pwd);
         return NULL;
     }
     len = my_wordarray_len(array);
-    if (len == 0) {
+    if (len == 0)
         return free_value(pwd, array, NULL);
-    }
     folder = my_strdup(array[len - 1]);
-    if (!folder) {
+    if (!folder)
         return free_value(pwd, array, NULL);
-    }
     return free_value(pwd, array, folder);
 }
