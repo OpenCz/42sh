@@ -11,12 +11,24 @@
 #include "c_zsh.h"
 #include <time.h>
 
+static int filesize_limit_is_zero(void)
+{
+    struct rlimit rl;
+
+    if (getrlimit(RLIMIT_FSIZE, &rl) < 0)
+        return false;
+    return rl.rlim_cur == 0;
+}
+
 static void add_to_history(history_t *his, history_cmd_t *history)
 {
-    FILE *file = fopen(".c_zsh_history", "a+");
+    FILE *file = NULL;
     time_t curr_time = time(NULL);
     struct tm *t = localtime(&curr_time);
 
+    if (filesize_limit_is_zero())
+        return;
+    file = fopen(".c_zsh_history", "a+");
     if (!file)
         return;
     fprintf(file, "%6d\t%.2d:%.2d\t%s\n", his->id, t->tm_hour,

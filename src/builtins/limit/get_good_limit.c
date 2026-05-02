@@ -23,17 +23,15 @@ static int verif_name(char *name, char *lim_name, int lim, limit_t *limit)
 static int check_name(limit_t *limit, char *name, char *lim_name[], int lim[])
 {
     limit->good_name = NULL;
-    for (int i = 0; lim_name[i] != NULL; i++) {
-        if (verif_name(name, lim_name[i], lim[i], limit) == FAILURE) {
+    for (int i = 0; lim_name[i] != NULL; i++)
+        if (verif_name(name, lim_name[i], lim[i], limit) == FAILURE)
             return FAILURE;
-        }
-    }
     return SUCCESS;
 }
 
 static limit_t *return_value(limit_t *limit)
 {
-    free(limit);
+    free_alloc(limit);
     return NULL;
 }
 

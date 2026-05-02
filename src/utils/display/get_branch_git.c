@@ -10,10 +10,9 @@
 
 #include "c_zsh.h"
 
-static char *free_value(char *value)
+static void *free_value(char *value)
 {
-    if (value)
-        free(value);
+    free_alloc(value);
     return NULL;
 }
 

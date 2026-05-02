@@ -94,7 +94,7 @@ static char *get_id(void)
     if (!name)
         return NULL;
     os_release = my_str_to_word_array(name, "\n");
-    free(name);
+    free_alloc(name);
     if (!os_release)
         return NULL;
     for (int i = 0; os_release[i]; i++) {
