@@ -15,13 +15,10 @@ static char get_escape(char c)
 {
     char escapes[] = {'n', 't', 'r', 'a', 'b', 'f', 'v', '\\', '"', '\0'};
     char values[] = {'\n', '\t', '\r', '\a', '\b', '\f', '\v', '\\', '"', '\0'};
-    int i = 0;
 
-    while (escapes[i]) {
+    for (int i = 0; escapes[i]; i++)
         if (escapes[i] == c)
             return values[i];
-        i++;
-    }
     return c;
 }
 
@@ -31,6 +28,15 @@ static void handle_quote(int *state, char c)
         state[0] = !state[0];
     if (c == '\'' && !state[0])
         state[1] = !state[1];
+}
+
+static int should_toggle_quote(int *state, char c)
+{
+    if (c == '"' && !state[1])
+        return 1;
+    if (c == '\'' && !state[0])
+        return 1;
+    return 0;
 }
 
 static void handle_body(char *cmd, char *result, int *i, int *state)
@@ -43,9 +49,8 @@ static void handle_body(char *cmd, char *result, int *i, int *state)
     if (state[0] && cmd[*i] == '\\' && cmd[*i + 1]) {
         result[state[2]] = get_escape(cmd[*i + 1]);
         (*i)++;
-    } else {
+    } else
         result[state[2]] = cmd[*i];
-    }
     state[2]++;
 }
 
@@ -54,7 +59,7 @@ static char *get_result(char *cmd, char *result, int *j)
     int state[3] = {0, 0, 0};
 
     for (int i = 0; cmd[i]; i++) {
-        if (cmd[i] == '"' || cmd[i] == '\'') {
+        if (should_toggle_quote(state, cmd[i])) {
             handle_quote(state, cmd[i]);
             continue;
         }
@@ -93,4 +98,13 @@ char *decode_literals(char *str)
     }
     result[j] = '\0';
     return result;
+}
+
+int is_escaped(char *str, int index)
+{
+    int backslashes = 0;
+
+    for (int i = index - 1; i >= 0 && str[i] == '\\'; i--)
+        backslashes++;
+    return backslashes % 2;
 }

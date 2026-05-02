@@ -22,6 +22,7 @@ int my_strcmp(char *s1, char *s2);
 int my_strncmp(char *s1, char *s2, int n);
 char *my_strconcat(char *str1, char *str2);
 const char *my_strstr(const char *str, const char *to_f);
+int is_escaped(char *str, int index);
 char **my_str_to_word_array(char *str, char *separator);
 char **my_str_to_word_array_quote(char *str, char *separator);
 char ***my_str_to_array_of_word_array(char const *str, char const *sep_ext,
