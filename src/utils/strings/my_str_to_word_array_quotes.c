@@ -13,10 +13,9 @@
 
 static int separator_has_space(char *separator)
 {
-    for (int i = 0; separator[i] != '\0'; i++) {
+    for (int i = 0; separator[i] != '\0'; i++)
         if (separator[i] == ' ')
             return 1;
-    }
     return 0;
 }
 
@@ -24,10 +23,9 @@ static int is_separator(char c, char *separator)
 {
     if (separator_has_space(separator) && isspace((unsigned char)c))
         return 1;
-    for (int i = 0; separator[i] != '\0'; i++) {
+    for (int i = 0; separator[i] != '\0'; i++)
         if (separator[i] == c)
             return 1;
-    }
     return 0;
 }
 
@@ -118,10 +116,9 @@ static char *my_strdup_word_quote(char *to_dup, char *separator)
 
 static void advance_decalage(char *str, char *sep, int *decalage, int *iq)
 {
-    while (str[*decalage] && (*iq || !is_separator(str[*decalage], sep))) {
+    for (; str[*decalage] && (*iq || !is_separator(str[*decalage], sep));
+        (*decalage)++)
         update_quote_state(str[*decalage], iq);
-        (*decalage)++;
-    }
 }
 
 char **my_str_to_word_array_quote(char *str, char *separator)
@@ -136,12 +133,11 @@ char **my_str_to_word_array_quote(char *str, char *separator)
         free_alloc(word_array);
         return NULL;
     }
-    while (i < words) {
+    for (; i < words; i++) {
         while (!in_quotes && is_separator(str[decalage], separator))
             decalage++;
         word_array[i] = my_strdup_word_quote(str + decalage, separator);
         advance_decalage(str, separator, &decalage, &in_quotes);
-        i++;
     }
     word_array[i] = NULL;
     return word_array;
