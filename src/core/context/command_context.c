@@ -65,6 +65,22 @@ void clear_command_ctx(command_ctx_t *ctx)
     ctx->arg_command = NULL;
 }
 
+static int decode_command_args(char **args)
+{
+    char *decoded = NULL;
+
+    for (int i = 0; args[i]; i++) {
+        decoded = decode_literals(args[i]);
+        if (!decoded) {
+            free_array(args);
+            return 1;
+        }
+        free(args[i]);
+        args[i] = decoded;
+    }
+    return 0;
+}
+
 static char **process_expanded_command(char *expanded, main_t *stock_main)
 {
     char **cmd_with_arg = my_str_to_word_array_quote(expanded, " \t");
@@ -75,7 +91,10 @@ static char **process_expanded_command(char *expanded, main_t *stock_main)
     }
     if (convert_command_args(cmd_with_arg, stock_main) != 0)
         return NULL;
-    return replace_env_vars(cmd_with_arg, stock_main);
+    replace_env_vars(cmd_with_arg, stock_main);
+    if (decode_command_args(cmd_with_arg) != 0)
+        return NULL;
+    return cmd_with_arg;
 }
 
 int parse_command_context(char *command, command_ctx_t *ctx, main_t *stock_main)
