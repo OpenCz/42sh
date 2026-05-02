@@ -73,6 +73,7 @@ SRC_ENV = \
 SRC_PARSING = \
 	src/parsing/redirection/get_redirection.c \
 	src/parsing/env_var_management/replace_env_vars.c \
+	src/parsing/env_var_management/is_hard.c \
 	src/parsing/quotes_management/manage_quotes.c \
 	src/parsing/command_substitution/command_substitution.c \
 	src/parsing/manage_backticks/manage_backticks.c \
