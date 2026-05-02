@@ -108,16 +108,13 @@ static void handle_undefined(char **args, int i, char *p, int dp)
     args[i] = err;
 }
 
-static void apply_substitution(char **args, int i, int dp,
-    char *val, bool free_val)
+static void apply_substitution(char **args, int i, int dp, char *val)
 {
     char *after = args[i] + dp + 1;
     size_t nlen = get_var_name_len(after);
     int closing = (after[0] == '{' || after[0] == '(') ? 1 : 0;
     char *new = build_new_val(args[i], dp, val, after + nlen + closing);
 
-    if (free_val)
-        free(val);
     if (!new) {
         drop_current_dollar(args[i], dp);
         return;
@@ -138,7 +135,9 @@ static void replace_single_arg(char **args, int i, main_t *m)
         handle_undefined(args, i, p, dp);
         return;
     }
-    apply_substitution(args, i, dp, val, free_val);
+    apply_substitution(args, i, dp, val);
+    if (free_val)
+        free(val);
 }
 
 char **replace_env_vars(char **args, main_t *m)
