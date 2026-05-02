@@ -14,12 +14,6 @@
     #include <time.h>
     #include "../c_zsh.h"
 
-typedef struct word_state_s {
-    int in_word;
-    int count;
-    int in_quotes;
-} word_state_t;
-
 int my_strlen(char *str);
 void my_putstr(char *str);
 void my_putstrerror(char *str);
