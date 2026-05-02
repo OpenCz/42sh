@@ -91,6 +91,7 @@ SRC_UTILS = \
 	src/utils/display/get_branch_git.c \
 	src/utils/display/get_folder.c \
 	src/utils/display/prompt.c \
+	src/utils/display/manage_pre_cmd.c \
 	src/utils/strings/my_strcmp.c \
 	src/utils/strings/my_strconcat.c \
 	src/utils/strings/my_strdup.c \
