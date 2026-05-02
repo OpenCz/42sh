@@ -34,7 +34,7 @@ char *get_folder(void)
         return NULL;
     array = my_str_to_word_array(pwd, "/");
     if (!array) {
-        free(pwd);
+        free_alloc(pwd);
         return NULL;
     }
     len = my_wordarray_len(array);
