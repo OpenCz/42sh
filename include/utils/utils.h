@@ -12,6 +12,13 @@
     #define UTILS_H
     #include "../config/czshrc.h"
     #include <time.h>
+    #include "../c_zsh.h"
+
+typedef struct word_state_s {
+    int in_word;
+    int count;
+    int in_quotes;
+} word_state_t;
 
 int my_strlen(char *str);
 void my_putstr(char *str);
@@ -49,5 +56,6 @@ void iso_date_format(struct tm *tm);
 char *my_word_array_to_str(char **array);
 int my_str_is_alpha(char *key);
 void *unmatched_quote(int in_quotes, char **word_array);
+int pre_cmd(main_t *stock_main);
 
 #endif
