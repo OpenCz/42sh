@@ -2,9 +2,9 @@
 ** EPITECH PROJECT, 2026
 ** 42sh
 ** File description:
-** Quote-aware word splitter: word_state_t tracks in_word and
-** in_quote; separator chars inside quotes are ignored; each
-** quoted section is kept as one token in the output array.
+** Quote-aware word splitter: tracks in_quote state (0=none, 1=double,
+** 2=single); separator chars inside any quoted section are ignored;
+** each quoted section is kept as one token in the output array.
 ** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 
@@ -31,14 +31,26 @@ static int is_separator(char c, char *separator)
     return 0;
 }
 
+static int update_quote_state(char c, int *iq)
+{
+    if (c == '"' && *iq != 2) {
+        *iq = (*iq == 1) ? 0 : 1;
+        return 1;
+    }
+    if (c == '\'' && *iq != 1) {
+        *iq = (*iq == 2) ? 0 : 2;
+        return 1;
+    }
+    return 0;
+}
+
 static int my_strlen_word_quote(char *str, char *separator)
 {
     int count = 0;
     int in_quotes = 0;
 
     for (int i = 0; str[i] != '\0'; i++) {
-        if (str[i] == '"') {
-            in_quotes = !in_quotes;
+        if (update_quote_state(str[i], &in_quotes)) {
             count++;
             continue;
         }
@@ -51,10 +63,8 @@ static int my_strlen_word_quote(char *str, char *separator)
 
 static void update_word_state(char c, char *sep, word_state_t *state)
 {
-    if (c == '"') {
-        state->in_quotes = !(state->in_quotes);
+    if (update_quote_state(c, &state->in_quotes))
         return;
-    }
     if (!state->in_quotes && is_separator(c, sep)) {
         state->in_word = 0;
         return;
@@ -82,8 +92,7 @@ static void fill_word(char *to_dup, char *separator, char *word, int len)
     int j = 0;
 
     for (int i = 0; j < len; i++) {
-        if (to_dup[i] == '"') {
-            in_quotes = !in_quotes;
+        if (update_quote_state(to_dup[i], &in_quotes)) {
             word[j] = to_dup[i];
             j++;
             continue;
@@ -110,8 +119,7 @@ static char *my_strdup_word_quote(char *to_dup, char *separator)
 static void advance_decalage(char *str, char *sep, int *decalage, int *iq)
 {
     while (str[*decalage] && (*iq || !is_separator(str[*decalage], sep))) {
-        if (str[*decalage] == '"')
-            *iq = !(*iq);
+        update_quote_state(str[*decalage], iq);
         (*decalage)++;
     }
 }
