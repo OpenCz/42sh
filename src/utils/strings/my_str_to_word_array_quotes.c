@@ -112,10 +112,8 @@ static void advance_word_iter(char *str, char *sep, word_iter_t *iter)
             iter->iq = !iter->iq;
         if (str[iter->pos] == '`')
             iter->ib = !iter->ib;
-        if (iter->iq || iter->ib) {
-            iter->pos++;
+        if (iter->iq || iter->ib)
             continue;
-        }
         if (is_separator(str[iter->pos], sep))
             break;
     }
