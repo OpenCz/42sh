@@ -23,7 +23,8 @@ SRC_BUILTINS = \
 	$(wildcard ../src/builtins/config/*.c) \
 	$(wildcard ../src/builtins/scripts/*.c) \
 	$(wildcard ../src/builtins/history/*.c) \
-	$(wildcard ../src/builtins/var_local/*.c)
+	$(wildcard ../src/builtins/var_local/*.c) \
+	$(wildcard ../src/builtins/limit/*.c)
 
 SRC_EXEC = \
 	$(wildcard ../src/execution/dispatch/*.c) \

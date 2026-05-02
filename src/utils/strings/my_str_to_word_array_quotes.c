@@ -75,7 +75,7 @@ static void update_word_state(char c, char *sep, word_state_t *state)
 
 static int count_word_quote(char *str, char *separator)
 {
-    word_state_t state = {0, 0, 0};
+    word_state_t state = {0, 0, 0, 0};
 
     if (!str)
         return 0;
@@ -140,5 +140,7 @@ char **my_str_to_word_array_quote(char *str, char *separator)
         advance_decalage(str, separator, &decalage, &in_quotes);
     }
     word_array[i] = NULL;
+    if (in_quotes)
+        return unmatched_quote(in_quotes, word_array);
     return word_array;
 }

@@ -77,6 +77,7 @@ void free_main(main_t *stock)
     free_alloc(stock->redirection);
     free_alloc(stock->old_path);
     free_jobs(stock->controler);
+    free_alloc(stock->signal);
     free_linked_list(stock->stock_env);
     free_history(stock->history, stock->history->history_cmd);
     free_alloc(stock);

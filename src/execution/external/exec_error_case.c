@@ -7,10 +7,21 @@
 
 #include "c_zsh.h"
 
-int child_exec(command_ctx_t *ctx, char *path, char **env)
+static void setup_child_signal(void)
 {
+    sigset_t mask;
+
+    sigemptyset(&mask);
+    sigprocmask(SIG_SETMASK, &mask, NULL);
     signal(SIGINT, SIG_DFL);
     signal(SIGQUIT, SIG_DFL);
+    signal(SIGXFSZ, SIG_DFL);
+    signal(SIGXCPU, SIG_DFL);
+}
+
+int child_exec(command_ctx_t *ctx, char *path, char **env)
+{
+    setup_child_signal();
     if (execve(path, ctx->argv, env) == -1) {
         my_putstrerror(ctx->command);
         if (errno == ENOEXEC) {
