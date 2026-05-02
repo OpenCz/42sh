@@ -87,6 +87,20 @@ Test(replace_env_vars, hard_coded_double_dollar)
     free_array(args);
 }
 
+Test(replace_env_vars, hard_coded_last_exit)
+{
+    main_t stock = {0};
+    char **args = malloc(sizeof(char *) * 2);
+
+    cr_assert_not_null(args);
+    stock.last_exit = "42";
+    args[0] = my_strdup("$?");
+    args[1] = NULL;
+    replace_env_vars(args, &stock);
+    cr_assert_str_eq(args[0], "42");
+    free_array(args);
+}
+
 Test(replace_env_vars, braced_var_syntax)
 {
     env_t node = {.key = "BAR", .value = "baz", .next = NULL};
