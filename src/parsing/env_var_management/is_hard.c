@@ -6,7 +6,7 @@
 ** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 
-#include "../../../include/c_zsh.h"
+#include "c_zsh.h"
 
 static char *get_result(char **hard_keys, char **hard_values, const char *key,
     size_t key_len)
@@ -25,17 +25,20 @@ static char *get_result(char **hard_keys, char **hard_values, const char *key,
 
 char *is_hard(const char *key, size_t key_len, main_t *stock_main)
 {
-    char *pid = my_itoa(getpid());
+    char *pid = NULL;
     char *hard_keys[] = {"0", "36", "117 354 889 550", "69", "8",
         "12", "?", "$", NULL};
     char *hard_values[] = {"c_zsh", "Sasha Le Moins-Avalos",
         "Celenzo Peuch", "Lukas Soigneux", "Jessym Gaddacha",
-        "Erwan Lo Presti", stock_main->last_exit, pid, NULL};
+        "Erwan Lo Presti", stock_main ? stock_main->last_exit : "0", NULL};
     char *result = NULL;
 
-    if (!pid || !stock_main)
+    if (!stock_main)
         return NULL;
-    hard_values[1] = stock_main->last_exit;
+    pid = my_itoa(getpid());
+    if (!pid)
+        return NULL;
+    hard_values[7] = pid;
     result = get_result(hard_keys, hard_values, key, key_len);
     if (result != pid)
         free(pid);
