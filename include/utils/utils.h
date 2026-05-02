@@ -48,5 +48,6 @@ void us_date_format(struct tm *tm);
 void iso_date_format(struct tm *tm);
 char *my_word_array_to_str(char **array);
 int my_str_is_alpha(char *key);
+void *unmatched_quote(int in_quotes, char **word_array);
 
 #endif
