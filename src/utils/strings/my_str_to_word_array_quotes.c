@@ -29,13 +29,15 @@ static int is_separator(char c, char *separator)
     return 0;
 }
 
-static int update_quote_state(char c, int *iq)
+static int update_quote_state(char *str, int index, int *iq)
 {
-    if (c == '"' && *iq != 2) {
+    if (str[index] == '"' && *iq != 2 && !is_escaped(str, index)) {
         *iq = (*iq == 1) ? 0 : 1;
         return 1;
     }
-    if (c == '\'' && *iq != 1) {
+    if (str[index] == '\'' && *iq != 1) {
+        if (*iq == 0 && is_escaped(str, index))
+            return 0;
         *iq = (*iq == 2) ? 0 : 2;
         return 1;
     }
@@ -48,7 +50,7 @@ static int my_strlen_word_quote(char *str, char *separator)
     int in_quotes = 0;
 
     for (int i = 0; str[i] != '\0'; i++) {
-        if (update_quote_state(str[i], &in_quotes)) {
+        if (update_quote_state(str, i, &in_quotes)) {
             count++;
             continue;
         }
@@ -59,11 +61,12 @@ static int my_strlen_word_quote(char *str, char *separator)
     return count;
 }
 
-static void update_word_state(char c, char *sep, word_state_t *state)
+static void update_word_state(char *str, int index, char *sep,
+    word_state_t *state)
 {
-    if (update_quote_state(c, &state->in_quotes))
+    if (update_quote_state(str, index, &state->in_quotes))
         return;
-    if (!state->in_quotes && is_separator(c, sep)) {
+    if (!state->in_quotes && is_separator(str[index], sep)) {
         state->in_word = 0;
         return;
     }
@@ -80,7 +83,7 @@ static int count_word_quote(char *str, char *separator)
     if (!str)
         return 0;
     for (int i = 0; str[i] != '\0'; i++)
-        update_word_state(str[i], separator, &state);
+        update_word_state(str, i, separator, &state);
     return state.count;
 }
 
@@ -90,7 +93,7 @@ static void fill_word(char *to_dup, char *separator, char *word, int len)
     int j = 0;
 
     for (int i = 0; j < len; i++) {
-        if (update_quote_state(to_dup[i], &in_quotes)) {
+        if (update_quote_state(to_dup, i, &in_quotes)) {
             word[j] = to_dup[i];
             j++;
             continue;
@@ -118,7 +121,7 @@ static void advance_decalage(char *str, char *sep, int *decalage, int *iq)
 {
     for (; str[*decalage] && (*iq || !is_separator(str[*decalage], sep));
         (*decalage)++)
-        update_quote_state(str[*decalage], iq);
+        update_quote_state(str, *decalage, iq);
 }
 
 char **my_str_to_word_array_quote(char *str, char *separator)
