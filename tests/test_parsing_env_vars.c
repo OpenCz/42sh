@@ -71,6 +71,22 @@ Test(replace_env_vars, hard_coded_dollar_zero)
     free_array(args);
 }
 
+Test(replace_env_vars, hard_coded_double_dollar)
+{
+    main_t stock = {0};
+    char **args = malloc(sizeof(char *) * 2);
+    char *expected = my_itoa((int)getpid());
+
+    cr_assert_not_null(args);
+    cr_assert_not_null(expected);
+    args[0] = my_strdup("$$");
+    args[1] = NULL;
+    replace_env_vars(args, &stock);
+    cr_assert_str_eq(args[0], expected);
+    free(expected);
+    free_array(args);
+}
+
 Test(replace_env_vars, braced_var_syntax)
 {
     env_t node = {.key = "BAR", .value = "baz", .next = NULL};
