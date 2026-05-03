@@ -1,19 +1,27 @@
 /*
 ** EPITECH PROJECT, 2026
-** 42sh
+** error
 ** File description:
-** Child-side execution: child_exec applies redirections and calls
-** execve; on failure prints a tcsh error and exits the child.
-** get_seg maps status: SIGINT->130, SIGSEGV->139, SIGFPE->136.
-** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
+** error
 */
 
 #include "c_zsh.h"
 
-int child_exec(command_ctx_t *ctx, char *path, char **env)
+static void setup_child_signal(void)
 {
+    sigset_t mask;
+
+    sigemptyset(&mask);
+    sigprocmask(SIG_SETMASK, &mask, NULL);
     signal(SIGINT, SIG_DFL);
     signal(SIGQUIT, SIG_DFL);
+    signal(SIGXFSZ, SIG_DFL);
+    signal(SIGXCPU, SIG_DFL);
+}
+
+int child_exec(command_ctx_t *ctx, char *path, char **env)
+{
+    setup_child_signal();
     if (execve(path, ctx->argv, env) == -1) {
         my_putstrerror(ctx->command);
         if (errno == ENOEXEC) {
@@ -29,7 +37,17 @@ int child_exec(command_ctx_t *ctx, char *path, char **env)
     return SUCCESS;
 }
 
-int get_seg(int status)
+void wait_stop(int status, main_t *stock_main, int pid, char **command)
+{
+    if (WIFSTOPPED(status)) {
+        my_putstr("\nSuspended\n");
+        append_jobs(command, pid, stock_main);
+    } else {
+        free_array(command);
+    }
+}
+
+int get_seg(int status, main_t *stock_main, int pid, char **command)
 {
     int sig = WTERMSIG(status);
     int exit_value = 0;
@@ -48,7 +66,6 @@ int get_seg(int status)
     }
     if (WCOREDUMP(status))
         write(1, " (core dumped)\n", 15);
-    if (WIFSTOPPED(status))
-        my_putstr("\nSuspended\n");
+    wait_stop(status, stock_main, pid, command);
     return exit_value;
 }

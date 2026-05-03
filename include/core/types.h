@@ -13,10 +13,12 @@
 
     #include <sys/types.h>
     #include <stdbool.h>
+    #include <signal.h>
     #include "../config/czshrc.h"
 
     #define CONTINUE -5
     #define TAB_WIDTH 4
+    #define HISTORY 100
 
 typedef struct alias_stock_s {
     char *new_name;
@@ -45,6 +47,25 @@ typedef struct env_s {
     struct env_s *next;
 } env_t;
 
+typedef struct job_s {
+    pid_t pid;
+    pid_t pgid;
+    char **command;
+    char sign;
+    int status;
+} job_t;
+
+typedef struct job_controler_s {
+    job_t *job;
+    struct job_controler_s *next;
+} job_controler_t;
+
+typedef struct signal_s {
+    volatile sig_atomic_t g_sigxcpu;
+    int sfd;
+} signal_t;
+
+
 typedef struct main_s {
     char *home;
     char *old_path;
@@ -58,7 +79,10 @@ typedef struct main_s {
     history_t *history;
     alias_stock_t *alias_stock;
     struct env_s *stock_env;
+    struct env_s *stock_local_var;
     czshrc_t *czshrc;
+    job_controler_t *controler;
+    signal_t *signal;
 } main_t;
 
 typedef struct command_ctx_s {
@@ -98,5 +122,24 @@ typedef struct loop_env_state_s {
     env_t *created_node;
     char *saved_value;
 } loop_env_state_t;
+
+typedef struct history_rc_s {
+    int history;
+    int savehist;
+    bool enabled;
+} history_rc_t;
+
+typedef struct word_state_s {
+    int in_word;
+    int count;
+    int in_quotes;
+    int in_backticks;
+} word_state_t;
+
+typedef struct word_iter_s {
+    int pos;
+    int iq;
+    int ib;
+} word_iter_t;
 
 #endif

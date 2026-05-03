@@ -24,9 +24,14 @@ const builtin_command_t command_shell[] = {
     {"which", builtin_which},
     {"where", builtin_where},
     {"printenv", builtin_printenv},
+    {"if", builtin_if},
     {"history", builtin_history},
     {"alias", builtin_alias},
     {"source", source},
+    {"set", builtin_set},
+    {"unset", builtin_unset},
+    {"limit", builtin_limit},
+    {"unlimit", builtin_unlimit},
     {NULL, NULL}
 };
 

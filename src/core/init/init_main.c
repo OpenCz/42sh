@@ -12,14 +12,9 @@
 
 static history_t *init_history(main_t *main)
 {
-    FILE *file = NULL;
-
     main->history = calloc(1, sizeof(history_t));
     if (!main->history)
         free(main);
-    file = fopen(".c_zsh_history", "w+");
-    if (file)
-        fclose(file);
     main->history->curr = malloc(BUFFER_SIZE + 1);
     if (!main->history->curr)
         return NULL;
@@ -33,6 +28,28 @@ static czshrc_t *init_rc(void)
     if (!rc)
         return NULL;
     return rc;
+}
+
+static job_controler_t *init_job_controler(void)
+{
+    job_controler_t *controler = malloc(sizeof(job_controler_t));
+
+    if (controler == NULL)
+        return NULL;
+    controler->job = NULL;
+    controler->next = NULL;
+    return controler;
+}
+
+static signal_t *init_signal(void)
+{
+    signal_t *signal = malloc(sizeof(signal_t));
+
+    if (!signal)
+        return NULL;
+    signal->g_sigxcpu = 0;
+    signal->sfd = 0;
+    return signal;
 }
 
 main_t *init_main(char **env)
@@ -53,5 +70,8 @@ main_t *init_main(char **env)
     main_node->alias_stock = NULL;
     init_history(main_node);
     main_node->czshrc = init_rc();
+    main_node->controler = init_job_controler();
+    main_node->signal = init_signal();
+    main_node->stock_local_var = NULL;
     return main_node;
 }

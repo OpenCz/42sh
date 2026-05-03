@@ -14,6 +14,7 @@ void write_print(main_t *stock)
 {
     char *user = get_user(stock->stock_env);
 
+    pre_cmd(stock);
     if (isatty(0))
         display_prompt(stock->czshrc->prompt, user);
 }

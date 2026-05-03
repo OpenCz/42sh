@@ -17,6 +17,14 @@ static void check_fork_failure(pid_t pid)
     }
 }
 
+static int len_array(char **array)
+{
+    int i = 0;
+
+    for (; array[i] != NULL; i++);
+    return i;
+}
+
 static int handle_child(command_ctx_t *ctx, char *path, char **env)
 {
     signal(SIGTTOU, SIG_DFL);
@@ -29,16 +37,45 @@ static int handle_child(command_ctx_t *ctx, char *path, char **env)
     exit(child_exec(ctx, path, env));
 }
 
-static int handle_parent(pid_t pid, struct termios *term)
+static void check_child_signals(int status)
 {
-    int status = 0;
+    if (WIFSIGNALED(status) && WTERMSIG(status) == SIGXFSZ)
+        my_putstrerror("filesize limit exceeded");
+    if (WIFSIGNALED(status) && WTERMSIG(status) == SIGXCPU)
+        my_putstrerror("cputime limit exceeded");
+}
 
+static void set_group_child(pid_t pid, int *status, struct termios *term)
+{
     setpgid(pid, pid);
     tcsetpgrp(STDIN_FILENO, pid);
-    waitpid(pid, &status, WUNTRACED);
+    waitpid(pid, status, WUNTRACED);
+    check_child_signals(*status);
     tcsetpgrp(STDIN_FILENO, getpgrp());
     tcsetattr(STDIN_FILENO, TCSADRAIN, term);
-    return get_seg(status);
+}
+
+static int handle_parent(pid_t pid, struct termios *term,
+    main_t *stock_main, command_ctx_t *ctx)
+{
+    int status = 0;
+    int actual = 1;
+    char **command = malloc(sizeof(char *) * (len_array(ctx->arg_command) + 2));
+
+    if (command == NULL)
+        return 1;
+    command[0] = strdup(ctx->command);
+    for (int i = 0; ctx->arg_command[i] != NULL; i++) {
+        command[actual] = strdup(ctx->arg_command[i]);
+        actual++;
+    }
+    command[actual] = NULL;
+    set_group_child(pid, &status, term);
+    if (WIFEXITED(status)) {
+        free_array(command);
+        return WEXITSTATUS(status);
+    }
+    return get_seg(status, stock_main, pid, command);
 }
 
 int run_fork(main_t *main_stock, command_ctx_t *ctx, char *path, char **env)
@@ -46,11 +83,10 @@ int run_fork(main_t *main_stock, command_ctx_t *ctx, char *path, char **env)
     struct termios term;
     pid_t pid = 0;
 
-    (void)main_stock;
     tcgetattr(STDIN_FILENO, &term);
     pid = fork();
     check_fork_failure(pid);
     if (pid == 0)
         handle_child(ctx, path, env);
-    return handle_parent(pid, &term);
+    return handle_parent(pid, &term, main_stock, ctx);
 }

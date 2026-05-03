@@ -36,6 +36,8 @@ SRC_BUILTINS = \
 	src/builtins/jobs/my_background.c \
 	src/builtins/repeat/repeat.c \
 	src/builtins/scripts/foreach.c \
+	src/builtins/scripts/scripts_if.c \
+	src/builtins/scripts/if_create_command.c \
 	src/builtins/scripts/foreach_input.c \
 	src/utils/errors/foreach.c \
 	src/builtins/fs/my_which.c \
@@ -43,7 +45,13 @@ SRC_BUILTINS = \
 	src/builtins/env/printenv.c \
 	src/builtins/history/history.c \
 	src/builtins/fs/my_alias.c \
-	src/builtins/config/source.c
+	src/builtins/config/source.c \
+	src/builtins/var_local/set.c \
+	src/builtins/var_local/unset.c \
+	src/builtins/limit/limit.c \
+	src/builtins/limit/unlimit.c \
+	src/builtins/limit/verif_time.c \
+	src/builtins/limit/get_good_limit.c
 
 SRC_EXEC = \
 	src/execution/dispatch/execute_builtin.c \
@@ -69,7 +77,10 @@ SRC_ENV = \
 SRC_PARSING = \
 	src/parsing/redirection/get_redirection.c \
 	src/parsing/env_var_management/replace_env_vars.c \
+	src/parsing/env_var_management/is_hard.c \
 	src/parsing/quotes_management/manage_quotes.c \
+	src/parsing/command_substitution/command_substitution.c \
+	src/parsing/manage_backticks/manage_backticks.c \
 
 SRC_UTILS = \
 	src/utils/io/my_putstr.c \
@@ -80,6 +91,7 @@ SRC_UTILS = \
 	src/utils/display/get_branch_git.c \
 	src/utils/display/get_folder.c \
 	src/utils/display/prompt.c \
+	src/utils/display/manage_pre_cmd.c \
 	src/utils/strings/my_strcmp.c \
 	src/utils/strings/my_strconcat.c \
 	src/utils/strings/my_strdup.c \
@@ -91,9 +103,15 @@ SRC_UTILS = \
 	src/utils/strings/str_to_array_of_word_array.c \
 	src/utils/strings/my_wordarraylen.c \
 	src/utils/strings/my_itoa.c \
+	src/utils/strings/error.c \
+	src/utils/strings/my_word_array_to_str.c \
 	src/utils/validation/my_ischar_num.c \
 	src/utils/validation/my_str_is_alphanum.c \
-	src/utils/validation/my_char_is_alpha.c
+	src/utils/validation/my_char_is_alpha.c \
+	src/utils/io/my_len_nb.c \
+	src/utils/io/display_zero.c \
+	src/utils/display/format_date.c \
+	src/utils/validation/my_str_is_alpha.c \
 
 SRC_MEMORY = \
 	src/memory/free/free_function.c
@@ -128,7 +146,7 @@ GCOVRFLAGS  = --gcov-executable "llvm-cov-20 gcov" --exclude tests/
 
 # ─── Tools ───────────────────────────────────────────────────────────────
 RM           = rm -rf
-ECC          = clang
+ECC          = epiclang
 ARGUMENTS    =
 DEBUG_STRICT ?= 0
 LOCAL_BIN   ?= $(HOME)/.local/bin
