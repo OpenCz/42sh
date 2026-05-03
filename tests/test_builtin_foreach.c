@@ -8,9 +8,6 @@
 #include <criterion/criterion.h>
 #include <criterion/redirect.h>
 #include "../include/c_zsh.h"
-
-/* ─── handle_error ───────────────────────────────────────────────────────── */
-
 Test(handle_error, too_few_args_zero_elements, .init = cr_redirect_stdout)
 {
     command_ctx_t ctx = {0};
