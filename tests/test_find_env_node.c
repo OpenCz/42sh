@@ -50,7 +50,7 @@ Test(find_env_node, finds_tail_and_sets_prev)
     found = find_env_node(n1, "B", &prev);
     cr_assert_not_null(found);
     cr_assert_str_eq(found->key, "B");
-    cr_assert_ptr_eq(prev, n1);
+    cr_assert_eq(prev, n1);
     free_linked_list(n1);
 }
 
@@ -67,7 +67,7 @@ Test(find_env_node, finds_middle_node)
     found = find_env_node(n1, "B", &prev);
     cr_assert_not_null(found);
     cr_assert_str_eq(found->key, "B");
-    cr_assert_ptr_eq(prev, n1);
+    cr_assert_eq(prev, n1);
     free_linked_list(n1);
 }
 

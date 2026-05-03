@@ -181,7 +181,7 @@ Test(my_strstr_extra, empty_needle_returns_haystack)
     const char *h = "hello";
     const char *r = my_strstr(h, "");
 
-    cr_assert_ptr_eq(r, h);
+    cr_assert_eq(r, h);
 }
 
 Test(my_strstr_extra, skips_match_inside_double_quotes)
