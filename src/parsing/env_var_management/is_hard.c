@@ -42,7 +42,7 @@ char *is_hard(const char *key, size_t key_len, main_t *stock_main)
     char *hard_values[] = {"c_zsh", "Sasha Le Moins-Avalos",
         "Celenzo Peuch", "Lukas Soigneux", "Jessym Gaddacha",
         "Erwan Lo Presti", stock_main ? stock_main->last_exit : "0",
-        pid, pid_job ==  NULL ? "" : pid_job, NULL};
+        pid, pid_job == NULL ? "" : pid_job, NULL};
     char *result = NULL;
 
     if (!stock_main)
