@@ -21,7 +21,7 @@ static env_t *node_new(const char *key, const char *value)
 
     cr_assert_not_null(node);
     node->key = strdup((char *)key);
-    node->value = value ? strdup *)value) : NULL;
+    node->value = value ? strdup((char *)value) : NULL;
     node->next = NULL;
     return node;
 }
