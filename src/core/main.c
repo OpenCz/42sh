@@ -27,12 +27,19 @@ static char *serialize(char *buffer)
     return buffer;
 }
 
-static bool handle_command_result(main_t *stock, loop_state_t *state)
+static bool handle_command_result(main_t *stock, loop_state_t *state,
+    int *force)
 {
     state->buffer = serialize(state->buffer);
-    if (state->cmd == -1 || my_strcmp(state->buffer, "exit") == 0)
+    if (my_strcmp(state->buffer, "exit") == 0)
         return true;
+    if (state->cmd == -1) {
+        *force = (*force >= -1 && *force <= 0) ? *force + 1 : *force;
+        return true;
+    }
     state->last_exit = execute_command(stock, state->buffer);
+    if (*force == 0)
+        *force = -1;
     if (state->last_exit == 130) {
         display_prompt(stock->czshrc->prompt, get_user(stock->stock_env));
         state->prompt_displayed = true;
@@ -55,7 +62,7 @@ static void free_var_local(env_t **local_var)
     }
 }
 
-static void set_shell_prompt(loop_state_t *state, main_t *stock)
+static void set_shell_prompt(loop_state_t *state, main_t *stock, int *force)
 {
     if (!state->prompt_displayed)
         write_print(stock);
@@ -64,23 +71,48 @@ static void set_shell_prompt(loop_state_t *state, main_t *stock)
         get_user(stock->stock_env));
 }
 
-static void run_shell_loop(main_t *stock, loop_state_t *state)
+static int suspend_jobs(job_controler_t *controler, int *force, main_t *stock)
 {
-    stock->last_exit = my_itoa(state->last_exit);
+    job_controler_t *tmp = controler->next;
+
+    if (controler->next != NULL && (*force == 0)) {
+        printf("^D\nThere are suspended jobs.\n");
+        display_prompt(stock->czshrc->prompt, get_user(stock->stock_env));
+        (*force) = 0;
+        return 1;
+    }
+    if (*force)
+        for (; tmp && tmp->next; tmp = tmp->next)
+            kill(SIGKILL, tmp->job->pid);
+    return 0;
+}
+
+static void loop_shell(main_t *stock, loop_state_t *state, int *force)
+{
     while (my_strcmp(state->buffer, "exit") != 0) {
         handle_limit_signals(stock->signal->sfd, stock->signal);
-        set_shell_prompt(state, stock);
+        set_shell_prompt(state, stock, force);
         if (check_limit_signals(stock->signal))
             break;
         if (state->cmd == CONTINUE) {
             state->prompt_displayed = false;
             continue;
         }
-        if (handle_command_result(stock, state))
+        if (handle_command_result(stock, state, force))
             break;
         free_alloc(stock->last_exit);
         stock->last_exit = my_itoa(state->last_exit);
     }
+    if (suspend_jobs(stock->controler, force, stock))
+        loop_shell(stock, state, force);
+}
+
+static void run_shell_loop(main_t *stock, loop_state_t *state)
+{
+    int force = -1;
+
+    stock->last_exit = my_itoa(state->last_exit);
+    loop_shell(stock, state, &force);
     free_alloc(stock->last_exit);
     free_var_local(&stock->stock_local_var);
     write_tty("exit\n");
