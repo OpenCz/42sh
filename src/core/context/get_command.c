@@ -83,7 +83,7 @@ static int manage_ignoreeof(main_t *stock_main)
         if (my_strcmp(tmp->key, "ignoreeof") != 0)
             continue;
         countdown = atoi(tmp->value);
-        if (countdown <= 0)
+        if (countdown <= 1)
             return -1;
         countdown--;
         tmp->value = my_itoa(countdown);
