@@ -10,11 +10,14 @@
 
 static char *is_operator(char *str)
 {
+    char c;
+
     for (int i = 0; str[i] != '\0'; i++) {
-        if (str[i] == '(' || str[i] == ')' || str[i] == '+' || str[i] == '=' ||
-            (str[i] == '-' && str[i + 1] >= '0' && str[i + 1] <= '9') ||
-            (str[i] == '/' && str[i - 1] != '.') ||
-            str[i] == '!' || str[i] == '*' || str[i] == '|')
+        c = str[i];
+        if (c == '(' || c == ')' || c == '+' || c == '=' ||
+            (c == '-' && str[i + 1] >= '0' && str[i + 1] <= '9') ||
+            (c == '/' && str[i - 1] != '.') || c == '!' ||
+            c == '*' || c == '|' || c == '>' || c == '<')
             return str;
     }
     return NULL;
