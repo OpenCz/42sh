@@ -31,8 +31,8 @@ Test(free_linked_list, frees_single_node)
     env_t *node = malloc(sizeof(env_t));
 
     cr_assert_not_null(node);
-    node->key = my_strdup("KEY");
-    node->value = my_strdup("VAL");
+    node->key = strdup("KEY");
+    node->value = strdup("VAL");
     node->next = NULL;
     free_linked_list(node);
 }
@@ -42,7 +42,7 @@ Test(free_linked_list, frees_node_with_null_value)
     env_t *node = malloc(sizeof(env_t));
 
     cr_assert_not_null(node);
-    node->key = my_strdup("NOVAL");
+    node->key = strdup("NOVAL");
     node->value = NULL;
     node->next = NULL;
     free_linked_list(node);
@@ -55,9 +55,9 @@ Test(free_linked_list, frees_multiple_nodes)
 
     cr_assert_not_null(n1);
     cr_assert_not_null(n2);
-    n1->key = my_strdup("A");
-    n1->value = my_strdup("1");
-    n2->key = my_strdup("B");
+    n1->key = strdup("A");
+    n1->value = strdup("1");
+    n2->key = strdup("B");
     n2->value = NULL;
     n1->next = n2;
     n2->next = NULL;
@@ -83,8 +83,8 @@ Test(free_array, frees_populated_array)
     char **arr = malloc(sizeof(char *) * 3);
 
     cr_assert_not_null(arr);
-    arr[0] = my_strdup("hello");
-    arr[1] = my_strdup("world");
+    arr[0] = strdup("hello");
+    arr[1] = strdup("world");
     arr[2] = NULL;
     free_array(arr);
 }

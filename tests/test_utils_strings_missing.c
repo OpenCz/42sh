@@ -199,7 +199,7 @@ Test(unmatched_quote, frees_word_array_and_returns_null,
     char **arr = malloc(sizeof(char *) * 2);
 
     cr_assert_not_null(arr);
-    arr[0] = my_strdup("hello");
+    arr[0] = strdup("hello");
     arr[1] = NULL;
     cr_assert_null(unmatched_quote(1, arr));
 }

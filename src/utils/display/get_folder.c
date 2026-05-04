@@ -40,7 +40,7 @@ char *get_folder(void)
     len = my_wordarray_len(array);
     if (len == 0)
         return free_value(pwd, array, NULL);
-    folder = my_strdup(array[len - 1]);
+    folder = strdup(array[len - 1]);
     if (!folder)
         return free_value(pwd, array, NULL);
     return free_value(pwd, array, folder);

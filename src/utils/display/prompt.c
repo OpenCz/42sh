@@ -99,7 +99,7 @@ static char *get_id(void)
         return NULL;
     for (int i = 0; os_release[i]; i++) {
         if (my_strncmp(os_release[i], "ID=", 3) == 0) {
-            id = my_strdup(os_release[i] + 3);
+            id = strdup(os_release[i] + 3);
             break;
         }
     }

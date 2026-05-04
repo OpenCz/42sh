@@ -16,8 +16,8 @@ static env_t *node_new(const char *key, const char *value)
     env_t *node = malloc(sizeof(env_t));
 
     cr_assert_not_null(node);
-    node->key = my_strdup((char *)key);
-    node->value = value ? my_strdup((char *)value) : NULL;
+    node->key = strdup((char *)key);
+    node->value = value ? strdup((char *)value) : NULL;
     node->next = NULL;
     return node;
 }
@@ -36,7 +36,7 @@ static char *create_temp_dir(void)
     char *dir = mkdtemp(template);
 
     cr_assert_not_null(dir);
-    return my_strdup(dir);
+    return strdup(dir);
 }
 
 static char *create_temp_file(void)
@@ -46,7 +46,7 @@ static char *create_temp_file(void)
 
     cr_assert(fd != -1);
     close(fd);
-    return my_strdup(template);
+    return strdup(template);
 }
 
 Test(builtin_cd, returns_error_when_directory_does_not_exist)

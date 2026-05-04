@@ -17,7 +17,6 @@
 int my_strlen(char *str);
 void my_putstr(char *str);
 void my_putstrerror(char *str);
-char *my_strdup(char *str);
 int my_strcmp(char *s1, char *s2);
 int my_strncmp(char *s1, char *s2, int n);
 char *my_strconcat(char *str1, char *str2);
