@@ -78,6 +78,7 @@ static int create_command(history_t *history, char **buffer,
 static int manage_ignoreeof(main_t *stock_main)
 {
     int countdown = 0;
+    char *new_value = NULL;
 
     for (env_t *tmp = stock_main->stock_local_var; tmp; tmp = tmp->next) {
         if (my_strcmp(tmp->key, "ignoreeof") != 0)
@@ -86,7 +87,11 @@ static int manage_ignoreeof(main_t *stock_main)
         if (countdown <= 1)
             return -1;
         countdown--;
-        tmp->value = my_itoa(countdown);
+        new_value = my_itoa(countdown);
+        if (!new_value)
+            return -1;
+        free_alloc(tmp->value);
+        tmp->value = new_value;
         my_putstr("Use \"exit\" to leave the shell.\n");
         return CONTINUE;
     }
