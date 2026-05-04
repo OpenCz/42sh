@@ -39,6 +39,7 @@ SRC_BUILTINS = \
 	src/builtins/scripts/scripts_if.c \
 	src/builtins/scripts/if_create_command.c \
 	src/builtins/scripts/foreach_input.c \
+	src/builtins/scripts/foreach_arg.c \
 	src/utils/errors/foreach.c \
 	src/builtins/fs/my_which.c \
 	src/builtins/fs/my_where.c \
