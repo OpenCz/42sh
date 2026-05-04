@@ -14,6 +14,7 @@ void free_alloc(void *object)
 {
     if (object)
         free(object);
+    object = NULL;
 }
 
 void free_linked_list(env_t *env)
