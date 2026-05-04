@@ -22,8 +22,13 @@ int is_valid_formating(char **arr)
     int start = 0;
     int end = 0;
 
-    for (int i = 0; arr[i]; i++)
+    for (int i = 0; arr[i]; i++) {
         check_array(arr[i], &start, &end);
+        if (strcmp(arr[i], "else") == 0 && !arr[i + 1]) {
+            printf("if: Expression Syntax.\n");
+            return -1;
+        }
+    }
     if (start == end)
         return 0;
     if (start > end)

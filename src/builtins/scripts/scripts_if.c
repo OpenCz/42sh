@@ -33,13 +33,15 @@ char *is_command(char *str)
     return str;
 }
 
-static char *init_cmd(void)
+static char *create_cmd(char *condition)
 {
     char *cmd = calloc(1, BUFFER_SIZE);
 
     if (!cmd)
         return NULL;
-    cmd = strcpy(cmd, "/bin/calc ");
+    cmd = strcpy(cmd, "echo \"");
+    cmd = strcat(cmd, condition);
+    cmd = strcat(cmd, "\" | bc -l");
     return cmd;
 }
 
@@ -79,19 +81,19 @@ static int check_if_format(command_ctx_t *ctx)
 {
     int len = my_wordarray_len(ctx->argv);
 
-    if (is_valid_formating(ctx->argv) == -1)
-        return -1;
     if (len == 1) {
         printf("if: Too few arguments.\n");
         return -1;
     }
-    if (len == 2) {
+    if (len == 2 || strcmp(ctx->argv[1], "else") == 0) {
         if (!is_command(ctx->argv[1]) || is_operator(ctx->argv[1]))
             printf("if: Expression Syntax.\n");
         else
             printf("Empty if.\n");
         return -1;
     }
+    if (is_valid_formating(ctx->argv) == -1)
+        return -1;
     return 0;
 }
 
@@ -110,20 +112,17 @@ static void exec_if_command(main_t *main_stock, char *cmd,
 
 int builtin_if(main_t *main_stock, command_ctx_t *ctx)
 {
-    char *cmd = init_cmd();
+    char *cmd = NULL;
     char *to_exec = NULL;
     char *else_cmd = NULL;
     char *condition = NULL;
 
-    if (!cmd || check_if_format(ctx) == -1) {
-        if (cmd)
-            free(cmd);
+    if (check_if_format(ctx) == -1)
         return 1;
-    }
     condition = create_condition(main_stock, ctx, &else_cmd, &to_exec);
     if (!condition || strlen(condition) < 1)
         return 1;
-    cmd = strcat(cmd, condition);
+    cmd = create_cmd(condition);
     free(condition);
     exec_if_command(main_stock, cmd, to_exec, else_cmd);
     return 0;
