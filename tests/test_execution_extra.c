@@ -66,21 +66,21 @@ Test(execute_single_extra, only_tabs_treated_as_blank)
 {
     main_t stock = {0};
 
-    cr_assert_eq(execute_single_command(&stock, "\t\t", true), SUCCESS);
+    cr_assert_eq(execute_single_command(&stock, "\t\t", true, false), SUCCESS);
 }
 
 Test(execute_single_extra, slash_bin_true_with_path)
 {
     main_t stock = {0};
 
-    cr_assert_eq(execute_single_command(&stock, "/bin/true", true), SUCCESS);
+    cr_assert_eq(execute_single_command(&stock, "/bin/true", true, false), SUCCESS);
 }
 
 Test(execute_single_extra, slash_bin_false_returns_nonzero)
 {
     main_t stock = {0};
 
-    cr_assert_eq(execute_single_command(&stock, "/bin/false", true), 1);
+    cr_assert_eq(execute_single_command(&stock, "/bin/false", true, false), 1);
 }
 
 Test(execute_single_extra, builtin_setenv_creates_var)
@@ -88,7 +88,7 @@ Test(execute_single_extra, builtin_setenv_creates_var)
     main_t stock = {0};
     env_t *prev = NULL;
 
-    execute_single_command(&stock, "setenv TESTVAR hello", true);
+    execute_single_command(&stock, "setenv TESTVAR hello", true, false);
     cr_assert_not_null(find_env_node(stock.stock_env, "TESTVAR", &prev));
     free_linked_list(stock.stock_env);
 }
@@ -97,7 +97,7 @@ Test(execute_single_extra, builtin_disabled_falls_to_external)
 {
     main_t stock = {0};
 
-    cr_assert_eq(execute_single_command(&stock, "/bin/true", false), SUCCESS);
+    cr_assert_eq(execute_single_command(&stock, "/bin/true", false, false), SUCCESS);
 }
 Test(exec_any_extra, absolute_path_true_succeeds)
 {
@@ -108,7 +108,7 @@ Test(exec_any_extra, absolute_path_true_succeeds)
     stock.stock_env = node_new("PATH", "/bin");
     ctx.command = argv[0];
     ctx.argv = argv;
-    cr_assert_eq(exec_any(&stock, &ctx), SUCCESS);
+    cr_assert_eq(exec_any(&stock, &ctx, false), SUCCESS);
     free_linked_list(stock.stock_env);
 }
 
@@ -121,7 +121,7 @@ Test(exec_any_extra, absolute_path_false_returns_1)
     stock.stock_env = node_new("PATH", "/bin");
     ctx.command = argv[0];
     ctx.argv = argv;
-    cr_assert_eq(exec_any(&stock, &ctx), 1);
+    cr_assert_eq(exec_any(&stock, &ctx, false), 1);
     free_linked_list(stock.stock_env);
 }
 
@@ -135,7 +135,7 @@ Test(exec_any_extra, command_in_path_resolves_and_runs)
     stock.path = paths;
     ctx.command = "true";
     ctx.argv = argv;
-    cr_assert_eq(exec_any(&stock, &ctx), SUCCESS);
+    cr_assert_eq(exec_any(&stock, &ctx, false), SUCCESS);
 }
 Test(execute_builtin_extra, setenv_is_registered)
 {

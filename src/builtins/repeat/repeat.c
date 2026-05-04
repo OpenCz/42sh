@@ -10,7 +10,7 @@
 
 #include "../../../include/c_zsh.h"
 
-int repeat(main_t *main_stock, command_ctx_t *ctx)
+int builtin_repeat(main_t *main_stock, command_ctx_t *ctx)
 {
     int nbr = 0;
     int value = 0;
@@ -24,11 +24,6 @@ int repeat(main_t *main_stock, command_ctx_t *ctx)
     repeated_ctx.argv = &ctx->arg_command[1];
     repeated_ctx.arg_command = ctx->arg_command + 2;
     for (int i = 0; i < nbr; i++)
-        value = exec_any(main_stock, &repeated_ctx);
+        value = exec_any(main_stock, &repeated_ctx, false);
     return value;
-}
-
-int builtin_repeat(main_t *main_stock, command_ctx_t *ctx)
-{
-    return repeat(main_stock, ctx);
 }
