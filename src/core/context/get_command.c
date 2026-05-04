@@ -88,7 +88,7 @@ static int manage_ignoreeof(main_t *stock_main)
         countdown--;
         tmp->value = my_itoa(countdown);
         my_putstr("Use \"exit\" to leave the shell.\n");
-        return 0;
+        return CONTINUE;
     }
     return -1;
 }

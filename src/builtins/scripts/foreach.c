@@ -70,7 +70,7 @@ static env_t *create_loop_node(char *var, char *new_value)
         free(new_value);
         return NULL;
     }
-    node->key = my_strdup(var);
+    node->key = strdup(var);
     if (!node->key) {
         free(new_value);
         free(node);
@@ -84,7 +84,7 @@ static env_t *create_loop_node(char *var, char *new_value)
 static int update_existing_loop_var(env_t *curr, char *arg,
     loop_env_state_t *state)
 {
-    char *new_value = arg ? my_strdup(arg) : NULL;
+    char *new_value = arg ? strdup(arg) : NULL;
 
     if (arg && !new_value)
         return FAILURE;
@@ -105,7 +105,7 @@ static int set_loop_variable(main_t *main_stock, char *var, char *arg,
     state->saved_value = NULL;
     if (curr)
         return update_existing_loop_var(curr, arg, state);
-    state->created_node = create_loop_node(var, arg ? my_strdup(arg) : NULL);
+    state->created_node = create_loop_node(var, arg ? strdup(arg) : NULL);
     if (!state->created_node)
         return FAILURE;
     state->created_node->next = main_stock->stock_env;

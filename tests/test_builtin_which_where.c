@@ -17,8 +17,8 @@ static main_t *make_stock(void)
     cr_assert_not_null(stock);
     stock->path = malloc(sizeof(char *) * 3);
     cr_assert_not_null(stock->path);
-    stock->path[0] = my_strdup(src[0]);
-    stock->path[1] = my_strdup(src[1]);
+    stock->path[0] = strdup(src[0]);
+    stock->path[1] = strdup(src[1]);
     stock->path[2] = NULL;
     return stock;
 }

@@ -35,7 +35,7 @@ Test(replace_env_vars, replaces_found_env_variable)
 
     stock.stock_env = &node;
     cr_assert_not_null(args);
-    args[0] = my_strdup("$FOO");
+    args[0] = strdup("$FOO");
     args[1] = NULL;
     replace_env_vars(args, &stock);
     cr_assert_str_eq(args[0], "bar");
@@ -49,7 +49,7 @@ Test(replace_env_vars, undefined_var_sets_error_string,
     char **args = malloc(sizeof(char *) * 2);
 
     cr_assert_not_null(args);
-    args[0] = my_strdup("$UNDEFINED42SH");
+    args[0] = strdup("$UNDEFINED42SH");
     args[1] = NULL;
     replace_env_vars(args, &stock);
     cr_assert_str_eq(args[0], ": Undefined variable.");
@@ -64,7 +64,7 @@ Test(replace_env_vars, hard_coded_dollar_zero)
     char **args = malloc(sizeof(char *) * 2);
 
     cr_assert_not_null(args);
-    args[0] = my_strdup("$0");
+    args[0] = strdup("$0");
     args[1] = NULL;
     replace_env_vars(args, &stock);
     cr_assert_str_eq(args[0], "c_zsh");
@@ -79,7 +79,7 @@ Test(replace_env_vars, hard_coded_double_dollar)
 
     cr_assert_not_null(args);
     cr_assert_not_null(expected);
-    args[0] = my_strdup("$$");
+    args[0] = strdup("$$");
     args[1] = NULL;
     replace_env_vars(args, &stock);
     cr_assert_str_eq(args[0], expected);
@@ -94,7 +94,7 @@ Test(replace_env_vars, hard_coded_last_exit)
 
     cr_assert_not_null(args);
     stock.last_exit = "42";
-    args[0] = my_strdup("$?");
+    args[0] = strdup("$?");
     args[1] = NULL;
     replace_env_vars(args, &stock);
     cr_assert_str_eq(args[0], "42");
@@ -109,7 +109,7 @@ Test(replace_env_vars, braced_var_syntax)
 
     stock.stock_env = &node;
     cr_assert_not_null(args);
-    args[0] = my_strdup("${BAR}");
+    args[0] = strdup("${BAR}");
     args[1] = NULL;
     replace_env_vars(args, &stock);
     cr_assert_str_eq(args[0], "baz");

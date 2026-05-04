@@ -26,7 +26,7 @@ static char *create_temp_file(const char *content, mode_t mode)
     cr_assert_eq(write(fd, content, my_strlen((char *)content)), (ssize_t)my_strlen((char *)content));
     cr_assert_eq(fchmod(fd, mode), 0);
     close(fd);
-    path = my_strdup(template);
+    path = strdup(template);
     cr_assert_not_null(path);
     return path;
 }
