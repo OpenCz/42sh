@@ -22,6 +22,7 @@
 
 typedef struct alias_stock_s {
     char *new_name;
+    char **new_arg_command;
     char *command;
     bool is_fixed;
     struct alias_stock_s *next;
@@ -64,7 +65,6 @@ typedef struct signal_s {
     volatile sig_atomic_t g_sigxcpu;
     int sfd;
 } signal_t;
-
 
 typedef struct main_s {
     char *home;
