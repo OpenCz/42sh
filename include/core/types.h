@@ -65,7 +65,6 @@ typedef struct signal_s {
     int sfd;
 } signal_t;
 
-
 typedef struct main_s {
     char *home;
     char *old_path;
@@ -141,5 +140,11 @@ typedef struct word_iter_s {
     int iq;
     int ib;
 } word_iter_t;
+
+typedef struct zipped_stock_s {
+    main_t *main_stock;
+    command_ctx_t *ctx;
+} zipped_stock_t;
+
 
 #endif
