@@ -23,35 +23,35 @@ Test(execute_single_command, returns_error_on_null_command)
 {
     main_t stock = {0};
 
-    cr_assert_eq(execute_single_command(&stock, NULL, true, false), 1);
+    cr_assert_eq(execute_single_command(&stock, NULL, true), 1);
 }
 
 Test(execute_single_command, skips_blank_command)
 {
     main_t stock = {0};
 
-    cr_assert_eq(execute_single_command(&stock, "   ", true, false), SUCCESS);
+    cr_assert_eq(execute_single_command(&stock, "   ", true), SUCCESS);
 }
 
 Test(execute_single_command, runs_builtin_when_allowed)
 {
     main_t stock = {0};
 
-    cr_assert_eq(execute_single_command(&stock, "env", true, false), SUCCESS);
+    cr_assert_eq(execute_single_command(&stock, "env", true), SUCCESS);
 }
 
 Test(execute_single_command, falls_back_to_external_command)
 {
     main_t stock = {0};
 
-    cr_assert_eq(execute_single_command(&stock, "true", true, false), SUCCESS);
+    cr_assert_eq(execute_single_command(&stock, "true", true), SUCCESS);
 }
 
 Test(execute_single_command, runs_external_when_builtins_are_disabled)
 {
     main_t stock = {0};
 
-    cr_assert_eq(execute_single_command(&stock, "true", false, false), SUCCESS);
+    cr_assert_eq(execute_single_command(&stock, "true", false), SUCCESS);
 }
 
 Test(execute_command, returns_status_of_last_semicolon_command)
