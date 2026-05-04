@@ -29,8 +29,8 @@ static int init_default_path_array(main_t *main_stock)
     main_stock->path = malloc(sizeof(char *) * 3);
     if (!main_stock->path)
         return 1;
-    main_stock->path[0] = my_strdup("/bin");
-    main_stock->path[1] = my_strdup("/usr/bin");
+    main_stock->path[0] = strdup("/bin");
+    main_stock->path[1] = strdup("/usr/bin");
     main_stock->path[2] = NULL;
     if (!main_stock->path[0] || !main_stock->path[1]) {
         free(main_stock->path[0]);

@@ -40,12 +40,12 @@ static char **get_operator_array(char *command)
         return NULL;
     for (int i = 0; command[i] != '\0'; i++) {
         if (command[i] == '&' && command[i + 1] == '&') {
-            op_array[k] = my_strdup("&&");
+            op_array[k] = strdup("&&");
             k++;
             i++;
         }
         if (command[i] == '|' && command[i + 1] == '|') {
-            op_array[k] = my_strdup("||");
+            op_array[k] = strdup("||");
             k++;
             i++;
         }

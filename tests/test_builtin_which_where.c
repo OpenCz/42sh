@@ -17,8 +17,8 @@ static main_t *make_stock(void)
     cr_assert_not_null(stock);
     stock->path = malloc(sizeof(char *) * 3);
     cr_assert_not_null(stock->path);
-    stock->path[0] = my_strdup(src[0]);
-    stock->path[1] = my_strdup(src[1]);
+    stock->path[0] = strdup(src[0]);
+    stock->path[1] = strdup(src[1]);
     stock->path[2] = NULL;
     return stock;
 }
@@ -28,9 +28,6 @@ static void free_stock(main_t *stock)
     free_array(stock->path);
     free(stock);
 }
-
-/* ─── builtin_which ──────────────────────────────────────────────────────── */
-
 Test(builtin_which, shell_builtin_prints_message, .init = cr_redirect_stdout)
 {
     main_t *stock = make_stock();
@@ -93,9 +90,6 @@ Test(builtin_which, which_is_a_builtin, .init = cr_redirect_stdout)
     cr_assert_stdout_eq_str("which: shell built-in command.\n");
     free_stock(stock);
 }
-
-/* ─── builtin_where ──────────────────────────────────────────────────────── */
-
 Test(builtin_where, shell_builtin_prints_message, .init = cr_redirect_stdout)
 {
     main_t *stock = make_stock();

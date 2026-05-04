@@ -14,8 +14,8 @@ static env_t *make_node(const char *key, const char *value)
     env_t *node = malloc(sizeof(env_t));
 
     cr_assert_not_null(node);
-    node->key = my_strdup((char *)key);
-    node->value = value ? my_strdup((char *)value) : NULL;
+    node->key = strdup((char *)key);
+    node->value = value ? strdup((char *)value) : NULL;
     node->next = NULL;
     return node;
 }

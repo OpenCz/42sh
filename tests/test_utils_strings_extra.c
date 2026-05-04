@@ -8,9 +8,6 @@
 #include <criterion/criterion.h>
 #include <criterion/redirect.h>
 #include "../include/c_zsh.h"
-
-/* ─── my_str_to_word_array_quote ─────────────────────────────────────────── */
-
 Test(my_str_to_word_array_quote, splits_simple_words)
 {
     char **arr = my_str_to_word_array_quote("hello world", " ");
@@ -67,9 +64,6 @@ Test(my_str_to_word_array_quote, splits_pipeline_segments)
     cr_assert_null(arr[2]);
     free_array(arr);
 }
-
-/* ─── my_str_to_array_of_word_array ─────────────────────────────────────── */
-
 static void free_array_of_word_arrays(char ***arr)
 {
     if (!arr)

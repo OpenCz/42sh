@@ -9,31 +9,28 @@
 
 static int free_local_var(env_t *stock)
 {
-    if (stock->key)
-        free(stock->key);
-    if (stock->value)
-        free(stock->value);
-    free(stock);
+    free_alloc(stock->key);
+    free_alloc(stock->value);
+    free_alloc(stock);
     return FAILURE;
 }
 
 static int change_value(env_t *tmp, char *value)
 {
-    char *new_value = my_strdup(value);
+    char *new_value = strdup(value);
 
     if (!new_value)
         return FAILURE;
-    free(tmp->value);
+    free_alloc(tmp->value);
     tmp->value = new_value;
     return SUCCESS;
 }
 
 static int update_value(env_t *stock, char *key, char *value)
 {
-    for (env_t *tmp = stock; tmp; tmp = tmp->next) {
+    for (env_t *tmp = stock; tmp; tmp = tmp->next)
         if (my_strcmp(tmp->key, key) == 0)
             return change_value(tmp, value);
-    }
     return FAILURE;
 }
 
@@ -43,8 +40,8 @@ static env_t *create_local_var(char *key, char *value)
 
     if (!new)
         return NULL;
-    new->key = my_strdup(key);
-    new->value = my_strdup(value);
+    new->key = strdup(key);
+    new->value = strdup(value);
     new->next = NULL;
     if (!new->key || !new->value) {
         free_local_var(new);

@@ -35,7 +35,7 @@ Test(command_context, bind_transfers_ownership_to_main)
     command_ctx_t ctx = {0};
 
     stock.argv = my_str_to_word_array("old value", " ");
-    stock.redirection = my_strdup("<");
+    stock.redirection = strdup("<");
     cr_assert_eq(parse_command_context("ls -l", &ctx, &stock), SUCCESS);
     cr_assert_eq(bind_command_context(&stock, &ctx), SUCCESS);
     cr_assert_null(ctx.argv);

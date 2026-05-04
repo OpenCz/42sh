@@ -7,7 +7,7 @@
 
 #include "c_zsh.h"
 
-char *my_strdup_quote(char *str)
+char *strdup_quote(char *str)
 {
     char *dup = malloc(my_strlen(str) + 1);
     int j = 0;
@@ -34,8 +34,8 @@ int builtin_alias(main_t *main_stock, command_ctx_t *ctx)
     arg_alias = my_str_to_word_array(ctx->arg_command[0], "=");
     if (!arg_alias || !arg_alias[0] || !arg_alias[1])
         return 1;
-    new_alias->new_name = my_strdup(arg_alias[0]);
-    new_alias->command = my_strdup(arg_alias[1]);
+    new_alias->new_name = strdup(arg_alias[0]);
+    new_alias->command = strdup(arg_alias[1]);
     new_alias->is_fixed = false;
     new_alias->next = main_stock->alias_stock;
     main_stock->alias_stock = new_alias;

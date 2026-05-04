@@ -28,7 +28,7 @@ static void check_alias(main_t *stock_main, char **command)
 
     while (alias) {
         if (my_strcmp(*command, alias->new_name) == 0) {
-            *command = my_strdup(alias->command);
+            *command = strdup(alias->command);
             break;
         }
         alias = alias->next;

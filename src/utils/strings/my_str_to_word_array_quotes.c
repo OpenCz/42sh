@@ -106,7 +106,7 @@ static void fill_word(char *to_dup, char *separator, char *word, int len)
     word[j] = '\0';
 }
 
-static char *my_strdup_word_quote(char *to_dup, char *separator)
+static char *strdup_word_quote(char *to_dup, char *separator)
 {
     int len = my_strlen_word_quote(to_dup, separator);
     char *word = malloc(sizeof(char) * (len + 1));
@@ -139,7 +139,7 @@ char **my_str_to_word_array_quote(char *str, char *separator)
     for (; i < words; i++) {
         while (!in_quotes && is_separator(str[decalage], separator))
             decalage++;
-        word_array[i] = my_strdup_word_quote(str + decalage, separator);
+        word_array[i] = strdup_word_quote(str + decalage, separator);
         advance_decalage(str, separator, &decalage, &in_quotes);
     }
     word_array[i] = NULL;

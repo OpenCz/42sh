@@ -67,7 +67,7 @@ static int count_word(char *str, char *separator)
     return count;
 }
 
-char *my_strdup_word_array(char *to_dup, char *separator)
+char *strdup_word_array(char *to_dup, char *separator)
 {
     int len = my_strlen_word_array(to_dup, separator);
     char *word = malloc(sizeof(char) * (len + 1));
@@ -94,7 +94,7 @@ char **my_str_to_word_array(char *str, char *separator)
     while (i < words) {
         while (is_separator(str[decalage], separator))
             decalage++;
-        word_array[i] = my_strdup_word_array(str + decalage, separator);
+        word_array[i] = strdup_word_array(str + decalage, separator);
         while (str[decalage] && !is_separator(str[decalage], separator))
             decalage++;
         i++;
