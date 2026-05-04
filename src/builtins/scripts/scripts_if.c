@@ -107,9 +107,10 @@ static void exec_if_command(main_t *main_stock, char *cmd,
         execute_command(main_stock, to_exec);
     else if (else_cmd) {
         execute_command(main_stock, else_cmd);
-        free(else_cmd);
     }
     free(to_exec);
+    if (else_cmd)
+        free(else_cmd);
     free(cmd);
 }
 
