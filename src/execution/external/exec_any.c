@@ -105,7 +105,7 @@ static int is_command_not_found(char *path, char **env, command_ctx_t *ctx)
     return 0;
 }
 
-int exec_any(main_t *main_stock, command_ctx_t *ctx)
+int exec_any(main_t *main_stock, command_ctx_t *ctx, bool allow_background)
 {
     int direct = is_direct_path(ctx->command);
     char *path = NULL;
@@ -118,7 +118,8 @@ int exec_any(main_t *main_stock, command_ctx_t *ctx)
     env = build_env(main_stock->stock_env);
     if (!env || is_command_not_found(path, env, ctx))
         return 1;
-    status = run_fork(main_stock, ctx, path, env);
+    status = run_fork(&(zipped_stock_t){main_stock, ctx}, path,
+        env, allow_background);
     if (!direct)
         free(path);
     free_env(env);

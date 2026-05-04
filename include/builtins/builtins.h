@@ -44,6 +44,7 @@ int builtin_setenv(main_t *main_stock, command_ctx_t *ctx);
 int builtin_unsetenv(main_t *main_stock, command_ctx_t *ctx);
 int builtin_cd(main_t *main_stock, command_ctx_t *ctx);
 int builtin_jobs(main_t *main_stock, command_ctx_t *ctx);
+int append_jobs(char **command, int pid, main_t *main_stock);
 int builtin_foreground(main_t *main_stock, command_ctx_t *ctx);
 int builtin_background(main_t *main_stock, command_ctx_t *ctx);
 int builtin_repeat(main_t *main_stock, command_ctx_t *ctx);
