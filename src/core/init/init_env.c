@@ -28,7 +28,7 @@ static int set_env_value(env_t *node, char *env_string, int sep)
         node->value = NULL;
         return SUCCESS;
     }
-    node->value = my_strdup(env_string + sep + 1);
+    node->value = strdup(env_string + sep + 1);
     return node->value == NULL;
 }
 

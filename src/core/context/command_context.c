@@ -23,7 +23,7 @@ static void set_redirection(command_ctx_t *ctx, char *command)
     char *redirection = get_redirection(command);
 
     if (redirection)
-        ctx->redirection = my_strdup(redirection);
+        ctx->redirection = strdup(redirection);
 }
 
 static int convert_command_args(char **command_with_arg, main_t *stock_main)

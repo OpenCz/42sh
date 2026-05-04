@@ -25,9 +25,9 @@ Test(my_strncmp, compares_up_to_n)
     cr_assert_gt(my_strncmp("aby", "abx", 3), 0);
 }
 
-Test(my_strdup, duplicates_content)
+Test(strdup, duplicates_content)
 {
-    char *dup = my_strdup("hello");
+    char *dup = strdup("hello");
 
     cr_assert_not_null(dup);
     cr_assert_str_eq(dup, "hello");

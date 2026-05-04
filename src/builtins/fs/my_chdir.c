@@ -110,7 +110,7 @@ int builtin_cd(main_t *main_stock, command_ctx_t *ctx)
         return 1;
     if (check_path(path) == 1)
         return 1;
-    path = my_strdup(path);
+    path = strdup(path);
     if (!path)
         return FAILURE;
     save_old_path(main_stock);

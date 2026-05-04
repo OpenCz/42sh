@@ -13,7 +13,7 @@
 static int update_env_node(env_t *node, char *value)
 {
     free(node->value);
-    node->value = value ? my_strdup(value) : NULL;
+    node->value = value ? strdup(value) : NULL;
     if (value && !node->value)
         return 1;
     return SUCCESS;
@@ -25,8 +25,8 @@ static env_t *create_new_node(char *key, char *value)
 
     if (!node)
         return NULL;
-    node->key = my_strdup(key);
-    node->value = value ? my_strdup(value) : NULL;
+    node->key = strdup(key);
+    node->value = value ? strdup(value) : NULL;
     node->next = NULL;
     return node;
 }
