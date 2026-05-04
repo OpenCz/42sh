@@ -64,10 +64,9 @@ static char *verif_value(main_t *main, char **str)
 
 static int is_else_condition(command_ctx_t *ctx)
 {
-    for (int i = 0; ctx->argv[i]; i++) {
+    for (int i = 0; ctx->argv[i]; i++)
         if (strcmp("else", ctx->argv[i]) == 0)
             return 1;
-    }
     return 0;
 }
 

@@ -15,7 +15,7 @@ static char *is_operator(char *str)
     for (int i = 0; str[i] != '\0'; i++) {
         c = str[i];
         if (c == '(' || c == ')' || c == '+' || c == '=' ||
-            (c == '-' && str[i + 1] >= '0' && str[i + 1] <= '9') ||
+            c == '-' ||
             (c == '/' && str[i - 1] != '.') || c == '!' ||
             c == '*' || c == '|' || c == '>' || c == '<')
             return str;
@@ -108,10 +108,9 @@ static void exec_if_command(main_t *main_stock, char *cmd,
     else if (else_cmd) {
         execute_command(main_stock, else_cmd);
     }
-    free(to_exec);
-    if (else_cmd)
-        free(else_cmd);
-    free(cmd);
+    free_alloc(to_exec);
+    free_alloc(else_cmd);
+    free_alloc(cmd);
 }
 
 int builtin_if(main_t *main_stock, command_ctx_t *ctx)
@@ -127,7 +126,7 @@ int builtin_if(main_t *main_stock, command_ctx_t *ctx)
     if (!condition || strlen(condition) < 1)
         return 1;
     cmd = create_cmd(condition);
-    free(condition);
+    free_alloc(condition);
     exec_if_command(main_stock, cmd, to_exec, else_cmd);
     return 0;
 }
