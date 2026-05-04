@@ -97,7 +97,7 @@ Test(execute_single_extra, builtin_disabled_falls_to_external)
 {
     main_t stock = {0};
 
-    cr_assert_eq(execute_single_command(&stock, "/bin/true", false), SUCCESS);
+    cr_assert_eq(execute_single_command(&stock, "/bin/true", false, false), SUCCESS);
 }
 Test(exec_any_extra, absolute_path_true_succeeds)
 {
