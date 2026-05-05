@@ -14,7 +14,7 @@ char *concat_command(char **arg_command)
 
     for (int i = 0; arg_command[i] != NULL; i++)
         total_length += strlen(arg_command[i]) + 1;
-    result = malloc(sizeof(char *) * (total_length + 1));
+    result = malloc(sizeof(char) * (total_length + 1));
     if (!result)
         return NULL;
     result[0] = '\0';
