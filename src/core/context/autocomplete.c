@@ -72,54 +72,6 @@ char **get_auto_exec(char *word, env_t *env, int *cursor)
     return total;
 }
 
-int menu(char **names, main_t *stock_main)
-{
-    char arrow[3] = {0};
-
-    if (read(STDIN_FILENO, &arrow[0], 1) == 1 && arrow[0] == '\e' &&
-        read(STDIN_FILENO, &arrow[1], 1) == 1 && arrow[1] == '[' &&
-        read(STDIN_FILENO, &arrow[2], 1) == 1 && arrow[2] == 'B') {
-        write(STDOUT_FILENO, "\n\e[1m⇒\e[m\n",
-            sizeof("\n\e[1m⇒\e[m\n") - 1);
-    }
-    display_prompt(stock_main->czshrc->prompt, get_user(stock_main->stock_env));
-    return 0;
-}
-
-void ask_see_command(char **names, main_t *stock_main)
-{
-    struct termios old;
-    struct termios tr;
-    char answer = 0;
-
-    printf("\nThere is %i commands available, do you want to see it (Y/n)\n", len_array(names));
-    tcgetattr(STDIN_FILENO, &old);
-    tr = old;
-    tr.c_lflag &= ~(ICANON | ECHO);
-    tr.c_cc[VMIN] = 1;
-    tr.c_cc[VTIME] = 0;
-    tcsetattr(STDIN_FILENO, TCSANOW, &tr);
-    if (read(STDIN_FILENO, &answer, 1) == 1) {
-        if (answer == 'Y' || answer == 'y' || answer == '\n') {
-            tcsetattr(STDIN_FILENO, TCSANOW, &old);
-            menu(names, stock_main);
-        } else {
-            tcsetattr(STDIN_FILENO, TCSANOW, &old);
-            display_prompt(stock_main->czshrc->prompt, get_user(stock_main->stock_env));
-        }
-    }
-    tcsetattr(STDIN_FILENO, TCSANOW, &old);
-}
-
-int complete_menu(char **names, main_t *stock_main)
-{
-    if (len_array(names) >= 100)
-        ask_see_command(names, stock_main);
-    else if (len_array(names) > 1)
-        menu(names, stock_main);
-    return 0;
-}
-
 int handle_autocomplete(char **buffer, int *len, int *cursor,
     main_t *main_stock)
 {
@@ -133,17 +85,8 @@ int handle_autocomplete(char **buffer, int *len, int *cursor,
         free_alloc(word);
         return 0;
     }
-    for (int i = 0; names[i] != NULL; i++) {
-        if (strcmp(names[i], word) == 0) {
-            strcat(*buffer, " ");
-            (*len)++;
-            (*cursor)++;
-            free_array(names);
-            free_alloc(word);
-            return 0;
-        }
-    }
-    complete_menu(names, main_stock);
+    if (len_array(names) > 1)
+        menu(names, main_stock, &(buffer_t){len, buffer, cursor});
     free_array(names);
     free_alloc(word);
     return 0;
