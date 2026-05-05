@@ -7,14 +7,14 @@
 
 #include "c_zsh.h"
 
-int down_arrow(char **names, int *idx)
+int down_arrow_menu(char **names, int *idx)
 {
     if (*idx < len_array(names) - 1)
         (*idx)++;
     return 0;
 }
 
-int up_arrow(char **names, int *idx)
+int up_arrow_menu(char **names, int *idx)
 {
     if (*idx > 0)
         (*idx)--;
@@ -36,9 +36,9 @@ void handle_menu_arrow(char **names, int *idx,
     if (arrow[2] == 'T')
         tab_handling(names, idx);
     if (arrow[2] == 'B')
-        down_arrow(names, idx);
+        down_arrow_menu(names, idx);
     if (arrow[2] == 'A')
-        up_arrow(names, idx);
+        up_arrow_menu(names, idx);
     render_list(names, *idx, shown);
 }
 
