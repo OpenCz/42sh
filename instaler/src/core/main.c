@@ -5,7 +5,7 @@
 ** main
 */
 
-#include "../include/instaler.h"
+#include "../../include/instaler.h"
 
 int main(void)
 {
@@ -13,7 +13,6 @@ int main(void)
     int c = 0;
 
     init(window);
-    while (c != 'q')
-        c = getch();
+    loop(c);
     endwin();
 }
