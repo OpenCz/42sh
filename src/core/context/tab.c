@@ -26,10 +26,6 @@ int get_buffer_display_width(char *buffer, int len)
 
 void write_tab_spaces(void)
 {
-    int tab = 0;
-
-    while (tab < TAB_WIDTH) {
+    for (int tab = 0; tab < TAB_WIDTH; tab++)
         write(1, " ", 1);
-        tab++;
-    }
 }

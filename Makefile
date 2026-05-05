@@ -24,7 +24,8 @@ SRC_CORE = \
 	src/core/context/termios.c \
 	src/core/context/display.c \
 	src/core/context/key_binding.c \
-	src/core/context/tab.c
+	src/core/context/tab.c \
+	src/core/context/autocomplete.c
 
 SRC_BUILTINS = \
 	src/builtins/env/my_env.c \
@@ -94,6 +95,7 @@ SRC_UTILS = \
 	src/utils/display/prompt.c \
 	src/utils/display/manage_pre_cmd.c \
 	src/utils/strings/my_strcmp.c \
+	src/utils/strings/array.c \
 	src/utils/strings/my_strconcat.c \
 	src/utils/strings/my_strlen.c \
 	src/utils/strings/my_strncmp.c \

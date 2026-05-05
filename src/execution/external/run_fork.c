@@ -17,14 +17,6 @@ static void check_fork_failure(pid_t pid)
     }
 }
 
-static int len_array(char **array)
-{
-    int i = 0;
-
-    for (; array[i] != NULL; i++);
-    return i;
-}
-
 static int handle_child(command_ctx_t *ctx, char *path, char **env)
 {
     signal(SIGTTOU, SIG_DFL);
