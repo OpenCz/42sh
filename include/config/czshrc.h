@@ -43,6 +43,7 @@ typedef struct czshrc_s {
 typedef struct buffer_s {
     int *len;
     char **buffer;
+    int *cursor;
 } buffer_t;
 
 void set_default_rc(czshrc_t *rc);

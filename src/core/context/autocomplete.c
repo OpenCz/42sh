@@ -58,15 +58,15 @@ static void clean_multiple(char ***names)
             delete_element(i, j, names);
 }
 
-char **get_auto_exec(char *buffer, env_t *env)
+char **get_auto_exec(char *word, env_t *env, int *cursor)
 {
     char **path = my_str_to_word_array(get_path(env), ":");
     char **total = NULL;
 
-    if (!path)
+    if (!path || !word)
         return NULL;
     for (int i = 0; path[i] != NULL; i++)
-        append_array_to_array(&total, find_name_executables(buffer, path[i]));
+        append_array_to_array(&total, find_name_executables(word, path[i]));
     free_array(path);
     clean_multiple(&total);
     return total;
@@ -76,16 +76,18 @@ int handle_autocomplete(char **buffer, int *len, int *cursor,
     main_t *main_stock)
 {
     char **names = NULL;
+    char *word = get_word_on_cursor(buffer, cursor);
 
-    if (*len <= 0)
+    if (*len <= 0 || !word)
         return 0;
-    names = get_auto_exec(*buffer, main_stock->stock_env);
-    if (!names)
+    names = get_auto_exec(word, main_stock->stock_env, cursor);
+    if (!names) {
+        free_alloc(word);
         return 0;
-    printf("\n");
-    for (int i = 0; names[i] != NULL; i++)
-        printf("%s\n", names[i]);
+    }
+    if (len_array(names) > 1)
+        menu(names, main_stock, &(buffer_t){len, buffer, cursor});
     free_array(names);
-    display_prompt(main_stock->czshrc->prompt, get_user(main_stock->stock_env));
+    free_alloc(word);
     return 0;
 }
