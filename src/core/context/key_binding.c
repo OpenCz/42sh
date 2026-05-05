@@ -70,7 +70,8 @@ int handle_input_char(history_t *history, buffer_t *buff,
     int *cursor, input_ctx_t *ctx)
 {
     if (ctx->ch == '\t')
-        return handle_autocomplete(buff->buffer, buff->len, cursor, ctx->stock_main);
+        return handle_autocomplete(buff->buffer, buff->len, cursor,
+            ctx->stock_main);
     if (ctx->ch == 3)
         return handle_ctrl_c(buff, cursor, ctx->user, ctx->stock_main);
     if (ctx->ch == 12)
