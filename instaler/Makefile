@@ -13,8 +13,15 @@ NAME     = instaler
 
 # ─── Sources ─────────────────────────────────────────────────────────────
 SRC = \
-	src/main.c \
-	src/init/init.c
+	src/core/main.c \
+	src/init/init.c \
+	src/core/loop/loop.c \
+	src/utils/io/openator.c \
+	src/utils/io/get_file_size_stat.c \
+	src/utils/memory/free_function.c \
+	src/utils/string/str_to_array_of_word_array.c \
+	src/utils/string/my_str_to_word_array.c \
+	src/display/print_ascii.c \
 
 OBJ = $(SRC:.c=.o)
 
