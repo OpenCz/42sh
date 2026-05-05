@@ -25,7 +25,8 @@ SRC_CORE = \
 	src/core/context/display.c \
 	src/core/context/key_binding.c \
 	src/core/context/tab.c \
-	src/core/context/autocomplete.c
+	src/core/context/autocomplete.c \
+	src/core/context/cursor.c
 
 SRC_BUILTINS = \
 	src/builtins/env/my_env.c \
