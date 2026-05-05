@@ -22,7 +22,6 @@
 
 typedef struct alias_stock_s {
     char *new_name;
-    char **new_arg_command;
     char *command;
     bool is_fixed;
     struct alias_stock_s *next;
