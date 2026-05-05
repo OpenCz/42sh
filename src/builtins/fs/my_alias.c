@@ -7,36 +7,44 @@
 
 #include "c_zsh.h"
 
-char *strdup_quote(char *str)
+char *concat_command(char **arg_command)
 {
-    char *dup = malloc(my_strlen(str) + 1);
-    int j = 0;
+    char *result = NULL;
+    int total_length = 0;
 
-    if (!dup)
+    for (int i = 0; arg_command[i] != NULL; i++)
+        total_length += strlen(arg_command[i]) + 1;
+    result = malloc(sizeof(char) * (total_length + 1));
+    if (!result)
         return NULL;
-    for (int i = 0; str[i] != '\0'; i++) {
-        if (str[0] == '"' || str[my_strlen(str) - 1] == '"')
-            continue;
-        dup[j] = str[i];
-        j++;
+    result[0] = '\0';
+    for (int i = 0; arg_command[i] != NULL; i++) {
+        strcat(result, arg_command[i]);
+        if (arg_command[i + 1] != NULL)
+            strcat(result, " ");
     }
-    dup[j] = '\0';
-    return dup;
+    return result;
+}
+
+int init_alias(main_t *main_stock, command_ctx_t *ctx, alias_stock_t *new_alias)
+{
+    new_alias->command = concat_command(&ctx->arg_command[1]);
+    new_alias->new_name = strdup(ctx->arg_command[0]);
+    new_alias->is_fixed = false;
+    new_alias->next = NULL;
+    return 0;
 }
 
 int builtin_alias(main_t *main_stock, command_ctx_t *ctx)
 {
     alias_stock_t *new_alias = malloc(sizeof(alias_stock_t));
-    char **arg_alias = NULL;
 
-    if (!new_alias || !ctx->arg_command[0])
+    if (!new_alias)
         return 1;
-    arg_alias = my_str_to_word_array(ctx->arg_command[0], "=");
-    if (!arg_alias || !arg_alias[0] || !arg_alias[1])
+    if (!ctx->arg_command[0] || !ctx->arg_command[1])
         return 1;
-    new_alias->new_name = strdup(arg_alias[0]);
-    new_alias->command = strdup(arg_alias[1]);
-    new_alias->is_fixed = false;
+    if (init_alias(main_stock, ctx, new_alias) != 0)
+        return 1;
     new_alias->next = main_stock->alias_stock;
     main_stock->alias_stock = new_alias;
     return 0;
