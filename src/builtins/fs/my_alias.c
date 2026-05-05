@@ -7,23 +7,31 @@
 
 #include "c_zsh.h"
 
+char *concat_command(char **arg_command)
+{
+    char *result = NULL;
+    int total_length = 0;
+
+    for (int i = 0; arg_command[i] != NULL; i++)
+        total_length += strlen(arg_command[i]) + 1;
+    result = malloc(sizeof(char *) * (total_length + 1));
+    if (!result)
+        return NULL;
+    result[0] = '\0';
+    for (int i = 0; arg_command[i] != NULL; i++) {
+        strcat(result, arg_command[i]);
+        if (arg_command[i + 1] != NULL)
+            strcat(result, " ");
+    }
+    return result;
+}
+
 int init_alias(main_t *main_stock, command_ctx_t *ctx, alias_stock_t *new_alias)
 {
-    int i = 2;
-    int arg_len = my_wordarray_len(&ctx->arg_command[2]);
-
-    new_alias->command = strdup(ctx->arg_command[0]);
-    new_alias->new_name = strdup(ctx->arg_command[1]);
-    new_alias->new_arg_command = malloc(sizeof(char *) * (arg_len + 1));
-    if (!new_alias->new_arg_command)
-        return 1;
-    for (int k = 0; k < arg_len; k++) {
-        new_alias->new_arg_command[k] = strdup(ctx->arg_command[i]);
-        i++;
-    }
-    new_alias->new_arg_command[arg_len] = NULL;
+    new_alias->command = concat_command(&ctx->arg_command[1]);
+    new_alias->new_name = strdup(ctx->arg_command[0]);
     new_alias->is_fixed = false;
-    new_alias->next = new_alias;
+    new_alias->next = NULL;
     return 0;
 }
 
@@ -35,6 +43,9 @@ int builtin_alias(main_t *main_stock, command_ctx_t *ctx)
         return 1;
     if (!ctx->arg_command[0] || !ctx->arg_command[1])
         return 1;
-    init_alias(main_stock, ctx, new_alias);
+    if (init_alias(main_stock, ctx, new_alias) != 0)
+        return 1;
+    new_alias->next = main_stock->alias_stock;
+    main_stock->alias_stock = new_alias;
     return 0;
 }
