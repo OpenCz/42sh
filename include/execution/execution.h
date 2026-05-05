@@ -33,7 +33,8 @@ int wait_pipeline(pid_t *pids, int count, main_t *stock_main, char *command);
 int finalize_pipeline(pipeline_state_t *state, char *command);
 
 int exec_any(main_t *main_stock, command_ctx_t *ctx, bool allow_background);
-int run_fork(zipped_stock_t *zip, char *path, char **env, bool allow_background);
+int run_fork(zipped_stock_t *zip, char *path, char **env,
+    bool allow_background);
 int child_exec(command_ctx_t *ctx, char *path, char **env);
 int get_seg(int status, main_t *stock_main, int pid, char **command);
 int append_jobs(char **command, int pid, main_t *main_stock);
