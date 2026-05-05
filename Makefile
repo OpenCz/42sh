@@ -56,6 +56,7 @@ SRC_BUILTINS = \
 SRC_EXEC = \
 	src/execution/dispatch/execute_builtin.c \
 	src/execution/dispatch/execute_command.c \
+	src/execution/dispatch/alias_expand.c \
 	src/execution/dispatch/execute_single_command.c \
 	src/execution/dispatch/execute_operation.c \
 	src/execution/external/exec_any.c \
