@@ -16,6 +16,7 @@ void loop(int c)
     while (c != 'q') {
         clear();
         print_ascii(1, 15, title_arr);
+        mvprintw(10, 10, "Press 'q' to quit.");
         refresh();
         c = getch();
     }
