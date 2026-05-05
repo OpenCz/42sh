@@ -8,8 +8,8 @@
 MAKEFLAGS += --no-print-directory
 
 # ─── Project Info ────────────────────────────────────────────────────────
-PROJECT  = instaler
-NAME     = instaler
+PROJECT  = instal
+NAME     = instal
 
 # ─── Sources ─────────────────────────────────────────────────────────────
 SRC = \
