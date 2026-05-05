@@ -19,6 +19,7 @@
     #define CONTINUE -5
     #define TAB_WIDTH 4
     #define HISTORY 100
+    #define AUTOCOMPLETION 20
 
 typedef struct alias_stock_s {
     char *new_name;
