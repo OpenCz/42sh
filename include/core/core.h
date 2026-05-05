@@ -41,5 +41,6 @@ void write_tab_spaces(void);
 int get_buffer_display_width(char *buffer, int len);
 int check_limit_signals(signal_t *signals);
 void handle_limit_signals(int sfd, signal_t *signals);
+int handle_autocomplete(char **buffer, int *len, int *cursor, main_t *main_stock);
 
 #endif
