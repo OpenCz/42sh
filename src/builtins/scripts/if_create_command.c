@@ -48,6 +48,7 @@ char *append_buffer(command_ctx_t *ctx, int *i)
         return buffer;
     buffer = strcpy(buffer, ctx->argv[*i]);
     for (; ctx->argv[*i + 1] && strcmp(ctx->argv[*i + 1], "else") &&
+        strcmp(ctx->argv[*i + 1], "endif") &&
         (!is_command(ctx->argv[*i]) &&
             !is_command(ctx->argv[*i + 1])); *i += 1) {
         buffer = strcat(buffer, " ");
@@ -84,12 +85,10 @@ char *create_condition(main_t *main, command_ctx_t *ctx,
 
     if (!buffer)
         return NULL;
-    for (; ctx->argv[i + 1] &&
-        strcmp(ctx->argv[i + 1], "endif") != 0; i++) {
-        if (!is_command(ctx->argv[i]) && !is_command(ctx->argv[i + 1]))
-            break;
+    for (; ctx->argv[i] && strcmp(ctx->argv[i], "then") != 0; i++)
         buffer = strcat(buffer, verif_value(main, &ctx->argv[i]));
-    }
+    if (ctx->argv[i] && strcmp(ctx->argv[i], "then") == 0)
+        i++;
     *to_exec = append_buffer(ctx, &i);
     if (is_else)
         *else_cmd = append_buffer(ctx, &i);

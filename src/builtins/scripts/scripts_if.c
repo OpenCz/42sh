@@ -40,7 +40,8 @@ static char *create_cmd(char *condition)
 {
     char *cmd = calloc(1, BUFFER_SIZE);
 
-    if (!cmd)
+    if (!cmd || (strlen(condition) + strlen("echo \"")
+            + strlen("\" | bc -l") > BUFFER_SIZE))
         return NULL;
     cmd = strcpy(cmd, "echo \"");
     cmd = strcat(cmd, condition);
@@ -58,43 +59,71 @@ static void handle_child(pid_t pid, main_t *main, int pipefd[2], char *str)
     }
 }
 
+static int wait_pipe(pid_t pid, FILE **fd, int *status, int pipefd[2])
+{
+    close(pipefd[1]);
+    waitpid(pid, status, 0);
+    *fd = fdopen(pipefd[0], "r");
+    if (!(*fd)) {
+        close(pipefd[0]);
+        return 0;
+    }
+    return 1;
+}
+
 int redirect_command(main_t *main, char *str)
 {
     int status = 0;
-    int pipefd[2];
-    pid_t pid;
-    char buffer[BUFFER_SIZE + 1];
-    int size = 0;
+    int pipefd[2] = {0, 0};
+    pid_t pid = 0;
+    char *buffer = NULL;
+    size_t size = 0;
+    FILE *fd = NULL;
+    int result = 0;
 
     if (pipe(pipefd) == -1)
         return 0;
     pid = fork();
     handle_child(pid, main, pipefd, str);
-    close(pipefd[1]);
-    waitpid(pid, &status, 0);
-    size = read(pipefd[0], buffer, BUFFER_SIZE);
-    close(pipefd[0]);
-    if (size <= 0)
+    if (!wait_pipe(pid, &fd, &status, pipefd))
+        return 0;
+    getline(&buffer, &size, fd);
+    fclose(fd);
+    result = atoi(buffer);
+    free_alloc(buffer);
+    return result;
+}
+
+static int check_keywords(char **argv)
+{
+    int has_then = 0;
+    int has_endif = 0;
+
+    for (int i = 1; argv[i]; i++) {
+        if (strcmp(argv[i], "then") == 0)
+            has_then = 1;
+        if (strcmp(argv[i], "endif") == 0)
+            has_endif = 1;
+    }
+    if (!has_then) {
+        printf("if: Missing 'then'.\n");
         return -1;
-    buffer[size] = '\0';
-    return atoi(buffer);
+    }
+    if (!has_endif) {
+        printf("if: Missing 'endif'.\n");
+        return -1;
+    }
+    return 0;
 }
 
 static int check_if_format(command_ctx_t *ctx)
 {
-    int len = my_wordarray_len(ctx->argv);
-
-    if (len == 1) {
+    if (my_wordarray_len(ctx->argv) == 1) {
         printf("if: Too few arguments.\n");
         return -1;
     }
-    if (len == 2 || strcmp(ctx->argv[1], "else") == 0) {
-        if (!is_command(ctx->argv[1]) || is_operator(ctx->argv[1]))
-            printf("if: Expression Syntax.\n");
-        else
-            printf("Empty if.\n");
+    if (check_keywords(ctx->argv) == -1)
         return -1;
-    }
     if (is_valid_formating(ctx->argv) == -1)
         return -1;
     return 0;
