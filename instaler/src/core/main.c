@@ -9,10 +9,11 @@
 
 int main(void)
 {
-    WINDOW *window = initscr();
+    instaler_t *instaler = malloc(sizeof(instaler_t));
     int c = 0;
 
-    init(window);
-    loop(c);
+    instaler->window = initscr();
+    init(instaler);
+    loop(c, instaler);
     endwin();
 }
