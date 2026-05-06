@@ -22,6 +22,7 @@ SRC = \
 	src/utils/string/str_to_array_of_word_array.c \
 	src/utils/string/my_str_to_word_array.c \
 	src/display/print_ascii.c \
+	src/init/closup.c \
 
 OBJ = $(SRC:.c=.o)
 
