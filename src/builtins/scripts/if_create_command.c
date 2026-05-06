@@ -44,6 +44,8 @@ char *append_buffer(command_ctx_t *ctx, int *i)
 
     if (!buffer)
         return NULL;
+    if (!ctx->argv[*i])
+        return buffer;
     buffer = strcpy(buffer, ctx->argv[*i]);
     for (; ctx->argv[*i + 1] && strcmp(ctx->argv[*i + 1], "else") &&
         (!is_command(ctx->argv[*i]) &&
@@ -51,7 +53,10 @@ char *append_buffer(command_ctx_t *ctx, int *i)
         buffer = strcat(buffer, " ");
         buffer = strcat(buffer, ctx->argv[*i + 1]);
     }
-    *i += 2;
+    if (ctx->argv[*i + 1] && strcmp(ctx->argv[*i + 1], "else") == 0)
+        *i += 2;
+    else
+        *i += 1;
     return buffer;
 }
 
