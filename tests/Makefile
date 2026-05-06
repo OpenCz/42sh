@@ -45,6 +45,7 @@ SRC_PARSING = \
 	$(wildcard ../src/parsing/quotes_management/*.c) \
 	$(wildcard ../src/parsing/command_substitution/*.c) \
 	$(wildcard ../src/parsing/manage_backticks/*.c) \
+	$(wildcard ../src/parsing/globbing/*.c)
 
 SRC_UTILS = \
 	$(wildcard ../src/utils/io/*.c) \
