@@ -74,6 +74,9 @@ static void enter_completion(char **names, int idx, buffer_t *buf)
         (*buf->cursor)++;
         (*buf->len)++;
     }
+    (*buf->buffer)[*buf->cursor] = ' ';
+    (*buf->cursor)++;
+    (*buf->len)++;
     (*buf->buffer)[*buf->cursor] = '\0';
 }
 
