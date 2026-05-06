@@ -80,6 +80,7 @@ char **get_auto_exec(char *word, main_t *main_stock, int *cursor)
     for (int i = 0; path[i] != NULL; i++)
         append_array_to_array(&total, find_name_executables(word, path[i]));
     free_array(path);
+    merge_sort(total, 0, (len_array(total) - 1));
     clean_multiple(&total);
     return total;
 }
