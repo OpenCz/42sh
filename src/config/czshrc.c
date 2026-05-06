@@ -8,7 +8,7 @@
 ** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 
-#include "../../include/c_zsh.h"
+#include "c_zsh.h"
 
 static void trim_inplace(char *str)
 {
@@ -39,6 +39,24 @@ static void free_parsed_rc(char ***rc_parsed)
     free(rc_parsed);
 }
 
+void manage_alias(czshrc_t *rc, char ***rc_parsed, int i)
+{
+    alias_stock_t *new_alias = NULL;
+
+    for (int j = i + 1; rc_parsed[j] && rc_parsed[j][0][0] != '['; j++) {
+        if (!rc_parsed[j][0] || !rc_parsed[j][1])
+            continue;
+        new_alias = malloc(sizeof(alias_stock_t));
+        if (!new_alias)
+            return;
+        new_alias->new_name = strdup(rc_parsed[j][0]);
+        new_alias->command = strdup(rc_parsed[j][1]);
+        new_alias->is_fixed = false;
+        new_alias->next = rc->aliases;
+        rc->aliases = new_alias;
+    }
+}
+
 static void parse_and_fill_struct(czshrc_t *rc, char *rc_content)
 {
     char ***rc_parsed = my_str_to_array_of_word_array(rc_content, "\n", "=");
@@ -53,9 +71,10 @@ static void parse_and_fill_struct(czshrc_t *rc, char *rc_content)
     for (int i = 0; rc_parsed[i]; i++) {
         if (rc_parsed[i][0][0] == '#')
             continue;
-        if (my_strcmp(rc_parsed[i][0], "[prompt]") == 0) {
+        if (my_strcmp(rc_parsed[i][0], "[prompt]") == 0)
             manage_prompt(rc, rc_parsed, i);
-        }
+        if (my_strcmp(rc_parsed[i][0], "[alias]") == 0)
+            manage_alias(rc, rc_parsed, i);
     }
     free_parsed_rc(rc_parsed);
     free_alloc(rc_content);
