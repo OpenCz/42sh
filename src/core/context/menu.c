@@ -49,10 +49,10 @@ static void clear_list(int shown)
 {
     if (shown <= 0)
         return;
-    printf("\x1b[%dA", shown);
-    for (int i = 0; i < shown; i++)
+    printf("\x1b[%dA", shown + 2);
+    for (int i = 0; i < shown + 2; i++)
         printf("\x1b[2K\n");
-    printf("\x1b[%dA", shown);
+    printf("\x1b[%dA", shown + 2);
     fflush(stdout);
 }
 
