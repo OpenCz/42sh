@@ -54,5 +54,6 @@ int pre_cmd(main_t *stock_main);
 int len_array(char **array);
 void append_array(char ***array, char *name);
 void append_array_to_array(char ***array, char **array2);
+void merge_sort(char **array, int left, int right);
 
 #endif
