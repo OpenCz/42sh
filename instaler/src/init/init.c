@@ -7,12 +7,13 @@
 
 #include "../../include/instaler.h"
 
-void init(WINDOW *window)
+void init(instaler_t *instaler)
 {
     noecho();
     cbreak();
     curs_set(0);
-    nodelay(window, TRUE);
-    keypad(window, TRUE);
-    wtimeout(window, 100);
+    nodelay(instaler->window, TRUE);
+    keypad(instaler->window, TRUE);
+    wtimeout(instaler->window, 100);
+    getmaxyx(instaler->window, instaler->size.y, instaler->size.x);
 }
