@@ -61,6 +61,7 @@ time        = true  : BLACK   : GREEN
 home  = cd ~
 
 # Listing
+ls    = ls --color=auto
 ll    = ls -la --color=auto
 la    = ls -A --color=auto
 lt    = ls -lt --color=auto
