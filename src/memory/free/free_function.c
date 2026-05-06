@@ -67,6 +67,19 @@ static void free_jobs(job_controler_t *controler)
     }
 }
 
+static void free_alias(alias_stock_t *alias)
+{
+    alias_stock_t *next = NULL;
+
+    while (alias) {
+        next = alias->next;
+        free_alloc(alias->command);
+        free_alloc(alias->new_name);
+        free_alloc(alias);
+        alias = next;
+    }
+}
+
 void free_main(main_t *stock)
 {
     if (!stock)
@@ -80,6 +93,7 @@ void free_main(main_t *stock)
     free_jobs(stock->controler);
     free_alloc(stock->signal);
     free_linked_list(stock->stock_env);
+    free_alias(stock->alias_stock);
     free_history(stock->history, stock->history->history_cmd);
     free_alloc(stock);
 }

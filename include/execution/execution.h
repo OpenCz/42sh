@@ -52,4 +52,7 @@ int builtin_which(main_t *main_stock, command_ctx_t *ctx);
 
 int builtin_alias(main_t *main_stock, command_ctx_t *ctx);
 
+void expand_aliases(main_t *stock_main, char **command);
+char *alias_extract_first_word(char *cmd);
+
 #endif
