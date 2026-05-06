@@ -21,8 +21,8 @@ static int get_available_lines(void)
     fflush(stdout);
     if (scanf("\x1b[%d;%dR", &cur_row, &cols) != 2)
         return AUTOCOMPLETION;
-    if (rows - cur_row < 3)
-        return 3;
+    if (rows - cur_row < 10)
+        return 10;
     return (rows - cur_row);
 }
 
