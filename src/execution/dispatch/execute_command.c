@@ -10,13 +10,39 @@
 
 #include "c_zsh.h"
 
+static void update_quote_state(char c, int *in_single, int *in_double,
+    int *in_backtick)
+{
+    if (c == '\'' && !(*in_double) && !(*in_backtick))
+        *in_single = !(*in_single);
+    if (c == '"' && !(*in_single) && !(*in_backtick))
+        *in_double = !(*in_double);
+    if (c == '`' && !(*in_single) && !(*in_double))
+        *in_backtick = !(*in_backtick);
+}
+
+static int is_pipe_operator(char c, int i, char *cmd)
+{
+    if (c != '|')
+        return 0;
+    if (i > 0 && cmd[i - 1] == '|')
+        return 0;
+    if (cmd[i + 1] != '\0' && cmd[i + 1] == '|')
+        return 0;
+    return 1;
+}
+
 int has_pipeline_operator(char *command)
 {
+    int in_single = 0;
+    int in_double = 0;
+    int in_backtick = 0;
+
     for (int i = 0; command[i] != '\0'; i++) {
-        if (command[i] != '|')
+        update_quote_state(command[i], &in_single, &in_double, &in_backtick);
+        if (in_single || in_double || in_backtick)
             continue;
-        if ((i == 0 || command[i - 1] != '|') &&
-            (command[i + 1] == '\0' || command[i + 1] != '|'))
+        if (is_pipe_operator(command[i], i, command))
             return 1;
     }
     return 0;
