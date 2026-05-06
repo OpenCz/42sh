@@ -76,10 +76,10 @@ char **get_auto_exec(char *word, main_t *main_stock, int *cursor)
 
     if (!path || !word)
         return NULL;
+    append_array_to_array(&total, get_aliases(word, main_stock->alias_stock));
     for (int i = 0; path[i] != NULL; i++)
         append_array_to_array(&total, find_name_executables(word, path[i]));
     free_array(path);
-    append_array_to_array(&total, get_aliases(word, main_stock->alias_stock));
     clean_multiple(&total);
     return total;
 }
