@@ -58,13 +58,25 @@ static void clean_multiple(char ***names)
             delete_element(i, j, names);
 }
 
-char **get_auto_exec(char *word, env_t *env, int *cursor)
+char **get_aliases(char *word, alias_stock_t *aliases)
 {
-    char **path = my_str_to_word_array(get_path(env), ":");
+    char **alias = NULL;
+    alias_stock_t *tmp = aliases;
+
+    for (; tmp; tmp = tmp->next)
+        if (strncmp(word, tmp->new_name, strlen(word)) == 0)
+            append_array(&alias, tmp->new_name);
+    return alias;
+}
+
+char **get_auto_exec(char *word, main_t *main_stock, int *cursor)
+{
+    char **path = my_str_to_word_array(get_path(main_stock->stock_env), ":");
     char **total = NULL;
 
     if (!path || !word)
         return NULL;
+    append_array_to_array(&total, get_aliases(word, main_stock->alias_stock));
     for (int i = 0; path[i] != NULL; i++)
         append_array_to_array(&total, find_name_executables(word, path[i]));
     free_array(path);
@@ -80,7 +92,7 @@ int handle_autocomplete(char **buffer, int *len, int *cursor,
 
     if (*len <= 0 || !word)
         return 0;
-    names = get_auto_exec(word, main_stock->stock_env, cursor);
+    names = get_auto_exec(word, main_stock, cursor);
     if (!names) {
         free_alloc(word);
         return 0;
