@@ -24,7 +24,11 @@ SRC_CORE = \
 	src/core/context/termios.c \
 	src/core/context/display.c \
 	src/core/context/key_binding.c \
-	src/core/context/tab.c
+	src/core/context/tab.c \
+	src/core/context/autocomplete.c \
+	src/core/context/cursor.c \
+	src/core/context/menu.c \
+	src/core/context/menu_handling.c
 
 SRC_BUILTINS = \
 	src/builtins/env/my_env.c \
@@ -39,6 +43,7 @@ SRC_BUILTINS = \
 	src/builtins/scripts/scripts_if.c \
 	src/builtins/scripts/if_create_command.c \
 	src/builtins/scripts/foreach_input.c \
+	src/builtins/scripts/foreach_arg.c \
 	src/utils/errors/foreach.c \
 	src/builtins/fs/my_which.c \
 	src/builtins/fs/my_where.c \
@@ -94,8 +99,8 @@ SRC_UTILS = \
 	src/utils/display/prompt.c \
 	src/utils/display/manage_pre_cmd.c \
 	src/utils/strings/my_strcmp.c \
+	src/utils/strings/array.c \
 	src/utils/strings/my_strconcat.c \
-	src/utils/strings/my_strdup.c \
 	src/utils/strings/my_strlen.c \
 	src/utils/strings/my_strncmp.c \
 	src/utils/strings/my_strstr.c \

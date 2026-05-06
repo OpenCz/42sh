@@ -10,7 +10,7 @@
 
 #include "c_zsh.h"
 
-static int has_pipeline_operator(char *command)
+int has_pipeline_operator(char *command)
 {
     for (int i = 0; command[i] != '\0'; i++) {
         if (command[i] != '|')
@@ -27,13 +27,22 @@ static int execute_compound_command(main_t *stock_main, char *command)
     int has_logic_operator = (my_strstr(command, "&&") != NULL ||
         my_strstr(command, "||") != NULL);
     int has_pipe_operator = has_pipeline_operator(command);
+    int cmd_len = strlen(command);
+    int is_job_controler = (cmd_len > 1 && command[cmd_len - 1] == '&'
+        && command[cmd_len - 2] == ' ');
+    char buf[BUFFER_SIZE] = {0};
 
     expand_aliases(stock_main, &command);
     if (has_logic_operator)
         return execute_operator(stock_main, command);
     if (has_pipe_operator)
         return execute_pipeline(stock_main, command);
-    return execute_single_command(stock_main, command, true);
+    if (is_job_controler) {
+        strncpy(buf, command, cmd_len - 2);
+        buf[cmd_len - 2] = '\0';
+        command = buf;
+    }
+    return execute_single_command(stock_main, command, true, is_job_controler);
 }
 
 int execute_command(main_t *stock_main, char *command)

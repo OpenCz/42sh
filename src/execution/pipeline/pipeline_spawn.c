@@ -35,7 +35,7 @@ pid_t launch_segment(main_t *stock_main,
             close(in_fd);
         if (out_fd != -1)
             close(out_fd);
-        exit(execute_single_command(stock_main, command, true));
+        exit(execute_single_command(stock_main, command, true, false));
     }
     return pid;
 }

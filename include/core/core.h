@@ -41,5 +41,16 @@ void write_tab_spaces(void);
 int get_buffer_display_width(char *buffer, int len);
 int check_limit_signals(signal_t *signals);
 void handle_limit_signals(int sfd, signal_t *signals);
+char *get_word_on_cursor(char **buffer, int *cursor);
+int menu(char **names, main_t *stock_main, buffer_t *buf);
+int down_arrow_menu(char **names, int *idx);
+int up_arrow_menu(char **names, int *idx);
+int tab_handling(char **names, int *idx);
+void handle_menu_arrow(char **names, int *idx,
+    char *arrow, int shown);
+int check_escape(char *arrow);
+void render_list(char **names, int idx, int shown);
+int handle_autocomplete(char **buffer, int *len, int *cursor,
+    main_t *main_stock);
 
 #endif

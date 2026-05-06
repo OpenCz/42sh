@@ -19,6 +19,7 @@
     #define CONTINUE -5
     #define TAB_WIDTH 4
     #define HISTORY 100
+    #define AUTOCOMPLETION 20
 
 typedef struct alias_stock_s {
     char *new_name;
@@ -140,5 +141,11 @@ typedef struct word_iter_s {
     int iq;
     int ib;
 } word_iter_t;
+
+typedef struct zipped_stock_s {
+    main_t *main_stock;
+    command_ctx_t *ctx;
+} zipped_stock_t;
+
 
 #endif

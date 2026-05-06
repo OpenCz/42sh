@@ -44,6 +44,7 @@ int builtin_setenv(main_t *main_stock, command_ctx_t *ctx);
 int builtin_unsetenv(main_t *main_stock, command_ctx_t *ctx);
 int builtin_cd(main_t *main_stock, command_ctx_t *ctx);
 int builtin_jobs(main_t *main_stock, command_ctx_t *ctx);
+int append_jobs(char **command, int pid, main_t *main_stock);
 int builtin_foreground(main_t *main_stock, command_ctx_t *ctx);
 int builtin_background(main_t *main_stock, command_ctx_t *ctx);
 int builtin_repeat(main_t *main_stock, command_ctx_t *ctx);
@@ -55,6 +56,10 @@ int put_error_var(char *var);
 char *is_command(char *str);
 char *append_buffer(command_ctx_t *ctx, int *i);
 int builtin_printenv(main_t *main_stock, command_ctx_t *ctx);
+int is_valid_formating(char **arr);
+char *create_condition(main_t *main, command_ctx_t *ctx,
+    char **else_cmd, char **to_exec);
+int redirect_command(main_t *main, char *str);
 int source(main_t *stock_main, command_ctx_t *ctx);
 
 int my_env(main_t *main_stock);

@@ -23,6 +23,8 @@
 #include <ctype.h>
 #include <limits.h>
 #include <termios.h>
+#include <sys/stat.h>
+#include <sys/ioctl.h>
 
 #ifndef MINISHELL_H
     #define MINISHELL_H

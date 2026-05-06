@@ -39,7 +39,7 @@ static char *do_subst_and_update(char *cmd, int i, int *bts, main_t *sm)
 
     free_alloc(inner);
     if (!s)
-        s = my_strdup("");
+        s = strdup("");
     bts[1] = i + 1;
     bts[0] = 0;
     return s;
@@ -103,7 +103,7 @@ static char *process_backtick_loop(char *cmd, char *result,
 
 char *manage_backticks(char *cmd, main_t *stock_main)
 {
-    char *result = my_strdup("");
+    char *result = strdup("");
 
     if (!result)
         return NULL;

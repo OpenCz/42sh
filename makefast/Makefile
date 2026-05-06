@@ -79,7 +79,6 @@ SRC_UTILS = \
 	../src/utils/display/prompt.c \
 	../src/utils/strings/my_strcmp.c \
 	../src/utils/strings/my_strconcat.c \
-	../src/utils/strings/my_strdup.c \
 	../src/utils/strings/my_strlen.c \
 	../src/utils/strings/my_strncmp.c \
 	../src/utils/strings/my_strstr.c \

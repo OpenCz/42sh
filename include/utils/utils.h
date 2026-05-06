@@ -17,7 +17,6 @@
 int my_strlen(char *str);
 void my_putstr(char *str);
 void my_putstrerror(char *str);
-char *my_strdup(char *str);
 int my_strcmp(char *s1, char *s2);
 int my_strncmp(char *s1, char *s2, int n);
 char *my_strconcat(char *str1, char *str2);
@@ -52,5 +51,8 @@ char *my_word_array_to_str(char **array);
 int my_str_is_alpha(char *key);
 void *unmatched_quote(int in_quotes, char **word_array);
 int pre_cmd(main_t *stock_main);
+int len_array(char **array);
+void append_array(char ***array, char *name);
+void append_array_to_array(char ***array, char **array2);
 
 #endif

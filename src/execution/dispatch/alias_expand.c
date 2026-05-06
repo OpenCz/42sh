@@ -80,7 +80,7 @@ static char *build_expanded_cmd(char *alias_val, char *full_cmd)
     char *rest = get_args_after_first(full_cmd);
 
     if (*rest == '\0')
-        return my_strdup(alias_val);
+        return strdup(alias_val);
     return concat_val_args(alias_val, rest);
 }
 
