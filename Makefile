@@ -86,6 +86,7 @@ SRC_PARSING = \
 	src/parsing/quotes_management/manage_quotes.c \
 	src/parsing/command_substitution/command_substitution.c \
 	src/parsing/manage_backticks/manage_backticks.c \
+	src/parsing/globbing/apply_glob.c 
 
 SRC_UTILS = \
 	src/utils/io/my_putstr.c \

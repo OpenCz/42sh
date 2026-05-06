@@ -11,6 +11,8 @@
 #ifndef PARSING_H
     #define PARSING_H
 
+    #include "parsing/globbing.h"
+
 char *get_redirection(const char *command);
 char *convert_quotes(char *cmd);
 char *decode_literals(char *str);
