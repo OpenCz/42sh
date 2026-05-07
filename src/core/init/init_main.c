@@ -66,12 +66,8 @@ static void initrc(main_t *main_node)
     init_alias_stock(main_node);
 }
 
-main_t *init_main(char **env)
+static void set_basic_shell(main_t *main_node, char **env)
 {
-    main_t *main_node = malloc(sizeof(main_t));
-
-    if (!main_node)
-        return NULL;
     main_node->stock_env = init_env(env);
     main_node->command = NULL;
     main_node->env = env;
@@ -81,9 +77,19 @@ main_t *init_main(char **env)
     main_node->old_path = NULL;
     main_node->path = my_str_to_word_array(get_path(main_node->stock_env), ":");
     main_node->home = get_home(main_node->stock_env);
+}
+
+main_t *init_main(char **env)
+{
+    main_t *main_node = malloc(sizeof(main_t));
+
+    if (!main_node)
+        return NULL;
+    set_basic_shell(main_node, env);
     main_node->alias_stock = NULL;
     init_history(main_node);
     initrc(main_node);
+    builtin_loader(main_node);
     main_node->controler = init_job_controler();
     main_node->signal = init_signal();
     main_node->stock_local_var = NULL;

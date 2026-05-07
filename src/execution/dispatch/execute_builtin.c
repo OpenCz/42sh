@@ -11,7 +11,7 @@
 #include "../../../include/c_zsh.h"
 #include "../../../include/builtins/builtins.h"
 
-const builtin_command_t command_shell[] = {
+const builtin_command_common_t command_shell[] = {
     {"env", builtin_env},
     {"setenv", builtin_setenv},
     {"unsetenv", builtin_unsetenv},
@@ -38,9 +38,13 @@ const builtin_command_t command_shell[] = {
 int execute_builtin(main_t *main_stock, command_ctx_t *ctx)
 {
     char *cmd = ctx->command;
+    builtin_command_t *load_builtin = main_stock->builtin;
 
     for (size_t i = 0; command_shell[i].name != NULL; i++)
         if (my_strcmp(cmd, (char *)command_shell[i].name) == 0)
             return command_shell[i].func(main_stock, ctx);
+    for (; load_builtin; load_builtin = load_builtin->next)
+        if (my_strcmp(cmd, (char *)load_builtin->name) == 0)
+            return load_builtin->func(main_stock, ctx);
     return -1;
 }

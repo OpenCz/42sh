@@ -66,6 +66,8 @@ typedef struct signal_s {
     int sfd;
 } signal_t;
 
+typedef struct builtin_command_s builtin_command_t;
+
 typedef struct main_s {
     char *home;
     char *old_path;
@@ -83,6 +85,7 @@ typedef struct main_s {
     czshrc_t *czshrc;
     job_controler_t *controler;
     signal_t *signal;
+    builtin_command_t *builtin;
 } main_t;
 
 typedef struct command_ctx_s {
@@ -146,6 +149,5 @@ typedef struct zipped_stock_s {
     main_t *main_stock;
     command_ctx_t *ctx;
 } zipped_stock_t;
-
 
 #endif
