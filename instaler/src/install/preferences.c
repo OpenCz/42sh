@@ -59,7 +59,8 @@ static void add_aliases(preferences_t *prefs)
 void init_preferences(instaler_t *instaler)
 {
     preferences_t *prefs = &instaler->prefs;
-    char *prompt_keys[NB_PROMPT] = {"user", "folder", "git_branch", "date", "time"};
+    char *prompt_keys[NB_PROMPT] = {"user", "folder", "git_branch", "date",
+        "time"};
     int fg_colors[NB_PROMPT] = {0, 0, 0, 0, 0};
     int bg_colors[NB_PROMPT] = {7, 4, 1, 7, 2};
 
