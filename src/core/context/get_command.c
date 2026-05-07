@@ -59,7 +59,7 @@ static int create_command(history_t *history, char **buffer,
     struct termios tr;
     struct termios old;
 
-    (*buffer) = calloc(BUFFER_SIZE, 1);
+    (*buffer) = calloc(LINE_SIZE, 1);
     if (!*buffer)
         return -1;
     init_termios(&tr, &old);
@@ -119,14 +119,14 @@ int get_command(main_t *stock_main, char **buffer, history_t *history,
     char *user)
 {
     int status = 0;
-    size_t buffer_size = BUFFER_SIZE;
+    size_t line = LINE_SIZE;
 
     if (isatty(0)) {
         status = get_tty_command(stock_main, buffer, history, user);
         if (status != 0)
             return status;
     } else {
-        if (getline(buffer, &buffer_size, stdin) == -1)
+        if (getline(buffer, &line, stdin) == -1)
             return manage_ignoreeof(stock_main);
     }
     history->curr_cmd = NULL;

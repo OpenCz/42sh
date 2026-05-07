@@ -38,10 +38,10 @@ char *is_command(char *str)
 
 static char *create_cmd(char *condition)
 {
-    char *cmd = calloc(1, BUFFER_SIZE);
+    char *cmd = calloc(1, LINE_SIZE);
 
     if (!cmd || (strlen(condition) + strlen("echo \"")
-            + strlen("\" | bc -l") > BUFFER_SIZE))
+            + strlen("\" | bc -l") > LINE_SIZE))
         return NULL;
     cmd = strcpy(cmd, "echo \"");
     cmd = strcat(cmd, condition);

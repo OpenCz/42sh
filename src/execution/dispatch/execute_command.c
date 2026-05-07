@@ -68,7 +68,7 @@ static int execute_compound_command(main_t *stock_main, char **command_ptr)
 {
     char *command = NULL;
     int is_job = 0;
-    char buf[BUFFER_SIZE] = {0};
+    char buf[LINE_SIZE] = {0};
 
     expand_aliases(stock_main, command_ptr);
     command = *command_ptr;

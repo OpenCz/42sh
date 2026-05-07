@@ -15,7 +15,7 @@ static history_t *init_history(main_t *main)
     main->history = calloc(1, sizeof(history_t));
     if (!main->history)
         free(main);
-    main->history->curr = malloc(BUFFER_SIZE + 1);
+    main->history->curr = malloc(LINE_SIZE + 1);
     if (!main->history->curr)
         return NULL;
     return main->history;
