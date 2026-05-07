@@ -2,9 +2,9 @@
 ** EPITECH PROJECT, 2026
 ** 42sh
 ** File description:
-** source / . builtin: opens the file with openator(), splits it
-** into lines with str_to_array_of_word_array(), then executes
-** each line via exec_any() in the current shell context.
+** source / . builtin stub: currently only reloads the czshrc config
+** via update_rc(); file execution (open, split lines, run each via
+** exec_any) is not yet implemented — the builtin is registered but empty.
 ** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 
