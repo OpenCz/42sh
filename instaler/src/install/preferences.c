@@ -29,50 +29,50 @@ char *get_date_fmt_str(date_fmt_t fmt)
     return "LONG";
 }
 
-static void add_alias(preferences_t *p, char *name, char *cmd)
+static void add_alias(preferences_t *prefs, char *name, char *cmd)
 {
-    int i = p->nb_aliases;
+    int alias_idx = prefs->nb_aliases;
 
-    if (i >= MAX_ALIASES)
+    if (alias_idx >= MAX_ALIASES)
         return;
-    strncpy(p->aliases[i].name, name, ALIAS_NAME_MAX - 1);
-    p->aliases[i].name[ALIAS_NAME_MAX - 1] = '\0';
-    strncpy(p->aliases[i].cmd, cmd, ALIAS_CMD_MAX - 1);
-    p->aliases[i].cmd[ALIAS_CMD_MAX - 1] = '\0';
-    p->aliases[i].enabled = true;
-    p->nb_aliases++;
+    strncpy(prefs->aliases[alias_idx].name, name, ALIAS_NAME_MAX - 1);
+    prefs->aliases[alias_idx].name[ALIAS_NAME_MAX - 1] = '\0';
+    strncpy(prefs->aliases[alias_idx].cmd, cmd, ALIAS_CMD_MAX - 1);
+    prefs->aliases[alias_idx].cmd[ALIAS_CMD_MAX - 1] = '\0';
+    prefs->aliases[alias_idx].enabled = true;
+    prefs->nb_aliases++;
 }
 
-void add_aliases(preferences_t *p)
+static void add_aliases(preferences_t *prefs)
 {
-    add_alias(p, "..", "cd ..");
-    add_alias(p, "...", "cd ../..");
-    add_alias(p, "home", "cd ~");
-    add_alias(p, "ll", "ls -la --color=auto");
-    add_alias(p, "la", "ls -A --color=auto");
-    add_alias(p, "lt", "ls -lt --color=auto");
-    add_alias(p, "gs", "git status");
-    add_alias(p, "gp", "git push");
-    add_alias(p, "gl", "git log --oneline");
+    add_alias(prefs, "..", "cd ..");
+    add_alias(prefs, "...", "cd ../..");
+    add_alias(prefs, "home", "cd ~");
+    add_alias(prefs, "ll", "ls -la --color=auto");
+    add_alias(prefs, "la", "ls -A --color=auto");
+    add_alias(prefs, "lt", "ls -lt --color=auto");
+    add_alias(prefs, "gs", "git status");
+    add_alias(prefs, "gp", "git push");
+    add_alias(prefs, "gl", "git log --oneline");
 }
 
 void init_preferences(instaler_t *instaler)
 {
-    preferences_t *p = &instaler->prefs;
-    char *keys[NB_PROMPT] = {"user", "folder", "git_branch", "date", "time"};
-    int fgs[NB_PROMPT] = {0, 0, 0, 0, 0};
-    int bgs[NB_PROMPT] = {7, 4, 1, 7, 2};
+    preferences_t *prefs = &instaler->prefs;
+    char *prompt_keys[NB_PROMPT] = {"user", "folder", "git_branch", "date", "time"};
+    int fg_colors[NB_PROMPT] = {0, 0, 0, 0, 0};
+    int bg_colors[NB_PROMPT] = {7, 4, 1, 7, 2};
 
-    p->row = 0;
-    p->col = 0;
-    p->alias_scroll = 0;
-    p->nb_aliases = 0;
-    p->date_fmt = FMT_LONG;
+    prefs->row = 0;
+    prefs->col = 0;
+    prefs->alias_scroll = 0;
+    prefs->nb_aliases = 0;
+    prefs->date_fmt = FMT_LONG;
     for (int i = 0; i < NB_PROMPT; i++) {
-        p->prompt[i].key = keys[i];
-        p->prompt[i].enabled = true;
-        p->prompt[i].fg = fgs[i];
-        p->prompt[i].bg = bgs[i];
+        prefs->prompt[i].key = prompt_keys[i];
+        prefs->prompt[i].enabled = true;
+        prefs->prompt[i].fg = fg_colors[i];
+        prefs->prompt[i].bg = bg_colors[i];
     }
-    add_aliases(p);
+    add_aliases(prefs);
 }
