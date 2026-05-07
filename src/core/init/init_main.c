@@ -10,6 +10,21 @@
 
 #include "../../../include/c_zsh.h"
 
+static int get_history_id(void)
+{
+    FILE *file = fopen(".c_zsh_history", "r");
+    int id = 0;
+    char *line = NULL;
+    size_t len = 0;
+
+    if (!file)
+        return id;
+    for (; getline(&line, &len, file) != -1; id++);
+    fclose(file);
+    free(line);
+    return id;
+}
+
 static history_t *init_history(main_t *main)
 {
     main->history = calloc(1, sizeof(history_t));
@@ -18,6 +33,7 @@ static history_t *init_history(main_t *main)
     main->history->curr = malloc(BUFFER_SIZE + 1);
     if (!main->history->curr)
         return NULL;
+    main->history->id = get_history_id();
     return main->history;
 }
 
