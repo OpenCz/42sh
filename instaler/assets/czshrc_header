@@ -1,0 +1,33 @@
+# ╔══════════════════════════════════════════════════════════════╗
+# ║                        .czshrc                               ║
+# ║              Configuration du shell czsh                     ║
+# ╠══════════════════════════════════════════════════════════════╣
+# ║  ⚠  AVERTISSEMENT                                            ║
+# ║                                                              ║
+# ║  Ce fichier est géré automatiquement par la commande :       ║
+# ║                                                              ║
+# ║                  $ czshrc                                    ║
+# ║                                                              ║
+# ║  Toute modification manuelle est possible mais risquée.      ║
+# ║  Un fichier mal formé peut entraîner un comportement         ║
+# ║  instable ou un chargement incorrect du shell.               ║
+# ║                                                              ║
+# ║  Vous modifiez ce fichier à vos risques et périls.           ║
+# ╚══════════════════════════════════════════════════════════════╝
+
+# ============================================================
+#  Syntaxe : clé = toggle : fg_color : bg_color
+#  toggle   : true / false
+#  fg_color : nom de couleur ou NONE
+#  bg_color : nom de couleur ou NONE
+# ============================================================
+
+[prompt]
+
+# --- Couleurs disponibles ---
+# Standards  : BLACK, RED, GREEN, YELLOW, BLUE, MAGENTA, CYAN, WHITE, GRAY
+# Vifs       : BRIGHT_RED, BRIGHT_GREEN, BRIGHT_YELLOW, BRIGHT_BLUE,
+#              BRIGHT_MAGENTA, BRIGHT_CYAN, BRIGHT_WHITE
+# Pastel     : PINK, ROSE, PEACH, ORANGE, PALE_YELLOW, MINT, SPRING_GREEN,
+#              SKY, LIGHT_BLUE, LAVENDER, PURPLE, SOFT_GRAY, LIGHT_GRAY
+
