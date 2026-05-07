@@ -2,9 +2,9 @@
 ** EPITECH PROJECT, 2026
 ** 42sh
 ** File description:
-** history builtin: iterates the history_cmd_t doubly-linked list
-** from oldest to newest and prints each entry as:
-**   ID  HH:MM  command
+** history builtin: opens ~/.c_zsh_history with openator() and prints
+** its full content to stdout; entries are written by manage_history
+** in the format "   ID\tHH:MM\tcommand" on each command execution.
 ** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 
