@@ -8,7 +8,7 @@
 ** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 
-#include "c_zsh.h"
+#include "../../../include/c_zsh.h"
 
 static void print_command(char *buffer, int len, int cursor)
 {
@@ -59,7 +59,7 @@ static int create_command(history_t *history, char **buffer,
     struct termios tr;
     struct termios old;
 
-    (*buffer) = calloc(BUFFER_SIZE, 1);
+    (*buffer) = calloc(LINE_SIZE, 1);
     if (!*buffer)
         return -1;
     init_termios(&tr, &old);
@@ -75,6 +75,29 @@ static int create_command(history_t *history, char **buffer,
     return status;
 }
 
+static int manage_ignoreeof(main_t *stock_main)
+{
+    int countdown = 0;
+    char *new_value = NULL;
+
+    for (env_t *tmp = stock_main->stock_local_var; tmp; tmp = tmp->next) {
+        if (my_strcmp(tmp->key, "ignoreeof") != 0)
+            continue;
+        countdown = atoi(tmp->value);
+        if (countdown <= 1)
+            return -1;
+        countdown--;
+        new_value = my_itoa(countdown);
+        if (!new_value)
+            return -1;
+        free_alloc(tmp->value);
+        tmp->value = new_value;
+        my_putstr("Use \"exit\" to leave the shell.\n");
+        return CONTINUE;
+    }
+    return -1;
+}
+
 static int get_tty_command(main_t *stock_main, char **buffer,
     history_t *history, char *user)
 {
@@ -84,11 +107,11 @@ static int get_tty_command(main_t *stock_main, char **buffer,
     if (create_cmd == -1) {
         free_alloc(*buffer);
         *buffer = NULL;
-        return -1;
+        return manage_ignoreeof(stock_main);
     }
     if (create_cmd == CONTINUE)
         return CONTINUE;
-    manage_history(history, *buffer);
+    manage_history(history, buffer);
     return 0;
 }
 
@@ -96,15 +119,15 @@ int get_command(main_t *stock_main, char **buffer, history_t *history,
     char *user)
 {
     int status = 0;
-    size_t buffer_size = BUFFER_SIZE;
+    size_t line = LINE_SIZE;
 
     if (isatty(0)) {
         status = get_tty_command(stock_main, buffer, history, user);
         if (status != 0)
             return status;
     } else {
-        if (getline(buffer, &buffer_size, stdin) == -1)
-            return -1;
+        if (getline(buffer, &line, stdin) == -1)
+            return manage_ignoreeof(stock_main);
     }
     history->curr_cmd = NULL;
     return 0;

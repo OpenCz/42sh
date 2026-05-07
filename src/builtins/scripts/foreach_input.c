@@ -17,7 +17,7 @@ static char **get_cmd(char **cmd, char *line)
 
     if (new_cmd == NULL)
         return NULL;
-    new_cmd[len] = my_strdup(line);
+    new_cmd[len] = strdup(line);
     if (new_cmd[len] == NULL) {
         free_array(new_cmd);
         return NULL;

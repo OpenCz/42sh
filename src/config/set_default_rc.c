@@ -31,9 +31,11 @@ static void set_default_prompt(czshrc_t *rc)
     rc->prompt->user.color = DEFAULT;
     rc->prompt->user.b_color = DEFAULT;
     rc->prompt->date_format = LONG;
+    rc->prompt->len_prompt = 0;
 }
 
 void set_default_rc(czshrc_t *rc)
 {
     set_default_prompt(rc);
+    rc->aliases = NULL;
 }

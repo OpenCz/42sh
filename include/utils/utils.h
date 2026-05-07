@@ -11,19 +11,17 @@
 #ifndef UTILS_H
     #define UTILS_H
     #include "../config/czshrc.h"
-typedef struct word_state_s {
-    int in_word;
-    int count;
-    int in_quotes;
-} word_state_t;
+    #include <time.h>
+    #include "../c_zsh.h"
+
 int my_strlen(char *str);
 void my_putstr(char *str);
 void my_putstrerror(char *str);
-char *my_strdup(char *str);
 int my_strcmp(char *s1, char *s2);
 int my_strncmp(char *s1, char *s2, int n);
 char *my_strconcat(char *str1, char *str2);
 const char *my_strstr(const char *str, const char *to_f);
+int is_escaped(char *str, int index);
 char **my_str_to_word_array(char *str, char *separator);
 char **my_str_to_word_array_quote(char *str, char *separator);
 char ***my_str_to_array_of_word_array(char const *str, char const *sep_ext,
@@ -38,6 +36,24 @@ char *get_branch_git(void);
 int my_char_is_alpha(char key);
 void display_prompt(prompt_t *prompt, char *user);
 int my_putnbr(int nb);
-void display_time(void);
+void display_time(infos_t *time_info, infos_t *date, date_format_t date_format,
+    int len_prompt);
+int len_nb(int nb);
+void display_zero(int nb);
+char *my_itoa(int num);
+void print_fg_color(int color);
+void print_bg_color(int b_color);
+void long_date_format(struct tm *tm);
+void european_date_format(struct tm *tm);
+void us_date_format(struct tm *tm);
+void iso_date_format(struct tm *tm);
+char *my_word_array_to_str(char **array);
+int my_str_is_alpha(char *key);
+void *unmatched_quote(int in_quotes, char **word_array);
+int pre_cmd(main_t *stock_main);
+int len_array(char **array);
+void append_array(char ***array, char *name);
+void append_array_to_array(char ***array, char **array2);
+void merge_sort(char **array, int left, int right);
 
 #endif

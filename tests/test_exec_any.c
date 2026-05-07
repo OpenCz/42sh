@@ -13,8 +13,8 @@ static env_t *node_new(const char *key, const char *value)
     env_t *node = malloc(sizeof(env_t));
 
     cr_assert_not_null(node);
-    node->key = my_strdup((char *)key);
-    node->value = value ? my_strdup((char *)value) : NULL;
+    node->key = strdup((char *)key);
+    node->value = value ? strdup((char *)value) : NULL;
     node->next = NULL;
     return node;
 }
@@ -33,7 +33,7 @@ Test(exec_any, direct_path_that_does_not_exist_returns_error)
     stock.stock_env = node_new("PATH", "/bin");
     ctx.command = args[0];
     ctx.argv = args;
-    cr_assert_eq(exec_any(&stock, &ctx), 1);
+    cr_assert_eq(exec_any(&stock, &ctx, false), 1);
     node_free_all(stock.stock_env);
 }
 

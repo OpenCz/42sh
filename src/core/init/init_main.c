@@ -8,19 +8,14 @@
 ** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 
-#include "c_zsh.h"
+#include "../../../include/c_zsh.h"
 
 static history_t *init_history(main_t *main)
 {
-    FILE *file = NULL;
-
     main->history = calloc(1, sizeof(history_t));
     if (!main->history)
         free(main);
-    file = fopen(".c_zsh_history", "w+");
-    if (file)
-        fclose(file);
-    main->history->curr = malloc(BUFFER_SIZE + 1);
+    main->history->curr = malloc(LINE_SIZE + 1);
     if (!main->history->curr)
         return NULL;
     return main->history;
@@ -28,11 +23,47 @@ static history_t *init_history(main_t *main)
 
 static czshrc_t *init_rc(void)
 {
-    czshrc_t *rc = update_rc();
+    czshrc_t *rc = update_rc(".czshrc");
 
     if (!rc)
         return NULL;
     return rc;
+}
+
+static void init_alias_stock(main_t *main_node)
+{
+    if (!main_node->czshrc)
+        return;
+    main_node->alias_stock = main_node->czshrc->aliases;
+    main_node->czshrc->aliases = NULL;
+}
+
+static job_controler_t *init_job_controler(void)
+{
+    job_controler_t *controler = malloc(sizeof(job_controler_t));
+
+    if (controler == NULL)
+        return NULL;
+    controler->job = NULL;
+    controler->next = NULL;
+    return controler;
+}
+
+static signal_t *init_signal(void)
+{
+    signal_t *signal = malloc(sizeof(signal_t));
+
+    if (!signal)
+        return NULL;
+    signal->g_sigxcpu = 0;
+    signal->sfd = 0;
+    return signal;
+}
+
+static void initrc(main_t *main_node)
+{
+    main_node->czshrc = init_rc();
+    init_alias_stock(main_node);
 }
 
 main_t *init_main(char **env)
@@ -50,7 +81,11 @@ main_t *init_main(char **env)
     main_node->old_path = NULL;
     main_node->path = my_str_to_word_array(get_path(main_node->stock_env), ":");
     main_node->home = get_home(main_node->stock_env);
+    main_node->alias_stock = NULL;
     init_history(main_node);
-    main_node->czshrc = init_rc();
+    initrc(main_node);
+    main_node->controler = init_job_controler();
+    main_node->signal = init_signal();
+    main_node->stock_local_var = NULL;
     return main_node;
 }

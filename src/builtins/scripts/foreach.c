@@ -10,58 +10,6 @@
 
 #include "../../../include/c_zsh.h"
 
-static int get_len_arg(command_ctx_t *ctx)
-{
-    int len = my_wordarray_len(ctx->arg_command);
-
-    if (ctx->arg_command[len - 1]
-        && strcmp(ctx->arg_command[len - 1], ")") == 0)
-        len--;
-    if (ctx->arg_command[1] && strcmp(ctx->arg_command[1], "(") == 0)
-        len--;
-    return len;
-}
-
-static void fill_arg(char **arg, command_ctx_t *ctx, int i, int j)
-{
-    int start = strcmp(ctx->arg_command[1], "(") == 0;
-    int len_array = my_wordarray_len(ctx->arg_command) - 1;
-    int last = 0;
-
-    if (i == start + 1 && ctx->arg_command[i][0] == '(') {
-        arg[j] = ctx->arg_command[i] + 1;
-        last = strlen(arg[j]) - 1;
-        arg[j][last] *= (arg[j][last] != ')');
-        return;
-    }
-    if (i == len_array
-        && ctx->arg_command[len_array]
-        [strlen(ctx->arg_command[len_array]) - 1] == ')') {
-        arg[j] = ctx->arg_command[i];
-        arg[j][strlen(arg[j]) - 1] = '\0';
-        return;
-    }
-    arg[j] = ctx->arg_command[i];
-}
-
-static char **get_array_arg(command_ctx_t *ctx)
-{
-    int len = get_len_arg(ctx);
-    int start = strcmp(ctx->arg_command[1], "(") == 0;
-    int j = 0;
-    char **arg = malloc(sizeof(char *) * (len + 1));
-
-    if (arg == NULL)
-        return NULL;
-    arg[len] = NULL;
-    arg[0] = ctx->arg_command[0];
-    for (int i = start + 1; i < len + start + 1; i++) {
-        j = i - start;
-        fill_arg(arg, ctx, i, j);
-    }
-    return arg;
-}
-
 static env_t *create_loop_node(char *var, char *new_value)
 {
     env_t *node = malloc(sizeof(env_t));
@@ -70,7 +18,7 @@ static env_t *create_loop_node(char *var, char *new_value)
         free(new_value);
         return NULL;
     }
-    node->key = my_strdup(var);
+    node->key = strdup(var);
     if (!node->key) {
         free(new_value);
         free(node);
@@ -84,7 +32,7 @@ static env_t *create_loop_node(char *var, char *new_value)
 static int update_existing_loop_var(env_t *curr, char *arg,
     loop_env_state_t *state)
 {
-    char *new_value = arg ? my_strdup(arg) : NULL;
+    char *new_value = arg ? strdup(arg) : NULL;
 
     if (arg && !new_value)
         return FAILURE;
@@ -105,7 +53,7 @@ static int set_loop_variable(main_t *main_stock, char *var, char *arg,
     state->saved_value = NULL;
     if (curr)
         return update_existing_loop_var(curr, arg, state);
-    state->created_node = create_loop_node(var, arg ? my_strdup(arg) : NULL);
+    state->created_node = create_loop_node(var, arg ? strdup(arg) : NULL);
     if (!state->created_node)
         return FAILURE;
     state->created_node->next = main_stock->stock_env;
@@ -127,6 +75,19 @@ static void restore_loop_variable(main_t *main_stock, loop_env_state_t *state)
     }
 }
 
+static int select_operand(char *cmd, main_t *main_stock, command_ctx_t *new_ctx)
+{
+    int has_logic_operator = (my_strstr(cmd, "&&") != NULL ||
+        my_strstr(cmd, "||") != NULL);
+    int has_pipe_operator = has_pipeline_operator(cmd);
+
+    if (has_logic_operator)
+        return execute_operator(main_stock, cmd);
+    if (has_pipe_operator)
+        return execute_pipeline(main_stock, cmd);
+    return exec_any(main_stock, new_ctx, false);
+}
+
 static int handle_cmd(char **cmd, command_ctx_t *new_ctx,
     handle_arg_t *handle_arg, main_t *main_stock)
 {
@@ -143,7 +104,7 @@ static int handle_cmd(char **cmd, command_ctx_t *new_ctx,
             break;
         if (status == 2)
             continue;
-        status = exec_any(main_stock, new_ctx);
+        status = select_operand(cmd[j], main_stock, new_ctx);
         clear_command_ctx(new_ctx);
         if (status == FAILURE)
             break;

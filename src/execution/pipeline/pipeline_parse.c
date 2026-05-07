@@ -29,7 +29,7 @@ int parse_pipeline(char *command, pipeline_segment_t **segments, int *count)
     }
     for (int i = 0; i < *count; i++)
         (*segments)[i].command = commands[i];
-    free(commands);
+    free_alloc(commands);
     return SUCCESS;
 }
 
@@ -45,7 +45,7 @@ int init_pipeline_state(pipeline_state_t *state,
         return -1;
     state->pids = malloc(sizeof(pid_t) * count);
     if (!state->pids) {
-        free(state->segments);
+        free_alloc(state->segments);
         return -1;
     }
     state->stock_main = stock_main;
@@ -58,11 +58,11 @@ int close_and_free(pipeline_state_t *state)
 {
     if (state->prev_read != -1)
         close(state->prev_read);
-    free(state->pids);
+    free_alloc(state->pids);
     if (state->segments) {
         for (int i = 0; i < state->count; i++)
-            free(state->segments[i].command);
-        free(state->segments);
+            free_alloc(state->segments[i].command);
+        free_alloc(state->segments);
     }
     return 1;
 }

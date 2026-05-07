@@ -10,29 +10,80 @@
 
 #include "c_zsh.h"
 
-static int has_pipeline_operator(char *command)
+static void update_quote_state(char c, int *in_single, int *in_double,
+    int *in_backtick)
 {
+    if (c == '\'' && !(*in_double) && !(*in_backtick))
+        *in_single = !(*in_single);
+    if (c == '"' && !(*in_single) && !(*in_backtick))
+        *in_double = !(*in_double);
+    if (c == '`' && !(*in_single) && !(*in_double))
+        *in_backtick = !(*in_backtick);
+}
+
+static int is_pipe_operator(char c, int i, char *cmd)
+{
+    if (c != '|')
+        return 0;
+    if (i > 0 && cmd[i - 1] == '|')
+        return 0;
+    if (cmd[i + 1] != '\0' && cmd[i + 1] == '|')
+        return 0;
+    return 1;
+}
+
+int has_pipeline_operator(char *command)
+{
+    int in_single = 0;
+    int in_double = 0;
+    int in_backtick = 0;
+
     for (int i = 0; command[i] != '\0'; i++) {
-        if (command[i] != '|')
+        update_quote_state(command[i], &in_single, &in_double, &in_backtick);
+        if (in_single || in_double || in_backtick)
             continue;
-        if ((i == 0 || command[i - 1] != '|') &&
-            (command[i + 1] == '\0' || command[i + 1] != '|'))
+        if (is_pipe_operator(command[i], i, command))
             return 1;
     }
     return 0;
 }
 
-static int execute_compound_command(main_t *stock_main, char *command)
+static int execute_logic_or_pipe(main_t *stock_main, char *command,
+    int has_logic, int has_pipe)
 {
-    int has_logic_operator = (my_strstr(command, "&&") != NULL ||
-        my_strstr(command, "||") != NULL);
-    int has_pipe_operator = has_pipeline_operator(command);
-
-    if (has_logic_operator)
+    if (has_logic)
         return execute_operator(stock_main, command);
-    if (has_pipe_operator)
+    if (has_pipe)
         return execute_pipeline(stock_main, command);
-    return execute_single_command(stock_main, command, true);
+    return -1;
+}
+
+static void apply_job_control(char *command, int cmd_l, char *buf)
+{
+    strncpy(buf, command, cmd_l - 2);
+    buf[cmd_l - 2] = '\0';
+}
+
+int execute_compound_command(main_t *stock_main, char **command_ptr)
+{
+    char *command = NULL;
+    int is_job = 0;
+    char buf[LINE_SIZE] = {0};
+
+    expand_aliases(stock_main, command_ptr);
+    command = *command_ptr;
+    if (my_strstr(command, "&&") || my_strstr(command, "||") ||
+        has_pipeline_operator(command))
+        return execute_logic_or_pipe(stock_main, command,
+            !!(my_strstr(command, "&&") || my_strstr(command, "||")),
+            has_pipeline_operator(command));
+    is_job = (strlen(command) > 1 && command[strlen(command) - 1] == '&' &&
+        command[strlen(command) - 2] == ' ');
+    if (is_job) {
+        apply_job_control(command, strlen(command), buf);
+        command = buf;
+    }
+    return execute_single_command(stock_main, command, true, is_job);
 }
 
 int execute_command(main_t *stock_main, char *command)
@@ -42,8 +93,12 @@ int execute_command(main_t *stock_main, char *command)
 
     if (!commands)
         return 1;
-    for (int i = 0; commands[i] != NULL; i++)
-        last_status = execute_compound_command(stock_main, commands[i]);
+    for (int i = 0; commands[i] != NULL; i++) {
+        if (is_if_segment(commands[i]))
+            last_status = handle_if_segment(stock_main, commands, &i);
+        else
+            last_status = execute_compound_command(stock_main, &commands[i]);
+    }
     free_array(commands);
     return last_status;
 }

@@ -24,7 +24,11 @@
     #include <errno.h>
     #include <signal.h>
     #include <ctype.h>
+    #include <limits.h>
     #include <termios.h>
+    #include <sys/stat.h>
+    #include <sys/ioctl.h>
+    #include <glob.h>
 
     #include "core/types.h"
     #include "core/core.h"

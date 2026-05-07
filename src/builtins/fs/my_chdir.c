@@ -8,7 +8,7 @@
 ** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 
-#include "c_zsh.h"
+#include "../../../include/c_zsh.h"
 
 int my_chdir_call(char *path)
 {
@@ -95,6 +95,13 @@ static int change_env(env_t **env, main_t *main_stock)
     return SUCCESS;
 }
 
+static void cwdcmd(main_t *main_stock)
+{
+    for (env_t *tmp = main_stock->stock_local_var; tmp; tmp = tmp->next)
+        if (strcmp(tmp->key, "cwdcmd") == 0)
+            execute_command(main_stock, tmp->value);
+}
+
 int builtin_cd(main_t *main_stock, command_ctx_t *ctx)
 {
     char *path = resolve_path(main_stock, ctx);
@@ -103,7 +110,7 @@ int builtin_cd(main_t *main_stock, command_ctx_t *ctx)
         return 1;
     if (check_path(path) == 1)
         return 1;
-    path = my_strdup(path);
+    path = strdup(path);
     if (!path)
         return FAILURE;
     save_old_path(main_stock);
@@ -114,6 +121,7 @@ int builtin_cd(main_t *main_stock, command_ctx_t *ctx)
     if (path)
         free(path);
     change_env(&main_stock->stock_env, main_stock);
+    cwdcmd(main_stock);
     return SUCCESS;
 }
 

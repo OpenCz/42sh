@@ -24,7 +24,12 @@ SRC_CORE = \
 	src/core/context/termios.c \
 	src/core/context/display.c \
 	src/core/context/key_binding.c \
-	src/core/context/tab.c
+	src/core/context/tab.c \
+	src/core/context/autocomplete.c \
+	src/core/context/cursor.c \
+	src/core/context/menu.c \
+	src/core/context/menu_handling.c \
+	src/core/context/craft_autocomplete.c
 
 SRC_BUILTINS = \
 	src/builtins/env/my_env.c \
@@ -36,19 +41,31 @@ SRC_BUILTINS = \
 	src/builtins/jobs/my_background.c \
 	src/builtins/repeat/repeat.c \
 	src/builtins/scripts/foreach.c \
+	src/builtins/scripts/scripts_if.c \
+	src/builtins/scripts/if_create_command.c \
 	src/builtins/scripts/foreach_input.c \
+	src/builtins/scripts/foreach_arg.c \
 	src/utils/errors/foreach.c \
 	src/builtins/fs/my_which.c \
 	src/builtins/fs/my_where.c \
 	src/builtins/env/printenv.c \
 	src/builtins/history/history.c \
-	src/builtins/config/source.c
+	src/builtins/fs/my_alias.c \
+	src/builtins/config/source.c \
+	src/builtins/var_local/set.c \
+	src/builtins/var_local/unset.c \
+	src/builtins/limit/limit.c \
+	src/builtins/limit/unlimit.c \
+	src/builtins/limit/verif_time.c \
+	src/builtins/limit/get_good_limit.c
 
 SRC_EXEC = \
 	src/execution/dispatch/execute_builtin.c \
 	src/execution/dispatch/execute_command.c \
+	src/execution/dispatch/alias_expand.c \
 	src/execution/dispatch/execute_single_command.c \
 	src/execution/dispatch/execute_operation.c \
+	src/execution/dispatch/execute_if.c \
 	src/execution/external/exec_any.c \
 	src/execution/external/exec_error_case.c \
 	src/execution/external/run_fork.c \
@@ -68,7 +85,11 @@ SRC_ENV = \
 SRC_PARSING = \
 	src/parsing/redirection/get_redirection.c \
 	src/parsing/env_var_management/replace_env_vars.c \
+	src/parsing/env_var_management/is_hard.c \
 	src/parsing/quotes_management/manage_quotes.c \
+	src/parsing/command_substitution/command_substitution.c \
+	src/parsing/manage_backticks/manage_backticks.c \
+	src/parsing/globbing/apply_glob.c 
 
 SRC_UTILS = \
 	src/utils/io/my_putstr.c \
@@ -79,9 +100,10 @@ SRC_UTILS = \
 	src/utils/display/get_branch_git.c \
 	src/utils/display/get_folder.c \
 	src/utils/display/prompt.c \
+	src/utils/display/manage_pre_cmd.c \
 	src/utils/strings/my_strcmp.c \
+	src/utils/strings/array.c \
 	src/utils/strings/my_strconcat.c \
-	src/utils/strings/my_strdup.c \
 	src/utils/strings/my_strlen.c \
 	src/utils/strings/my_strncmp.c \
 	src/utils/strings/my_strstr.c \
@@ -89,9 +111,16 @@ SRC_UTILS = \
 	src/utils/strings/my_str_to_word_array_quotes.c \
 	src/utils/strings/str_to_array_of_word_array.c \
 	src/utils/strings/my_wordarraylen.c \
+	src/utils/strings/my_itoa.c \
+	src/utils/strings/error.c \
+	src/utils/strings/my_word_array_to_str.c \
 	src/utils/validation/my_ischar_num.c \
 	src/utils/validation/my_str_is_alphanum.c \
-	src/utils/validation/my_char_is_alpha.c
+	src/utils/validation/my_char_is_alpha.c \
+	src/utils/io/my_len_nb.c \
+	src/utils/io/display_zero.c \
+	src/utils/display/format_date.c \
+	src/utils/validation/my_str_is_alpha.c \
 
 SRC_MEMORY = \
 	src/memory/free/free_function.c
@@ -222,13 +251,13 @@ coverage: re
 functional_tests: all
 	$(call pretty_header, Running Functional Tests)
 	@mkdir -p $(LOGS_DIR)/functional_tests
-	@./tests/run_tests.sh; EXIT_CODE=$$?; \
-	echo" ""; \
-	printf "%b\n" "$(H_CYAN)Functional test report saved to $(H_YELLOW)$(LOGS_DIR)/functional_tests/$(END)"; \
+	@python3 ./tests/tester.py; EXIT_CODE=$$?; \
+	echo" "; \
+	printf "%b\n" "$(H_CYAN)Functional tests finished.$(END)"; \
 	if [ $$EXIT_CODE -eq 0 ]; then \
 	    printf "%b\n" "$(BOLD)$(H_GREEN)All functional tests passed!$(END)"; \
 	else \
-	    printf "%b\n" "$(BOLD)$(H_YELLOW)Some tests failed! Check $(LOGS_DIR)/functional_tests/ for details$(END)"; \
+	    printf "%b\n" "$(BOLD)$(H_YELLOW)Some tests failed! See /tmp/test.* for details$(END)"; \
 	fi; \
 	exit $$EXIT_CODE
 
@@ -240,6 +269,9 @@ clean:
 fclean: clean
 	$(call pretty_header, Full clean: objects binary tests coverage)
 	@$(RM) $(NAME) $(TO_RM)
+	@$(RM) $(LOGS_DIR)/functional_tests
+	@$(RM) /tmp/test.* /tmp/.shell.* /tmp/.refer.* /tmp/.tester.* /tmp/.runner.* /tmp/.tmp.* test/ dir;
+	@$(RM) "dir \"" "dir;" test output
 	@$(MAKE) fclean -C tests/
 
 re: fclean all
@@ -266,7 +298,7 @@ help:
 	@printf "%b\n" "  $(BOLD)make unit_tests$(END)             Build Criterion unit-tests binary"
 	@printf "%b\n" "  $(BOLD)make tests_run$(END)              Run tests → logs in $(LOGS_DIR)/"
 	@printf "%b\n" "  $(BOLD)make coverage$(END)               Run tests → HTML report at $(COVERAGE_HTML)"
-	@printf "%b\n" "  $(BOLD)make functional_tests$(END)       Run functional tests (tests/run_tests.sh)"
+	@printf "%b\n" "  $(BOLD)make functional_tests$(END)       Run functional tests (tests/tester.py)"
 	@printf "%b\n" ""
 	@printf "%b\n" "$(BOLD)$(H_CYAN)── Cleanup ───────────────────────────────────────────────────────$(END)"
 	@printf "%b\n" "  $(BOLD)make clean$(END)                  Remove .o files"

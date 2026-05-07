@@ -27,5 +27,5 @@ int execute_pipeline(main_t *stock_main, char *command)
         return 1;
     if (run_pipeline_segments(&state, count))
         return 1;
-    return finalize_pipeline(&state);
+    return finalize_pipeline(&state, command);
 }

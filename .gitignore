@@ -9,3 +9,8 @@ unit_tests
 Logs
 .idea
 .c_zsh_history
+test/
+output
+vgcore*
+*.sh
+test_shell

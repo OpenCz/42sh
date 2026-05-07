@@ -10,21 +10,32 @@
 
 #include "c_zsh.h"
 
+static void update_quote_state(char c, int *in_single, int *in_double,
+    int *in_backtick)
+{
+    if (c == '\'' && !(*in_double) && !(*in_backtick))
+        *in_single = !(*in_single);
+    if (c == '"' && !(*in_single) && !(*in_backtick))
+        *in_double = !(*in_double);
+    if (c == '`' && !(*in_single) && !(*in_double))
+        *in_backtick = !(*in_backtick);
+}
+
 const char *my_strstr(const char *str, const char *to_f)
 {
     int k = 0;
-    int in_quote = 0;
+    int in_single = 0;
+    int in_double = 0;
+    int in_backtick = 0;
 
     if (*to_f == '\0')
         return str;
     for (int i = 0; str[i] != '\0'; i++) {
-        k = 0;
-        if (str[i] == '"')
-            in_quote = !in_quote;
-        if (in_quote)
+        update_quote_state(str[i], &in_single, &in_double, &in_backtick);
+        if (in_single || in_double || in_backtick)
             continue;
-        while (str[i + k] != '\0' && to_f[k] != '\0' && str[i + k] == to_f[k])
-            k++;
+        for (k = 0; str[i + k] != '\0' && to_f[k] != '\0'
+            && str[i + k] == to_f[k]; k++);
         if (to_f[k] == '\0')
             return &str[i];
     }

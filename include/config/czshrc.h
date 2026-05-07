@@ -13,6 +13,8 @@
 
     #include <stdbool.h>
 
+typedef struct alias_stock_s alias_stock_t;
+
 typedef enum date_format_e {
     LONG,
     EU,
@@ -27,6 +29,7 @@ typedef struct infos_s {
 } infos_t;
 
 typedef struct prompt_s {
+    int len_prompt;
     infos_t git_branch;
     infos_t folder;
     infos_t user;
@@ -37,15 +40,18 @@ typedef struct prompt_s {
 
 typedef struct czshrc_s {
     prompt_t *prompt;
+    alias_stock_t *aliases;
 } czshrc_t;
 
 typedef struct buffer_s {
     int *len;
     char **buffer;
+    int *cursor;
 } buffer_t;
 
 void set_default_rc(czshrc_t *rc);
 void manage_prompt(czshrc_t *rc, char ***rc_parsed, int i);
-czshrc_t *update_rc(void);
+void manage_alias(czshrc_t *rc, char ***rc_parsed, int i);
+czshrc_t *update_rc(char *path);
 
 #endif
