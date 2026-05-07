@@ -24,15 +24,12 @@ static char *copy_word(char *src, int start, int len)
 char *alias_extract_first_word(char *cmd)
 {
     int i = 0;
-    int start;
+    int start = 0;
 
-    while (cmd[i] == ' ' || cmd[i] == '\t')
-        i++;
+    for (; cmd[i] == ' ' || cmd[i] == '\t'; i++);
     if (cmd[i] == '"' || cmd[i] == '\'')
         return NULL;
-    start = i;
-    while (cmd[i] && cmd[i] != ' ' && cmd[i] != '\t')
-        i++;
+    for (start = i; cmd[i] && cmd[i] != ' ' && cmd[i] != '\t'; i++);
     if (i == start)
         return NULL;
     return copy_word(cmd, start, i - start);
@@ -40,22 +37,17 @@ char *alias_extract_first_word(char *cmd)
 
 static alias_stock_t *find_alias_by_name(alias_stock_t *list, char *name)
 {
-    while (list) {
+    for (; list; list = list->next)
         if (my_strcmp(name, list->new_name) == 0)
             return list;
-        list = list->next;
-    }
     return NULL;
 }
 
 static char *get_args_after_first(char *cmd)
 {
-    while (*cmd == ' ' || *cmd == '\t')
-        cmd++;
-    while (*cmd && *cmd != ' ' && *cmd != '\t')
-        cmd++;
-    while (*cmd == ' ' || *cmd == '\t')
-        cmd++;
+    for (; *cmd == ' ' || *cmd == '\t'; cmd++);
+    for (; *cmd && *cmd != ' ' && *cmd != '\t'; cmd++);
+    for (; *cmd == ' ' || *cmd == '\t'; cmd++);
     return cmd;
 }
 
@@ -63,7 +55,7 @@ static char *concat_val_args(char *alias_val, char *args)
 {
     int vlen = strlen(alias_val);
     int rlen = strlen(args);
-    char *result = malloc(vlen + 1 + rlen + 1);
+    char *result = malloc(vlen + rlen + 2);
 
     if (!result)
         return NULL;
@@ -87,12 +79,12 @@ static char *build_expanded_cmd(char *alias_val, char *full_cmd)
 static bool is_self_recursive(char *cmd, char *alias_name)
 {
     char *first = alias_extract_first_word(cmd);
-    bool result;
+    bool result = false;
 
     if (!first)
         return false;
     result = (my_strcmp(first, alias_name) == 0);
-    free(first);
+    free_alloc(first);
     return result;
 }
 
@@ -105,14 +97,14 @@ static bool expand_one_alias(main_t *s, char **command, char **expanded)
     if (!first_word)
         return false;
     found = find_alias_by_name(s->alias_stock, first_word);
-    free(first_word);
+    free_alloc(first_word);
     if (!found)
         return false;
     new_cmd = build_expanded_cmd(found->command, *command);
     if (!new_cmd)
         return false;
     if (*expanded)
-        free(*expanded);
+        free_alloc(*expanded);
     *expanded = new_cmd;
     *command = new_cmd;
     return !is_self_recursive(new_cmd, found->new_name);
@@ -121,10 +113,12 @@ static bool expand_one_alias(main_t *s, char **command, char **expanded)
 void expand_aliases(main_t *stock_main, char **command)
 {
     char *expanded = NULL;
-    int depth = 0;
+    char *original = *command;
 
     if (!stock_main->alias_stock)
         return;
-    while (depth < 20 && expand_one_alias(stock_main, command, &expanded))
-        depth++;
+    for (int depth = 0; depth < 20 &&
+        expand_one_alias(stock_main, command, &expanded); depth++);
+    if (*command != original)
+        free_alloc(original);
 }

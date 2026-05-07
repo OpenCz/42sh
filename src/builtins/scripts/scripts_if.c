@@ -38,9 +38,10 @@ char *is_command(char *str)
 
 static char *create_cmd(char *condition)
 {
-    char *cmd = calloc(1, BUFFER_SIZE);
+    char *cmd = calloc(1, LINE_SIZE);
 
-    if (!cmd)
+    if (!cmd || (strlen(condition) + strlen("echo \"")
+            + strlen("\" | bc -l") > LINE_SIZE))
         return NULL;
     cmd = strcpy(cmd, "echo \"");
     cmd = strcat(cmd, condition);
@@ -58,26 +59,39 @@ static void handle_child(pid_t pid, main_t *main, int pipefd[2], char *str)
     }
 }
 
+static int wait_pipe(pid_t pid, FILE **fd, int *status, int pipefd[2])
+{
+    close(pipefd[1]);
+    waitpid(pid, status, 0);
+    *fd = fdopen(pipefd[0], "r");
+    if (!(*fd)) {
+        close(pipefd[0]);
+        return 0;
+    }
+    return 1;
+}
+
 int redirect_command(main_t *main, char *str)
 {
     int status = 0;
-    int pipefd[2];
-    pid_t pid;
-    char buffer[BUFFER_SIZE + 1];
-    int size = 0;
+    int pipefd[2] = {0, 0};
+    pid_t pid = 0;
+    char *buffer = NULL;
+    size_t size = 0;
+    FILE *fd = NULL;
+    int result = 0;
 
     if (pipe(pipefd) == -1)
         return 0;
     pid = fork();
     handle_child(pid, main, pipefd, str);
-    close(pipefd[1]);
-    waitpid(pid, &status, 0);
-    size = read(pipefd[0], buffer, BUFFER_SIZE);
-    close(pipefd[0]);
-    if (size <= 0)
-        return -1;
-    buffer[size] = '\0';
-    return atoi(buffer);
+    if (!wait_pipe(pid, &fd, &status, pipefd))
+        return 0;
+    getline(&buffer, &size, fd);
+    fclose(fd);
+    result = atoi(buffer);
+    free_alloc(buffer);
+    return result;
 }
 
 static int check_keywords(char **argv)

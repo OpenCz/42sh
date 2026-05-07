@@ -25,7 +25,11 @@ SRC_CORE = \
 	src/core/context/display.c \
 	src/core/context/key_binding.c \
 	src/core/context/tab.c \
-	src/core/context/autocomplete.c
+	src/core/context/autocomplete.c \
+	src/core/context/cursor.c \
+	src/core/context/menu.c \
+	src/core/context/menu_handling.c \
+	src/core/context/craft_autocomplete.c
 
 SRC_BUILTINS = \
 	src/builtins/env/my_env.c \
@@ -84,6 +88,7 @@ SRC_PARSING = \
 	src/parsing/quotes_management/manage_quotes.c \
 	src/parsing/command_substitution/command_substitution.c \
 	src/parsing/manage_backticks/manage_backticks.c \
+	src/parsing/globbing/apply_glob.c 
 
 SRC_UTILS = \
 	src/utils/io/my_putstr.c \

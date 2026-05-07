@@ -15,7 +15,7 @@ static history_t *init_history(main_t *main)
     main->history = calloc(1, sizeof(history_t));
     if (!main->history)
         free(main);
-    main->history->curr = malloc(BUFFER_SIZE + 1);
+    main->history->curr = malloc(LINE_SIZE + 1);
     if (!main->history->curr)
         return NULL;
     return main->history;
@@ -28,6 +28,14 @@ static czshrc_t *init_rc(void)
     if (!rc)
         return NULL;
     return rc;
+}
+
+static void init_alias_stock(main_t *main_node)
+{
+    if (!main_node->czshrc)
+        return;
+    main_node->alias_stock = main_node->czshrc->aliases;
+    main_node->czshrc->aliases = NULL;
 }
 
 static job_controler_t *init_job_controler(void)
@@ -52,6 +60,12 @@ static signal_t *init_signal(void)
     return signal;
 }
 
+static void initrc(main_t *main_node)
+{
+    main_node->czshrc = init_rc();
+    init_alias_stock(main_node);
+}
+
 main_t *init_main(char **env)
 {
     main_t *main_node = malloc(sizeof(main_t));
@@ -69,7 +83,7 @@ main_t *init_main(char **env)
     main_node->home = get_home(main_node->stock_env);
     main_node->alias_stock = NULL;
     init_history(main_node);
-    main_node->czshrc = init_rc();
+    initrc(main_node);
     main_node->controler = init_job_controler();
     main_node->signal = init_signal();
     main_node->stock_local_var = NULL;
