@@ -27,6 +27,35 @@ make fclean   # remove .o files and the binary
 
 ## Project Architecture
 
+```mermaid
+flowchart TD
+    A([42sh binary]) --> B["init_main()\nbuild env_t list · parse PATH · load history · load RC"]
+    B --> C["setup_shell_signals()\nSIGINT/SIGTSTP/SIGQUIT → SIG_IGN · shell becomes pgid leader"]
+    C --> REPL
+
+    subgraph REPL ["REPL loop  —  src/core/main.c"]
+        D["write_print()\ndisplay styled prompt"] --> E["get_command()\nraw-termios input or getline"]
+        E --> F["serialize()\ntrim whitespace"]
+        F --> G["execute_command()\nsplit on ';'"]
+    end
+
+    G --> H{operator?}
+    H -->|"&&  \|\|"| I["execute_operator()\nshort-circuit chain"]
+    H -->|"\|"| J["execute_pipeline()\nfork/pipe/wait per segment"]
+    H -->|plain| K["execute_single_command()\nparse → builtin? → external"]
+
+    K --> L{builtin?}
+    L -->|yes| M["execute_builtin()\nenv · cd · setenv · repeat · foreach …"]
+    L -->|no| N["exec_any()\nresolve PATH · fork · execve"]
+
+    I --> K
+    J --> K
+    M --> REPL
+    N --> REPL
+
+    style REPL fill:#e3f2fd,stroke:#1565c0,color:#000
+```
+
 ```
 42sh/
 ├── Makefile
