@@ -54,5 +54,8 @@ int builtin_alias(main_t *main_stock, command_ctx_t *ctx);
 
 void expand_aliases(main_t *stock_main, char **command);
 char *alias_extract_first_word(char *cmd);
+int handle_if_segment(main_t *stock_main, char **cmds, int *i);
+int is_if_segment(char *cmd);
+int execute_compound_command(main_t *stock_main, char **command_ptr);
 
 #endif

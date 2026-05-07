@@ -28,7 +28,8 @@ SRC_CORE = \
 	src/core/context/autocomplete.c \
 	src/core/context/cursor.c \
 	src/core/context/menu.c \
-	src/core/context/menu_handling.c
+	src/core/context/menu_handling.c \
+	src/core/context/craft_autocomplete.c
 
 SRC_BUILTINS = \
 	src/builtins/env/my_env.c \
@@ -64,6 +65,7 @@ SRC_EXEC = \
 	src/execution/dispatch/alias_expand.c \
 	src/execution/dispatch/execute_single_command.c \
 	src/execution/dispatch/execute_operation.c \
+	src/execution/dispatch/execute_if.c \
 	src/execution/external/exec_any.c \
 	src/execution/external/exec_error_case.c \
 	src/execution/external/run_fork.c \

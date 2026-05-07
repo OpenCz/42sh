@@ -64,11 +64,11 @@ static void apply_job_control(char *command, int cmd_l, char *buf)
     buf[cmd_l - 2] = '\0';
 }
 
-static int execute_compound_command(main_t *stock_main, char **command_ptr)
+int execute_compound_command(main_t *stock_main, char **command_ptr)
 {
     char *command = NULL;
     int is_job = 0;
-    char buf[BUFFER_SIZE] = {0};
+    char buf[LINE_SIZE] = {0};
 
     expand_aliases(stock_main, command_ptr);
     command = *command_ptr;
@@ -93,8 +93,12 @@ int execute_command(main_t *stock_main, char *command)
 
     if (!commands)
         return 1;
-    for (int i = 0; commands[i] != NULL; i++)
-        last_status = execute_compound_command(stock_main, &commands[i]);
+    for (int i = 0; commands[i] != NULL; i++) {
+        if (is_if_segment(commands[i]))
+            last_status = handle_if_segment(stock_main, commands, &i);
+        else
+            last_status = execute_compound_command(stock_main, &commands[i]);
+    }
     free_array(commands);
     return last_status;
 }

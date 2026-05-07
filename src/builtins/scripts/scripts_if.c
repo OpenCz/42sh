@@ -16,7 +16,7 @@ static char *is_operator(char *str)
         c = str[i];
         if (c == '(' || c == ')' || c == '+' || c == '=' ||
             c == '-' ||
-            (c == '/' && str[i - 1] != '.') || c == '!' ||
+            (c == '/' && (i == 0 || str[i - 1] != '.')) || c == '!' ||
             c == '*' || c == '|' || c == '>' || c == '<')
             return str;
     }
@@ -38,10 +38,10 @@ char *is_command(char *str)
 
 static char *create_cmd(char *condition)
 {
-    char *cmd = calloc(1, BUFFER_SIZE);
+    char *cmd = calloc(1, LINE_SIZE);
 
     if (!cmd || (strlen(condition) + strlen("echo \"")
-            + strlen("\" | bc -l") > BUFFER_SIZE))
+            + strlen("\" | bc -l") > LINE_SIZE))
         return NULL;
     cmd = strcpy(cmd, "echo \"");
     cmd = strcat(cmd, condition);
@@ -132,9 +132,10 @@ static int check_if_format(command_ctx_t *ctx)
 static void exec_if_command(main_t *main_stock, char *cmd,
     char *to_exec, char *else_cmd)
 {
-    if (redirect_command(main_stock, cmd) != 0)
-        execute_command(main_stock, to_exec);
-    else if (else_cmd) {
+    if (redirect_command(main_stock, cmd) != 0) {
+        if (to_exec && strlen(to_exec) > 0)
+            execute_command(main_stock, to_exec);
+    } else if (else_cmd && strlen(else_cmd) > 0) {
         execute_command(main_stock, else_cmd);
     }
     free_alloc(to_exec);
