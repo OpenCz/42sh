@@ -2,9 +2,9 @@
 ** EPITECH PROJECT, 2026
 ** 42sh
 ** File description:
-** Time display stub: display_time formats the current HH:MM:SS and
-** computes the right-aligned column via ioctl(TIOCGWINSZ), but does
-** not yet write output; check_null_win falls back to col 0 if ioctl fails.
+** Time/date display: computes right-padding via ioctl(TIOCGWINSZ) and
+** calculate_limit, then prints HH:MM:SS via displauy_time() and the date
+** in LONG/EU/US/ISO format via display_date(), both with ANSI color support.
 ** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 
