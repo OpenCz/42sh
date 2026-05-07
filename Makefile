@@ -188,15 +188,22 @@ $(NAME): $(OBJ)
 	@echo ""
 
 install: $(NAME)
+	$(call pretty_header, Building installer)
+	@$(MAKE) -C instaler
+	$(call pretty_header, Running installer)
+	@cd instaler && ./instal
+	$(call pretty_header, Installing 42sh to $(LOCAL_BIN))
 	@mkdir -p $(LOCAL_BIN)
 	@cp $(NAME) $(LOCAL_BIN)/$(NAME)
-	@chmod u+x $(LOCAL_BIN)/$(NAME)
+	@chmod 755 $(LOCAL_BIN)/$(NAME)
 	@printf "%b\n" "$(BOLD)$(H_GREEN)Installed$(END) $(NAME) -> $(LOCAL_BIN)/$(NAME)"
-	@if ! printf "%b\n" "$$PATH" | grep -q "$(LOCAL_BIN)"; then \
-		printf "%b\n" "$(BOLD)$(H_YELLOW)$(LOCAL_BIN) is not in PATH.$(END)"; \
-		printf "%b\n" "Add this to ~/.zshrc:"; \
-		printf "%b\n" "  export PATH=\"$(LOCAL_BIN):\$$PATH\""; \
-		printf "%b\n" "Then run: source ~/.zshrc && hash -r"; \
+	@if [ -f "$$HOME/.czshrc" ]; then \
+		printf "$(BOLD)$(H_GREEN) .czshrc already in place$(END)\n"; \
+	elif [ -f "$$HOME/.config/42sh/.czshrc" ]; then \
+		cp "$$HOME/.config/42sh/.czshrc" "$$HOME/.czshrc" && \
+		printf "$(BOLD)$(H_GREEN) Placed .czshrc -> $$HOME/.czshrc$(END)\n"; \
+	else \
+		printf "$(BOLD)$(H_YELLOW) Warning: .czshrc not found, skipping$(END)\n"; \
 	fi
 
 uninstall:
@@ -284,8 +291,8 @@ help:
 	@printf "%b\n" "  $(BOLD)make valgrind$(END)               Run Valgrind on current binary"
 	@echo ""
 	@printf "%b\n" "$(BOLD)$(H_CYAN)── Install ───────────────────────────────────────────────────────$(END)"
-	@printf "%b\n" "  $(BOLD)make install$(END)                Install $(NAME) to $(LOCAL_BIN)"
-	@printf "%b\n" "  $(BOLD)make uninstall$(END)              Remove $(NAME) from $(LOCAL_BIN)"
+	@printf "%b\n" "  $(BOLD)make install$(END)                Build installer, run it, install $(NAME) to $(LOCAL_BIN)/"
+	@printf "%b\n" "  $(BOLD)make uninstall$(END)              Remove $(NAME) from $(LOCAL_BIN)/"
 	@echo ""
 	@printf "%b\n" "$(BOLD)$(H_CYAN)── Tests & Coverage ──────────────────────────────────────────────$(END)"
 	@printf "%b\n" "  $(BOLD)make unit_tests$(END)             Build Criterion unit-tests binary"
