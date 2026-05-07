@@ -44,13 +44,12 @@ char *append_buffer(command_ctx_t *ctx, int *i)
 
     if (!buffer)
         return NULL;
-    if (!ctx->argv[*i])
+    if (!ctx->argv[*i] || strcmp(ctx->argv[*i], "endif") == 0
+        || strcmp(ctx->argv[*i], "else") == 0)
         return buffer;
     buffer = strcpy(buffer, ctx->argv[*i]);
-    for (; ctx->argv[*i + 1] && strcmp(ctx->argv[*i + 1], "else") &&
-        strcmp(ctx->argv[*i + 1], "endif") &&
-        (!is_command(ctx->argv[*i]) &&
-            !is_command(ctx->argv[*i + 1])); *i += 1) {
+    for (; ctx->argv[*i + 1] && strcmp(ctx->argv[*i + 1], "else") != 0 &&
+        strcmp(ctx->argv[*i + 1], "endif") != 0; *i += 1) {
         buffer = strcat(buffer, " ");
         buffer = strcat(buffer, ctx->argv[*i + 1]);
     }
