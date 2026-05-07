@@ -2,9 +2,9 @@
 ** EPITECH PROJECT, 2026
 ** 42sh
 ** File description:
-** history builtin: opens ~/.c_zsh_history with openator() and prints
-** its full content to stdout; entries are written by manage_history
-** in the format "   ID\tHH:MM\tcommand" on each command execution.
+** history builtin: opens .c_zsh_history and dispatches to write_history
+** (last N entries, oldest-first) or write_reverse_history (-r flag,
+** newest-first up to N); N defaults to the full file when omitted.
 ** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 
