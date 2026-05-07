@@ -16,4 +16,5 @@ void init(instaler_t *instaler)
     keypad(instaler->window, TRUE);
     wtimeout(instaler->window, 100);
     getmaxyx(instaler->window, instaler->size.y, instaler->size.x);
+    instaler->state = STEP_1;
 }
