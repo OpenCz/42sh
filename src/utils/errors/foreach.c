@@ -2,9 +2,9 @@
 ** EPITECH PROJECT, 2026
 ** 42sh
 ** File description:
-** foreach error helper: put_error_var prints a tcsh-compatible
-** error message to stderr when the foreach loop variable name
-** is invalid (must start with a letter, alphanumeric + _ only).
+** foreach error helper: put_error_var prints "VAR: Undefined variable."
+** to stdout via my_putstr and returns FAILURE; called when a loop
+** variable cannot be resolved during foreach execution.
 ** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 
