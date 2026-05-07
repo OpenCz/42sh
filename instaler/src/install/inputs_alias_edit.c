@@ -9,32 +9,35 @@
 
 static void field_insert(char *buf, int *pos, int max, int c)
 {
-    int len = (int)strlen(buf);
+    int len = strlen(buf);
 
     if (len >= max - 1)
         return;
-    memmove(buf + *pos + 1, buf + *pos, (size_t)(len - *pos + 1));
+    for (int i = len; i >= *pos; i--)
+        buf[i + 1] = buf[i];
     buf[*pos] = (char)c;
     (*pos)++;
 }
 
 static void field_backspace(char *buf, int *pos)
 {
-    int len = (int)strlen(buf);
+    int len = strlen(buf);
 
     if (*pos == 0)
         return;
-    memmove(buf + *pos - 1, buf + *pos, (size_t)(len - *pos + 1));
+    for (int i = *pos; i <= len; i++)
+        buf[i - 1] = buf[i];
     (*pos)--;
 }
 
 static void field_delete_at(char *buf, int pos)
 {
-    int len = (int)strlen(buf);
+    int len = strlen(buf);
 
     if (pos >= len)
         return;
-    memmove(buf + pos, buf + pos + 1, (size_t)(len - pos));
+    for (int i = pos; i < len; i++)
+        buf[i] = buf[i + 1];
 }
 
 static void apply_alias_edit(alias_t *a, alias_edit_t *e)
@@ -74,7 +77,7 @@ static void handle_field_keys(alias_edit_t *e, int c)
     char *buf = e->field == 0 ? e->name : e->cmd;
     int *pos = e->field == 0 ? &e->name_pos : &e->cmd_pos;
     int max = e->field == 0 ? ALIAS_NAME_MAX : ALIAS_CMD_MAX;
-    int len = (int)strlen(buf);
+    int len = strlen(buf);
 
     if (c == KEY_LEFT && *pos > 0)
         (*pos)--;
