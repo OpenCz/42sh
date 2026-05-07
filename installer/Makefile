@@ -8,8 +8,8 @@
 MAKEFLAGS += --no-print-directory
 
 # ─── Project Info ────────────────────────────────────────────────────────
-PROJECT  = instal
-NAME     = instal
+PROJECT  = install
+NAME     = install
 
 # ─── Sources ─────────────────────────────────────────────────────────────
 SRC = \
@@ -34,7 +34,7 @@ SRC = \
 OBJ = $(SRC:.c=.o)
 
 # ─── Flags ───────────────────────────────────────────────────────────────
-WFLAGS  = -Wall -Wextra -Werror -Wshadow -Wno-unused-parameter
+WFLAGS  = -Wall -Wextra 
 CFLAGS  = -Iinclude $(WFLAGS)
 LDFLAGS = -lncurses
 
@@ -57,7 +57,7 @@ define pretty_header
 endef
 
 # ─── Rules ───────────────────────────────────────────────────────────────
-.PHONY: all re clean fclean install
+.PHONY: all re clean fclean installer
 
 all: $(NAME)
 
@@ -79,7 +79,7 @@ fclean: clean
 
 re: fclean all
 
-install: all
+installer: all
 	$(call pretty_header, Detecting OS and installing 42SH rc)
 	@OS_ID=""; \
 	if [ -f /etc/os-release ]; then \

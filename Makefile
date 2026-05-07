@@ -196,9 +196,9 @@ $(NAME): $(OBJ)
 
 install: $(NAME)
 	$(call pretty_header, Building installer)
-	@$(MAKE) -C instaler
+	@$(MAKE) -C installer
 	$(call pretty_header, Running installer)
-	@cd instaler && ./instal
+	@cd installer && ./install
 	$(call pretty_header, Installing 42sh to $(LOCAL_BIN))
 	@mkdir -p $(LOCAL_BIN)
 	@cp $(NAME) $(LOCAL_BIN)/$(NAME)
