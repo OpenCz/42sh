@@ -23,7 +23,8 @@ int czsh_plugin_init(main_t *main_stock, const shell_plugin_api_t *api)
         return CZSH_PLUGIN_ERR;
     if (!api->register_builtin)
         return CZSH_PLUGIN_ERR;
-    return api->register_builtin(main_stock, "hello", hello_builtin, api->plugin_handle);
+    return api->register_builtin(main_stock, "hello", hello_builtin,
+        api->plugin_handle);
 }
 
 void czsh_plugin_shutdown(main_t *main_stock)
