@@ -59,5 +59,6 @@ char **collect_file_names(char *directory_to_open, char *directory_name,
     char *prefix);
 bool should_complete_command(char *precedent, char *word);
 int builtin_loader(main_t *main_stock);
+bool is_special_token(char *word);
 
 #endif

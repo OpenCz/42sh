@@ -9,7 +9,6 @@
 */
 
 #include "../../../include/c_zsh.h"
-#include "../../../include/builtins/builtins.h"
 
 const builtin_command_common_t command_shell[] = {
     {"env", builtin_env},
