@@ -23,6 +23,13 @@ SRC = \
 	src/utils/string/my_str_to_word_array.c \
 	src/display/print_ascii.c \
 	src/init/closup.c \
+	src/install/detect_os.c \
+	src/install/preferences.c \
+	src/install/render.c \
+	src/install/render_alias_edit.c \
+	src/install/inputs.c \
+	src/install/inputs_alias_edit.c \
+	src/install/write_rc.c \
 
 OBJ = $(SRC:.c=.o)
 
@@ -50,7 +57,7 @@ define pretty_header
 endef
 
 # ─── Rules ───────────────────────────────────────────────────────────────
-.PHONY: all re clean fclean
+.PHONY: all re clean fclean install
 
 all: $(NAME)
 
@@ -71,6 +78,30 @@ fclean: clean
 	@$(RM) $(NAME)
 
 re: fclean all
+
+install: all
+	$(call pretty_header, Detecting OS and installing 42SH rc)
+	@OS_ID=""; \
+	if [ -f /etc/os-release ]; then \
+		OS_ID=$$(. /etc/os-release 2>/dev/null && echo $$ID); \
+	elif [ "$$(uname -s)" = "Darwin" ]; then \
+		OS_ID="macos"; \
+	else \
+		OS_ID="unknown"; \
+	fi; \
+	printf "$(BOLD) OS detected: $$OS_ID$(END)\n"; \
+	if [ "$$OS_ID" = "nixos" ]; then \
+		RC_DIR="$$HOME/.config/42sh"; \
+		mkdir -p "$$RC_DIR"; \
+		RC_PATH="$$RC_DIR/rc"; \
+	else \
+		RC_PATH="$$HOME/.42shrc"; \
+	fi; \
+	cp assets/42shrc "$$RC_PATH" && \
+		printf "$(BOLD)$(H_GREEN) Placed rc → $$RC_PATH$(END)\n" || \
+		printf "$(BOLD)$(H_RED) Failed to place rc$(END)\n"
+	$(call pretty_header, Launching installer)
+	@./$(NAME)
 
 # ─── Styles ──────────────────────────────────────────────────────────────
 END     = \033[0m
