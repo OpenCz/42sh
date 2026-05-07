@@ -16,7 +16,8 @@ static void strip_quotes(char *id)
         len--;
     }
     if (id[0] == '"')
-        memmove(id, id + 1, strlen(id));
+        for (size_t i = 0; id[i]; i++)
+            id[i] = id[i + 1];
 }
 
 static void free_array_of_word_array(char ***arr)
