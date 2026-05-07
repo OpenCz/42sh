@@ -40,7 +40,7 @@ int is_valid_formating(char **arr)
 
 char *append_buffer(command_ctx_t *ctx, int *i)
 {
-    char *buffer = calloc(1, BUFFER_SIZE);
+    char *buffer = calloc(1, LINE_SIZE);
 
     if (!buffer)
         return NULL;
@@ -79,7 +79,7 @@ static int is_else_condition(command_ctx_t *ctx)
 char *create_condition(main_t *main, command_ctx_t *ctx,
     char **else_cmd, char **to_exec)
 {
-    char *buffer = calloc(1, BUFFER_SIZE);
+    char *buffer = calloc(1, LINE_SIZE);
     int i = 1;
     int is_else = is_else_condition(ctx);
 

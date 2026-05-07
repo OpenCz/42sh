@@ -12,7 +12,7 @@
     #define CORE_H
 
     #include "core/types.h"
-    #define BUFFER_SIZE 4096
+    #define LINE_SIZE 4096
     #define ARROW_START '\x1b'
 
 int manage_history(history_t *history, char **cmd);
@@ -52,5 +52,10 @@ int check_escape(char *arrow);
 void render_list(char **names, int idx, int shown);
 int handle_autocomplete(char **buffer, int *len, int *cursor,
     main_t *main_stock);
+bool split_completion_path(char *word, char **directory_name,
+    char **prefix);
+char **collect_file_names(char *directory_to_open, char *directory_name,
+    char *prefix);
+bool should_complete_command(char *precedent, char *word);
 
 #endif

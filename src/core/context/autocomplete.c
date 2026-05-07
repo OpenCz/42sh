@@ -71,10 +71,13 @@ char **get_aliases(char *word, alias_stock_t *aliases)
 
 char **get_auto_exec(char *word, main_t *main_stock, int *cursor)
 {
-    char **path = my_str_to_word_array(get_path(main_stock->stock_env), ":");
     char **total = NULL;
+    char **path = NULL;
 
-    if (!path || !word)
+    if (!word)
+        return NULL;
+    path = my_str_to_word_array(get_path(main_stock->stock_env), ":");
+    if (!path)
         return NULL;
     append_array_to_array(&total, get_aliases(word, main_stock->alias_stock));
     for (int i = 0; path[i] != NULL; i++)
@@ -85,22 +88,57 @@ char **get_auto_exec(char *word, main_t *main_stock, int *cursor)
     return total;
 }
 
+static bool is_special_token(char *word)
+{
+    if (!word)
+        return false;
+    return (strcmp(word, "&&") == 0 || strcmp(word, "|") == 0 ||
+        strcmp(word, "||") == 0);
+}
+
+static char *get_precedent_word(char *buffer, int cursor, char *word)
+{
+    int i = cursor - 1;
+
+    if (word)
+        i -= strlen(word);
+    for (; i >= 0 && buffer[i] == ' '; i--);
+    return get_word_on_cursor(&buffer, &i);
+}
+
+static char **get_files(char *word)
+{
+    char *directory_name = NULL;
+    char *prefix = NULL;
+    char **names = NULL;
+
+    if (!split_completion_path(word, &directory_name, &prefix))
+        return NULL;
+    names = collect_file_names(directory_name[0] ? directory_name : ".",
+        directory_name, prefix);
+    free_alloc(directory_name);
+    free_alloc(prefix);
+    return names;
+}
+
 int handle_autocomplete(char **buffer, int *len, int *cursor,
     main_t *main_stock)
 {
     char **names = NULL;
     char *word = get_word_on_cursor(buffer, cursor);
+    char *precedent = NULL;
 
-    if (*len <= 0 || !word)
+    if (*len <= 0)
         return 0;
-    names = get_auto_exec(word, main_stock, cursor);
-    if (!names) {
-        free_alloc(word);
-        return 0;
-    }
-    if (len_array(names) > 1)
+    precedent = get_precedent_word(*buffer, *cursor, word);
+    if (should_complete_command(precedent, word))
+        names = get_auto_exec(word, main_stock, cursor);
+    else if (!is_special_token(word))
+        names = get_files(word);
+    if (names && len_array(names) >= 1)
         menu(names, main_stock, &(buffer_t){len, buffer, cursor});
     free_array(names);
     free_alloc(word);
+    free_alloc(precedent);
     return 0;
 }
