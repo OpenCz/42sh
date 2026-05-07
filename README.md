@@ -29,29 +29,30 @@ make fclean   # remove .o files and the binary
 
 ```mermaid
 flowchart TD
-    A([42sh binary]) --> B["init_main()\nbuild env_t list · parse PATH · load history · load RC"]
-    B --> C["setup_shell_signals()\nSIGINT/SIGTSTP/SIGQUIT → SIG_IGN · shell becomes pgid leader"]
-    C --> REPL
+    START([42sh binary]) --> INIT["init_main(env)\nbuild env_t list · parse PATH · load .c_zsh_history · load .czshrc"]
+    INIT --> SIGS["setup_shell_signals()\nSIGINT / SIGTSTP / SIGQUIT → SIG_IGN · shell becomes pgid leader"]
+    SIGS --> REPL
 
     subgraph REPL ["REPL loop  —  src/core/main.c"]
-        D["write_print()\ndisplay styled prompt"] --> E["get_command()\nraw-termios input or getline"]
-        E --> F["serialize()\ntrim whitespace"]
-        F --> G["execute_command()\nsplit on ';'"]
+        PROMPT["display_prompt()\nfolder · user · git branch · time/date with ANSI colors"] --> INPUT["get_command()\nraw-termios char-by-char loop  or  getline (non-TTY)"]
+        INPUT --> HIST["manage_history()\nappend to ~/.c_zsh_history"]
+        HIST --> EXEC["execute_command()\nsplit on ';' (quote-aware)"]
     end
 
-    G --> H{operator?}
-    H -->|"&&  \|\|"| I["execute_operator()\nshort-circuit chain"]
-    H -->|"\|"| J["execute_pipeline()\nfork/pipe/wait per segment"]
-    H -->|plain| K["execute_single_command()\nparse → builtin? → external"]
+    EXEC --> D{segment type?}
+    D -->|"&& / ||"| OP["execute_operator()\nshort-circuit evaluation of chained commands"]
+    D -->|"|"| PIPE["execute_pipeline()\nfork · pipe FDs · wait all PIDs"]
+    D -->|plain| SINGLE["execute_single_command()\nparse_command_context  →  $VAR expand  →  quote convert"]
 
-    K --> L{builtin?}
-    L -->|yes| M["execute_builtin()\nenv · cd · setenv · repeat · foreach …"]
-    L -->|no| N["exec_any()\nresolve PATH · fork · execve"]
+    OP --> SINGLE
+    PIPE --> SINGLE
 
-    I --> K
-    J --> K
-    M --> REPL
-    N --> REPL
+    SINGLE --> E{builtin?}
+    E -->|yes| BUILTIN["execute_builtin()\nenv · setenv · unsetenv · cd · which · where\nprintenv · repeat · foreach · history · source"]
+    E -->|no| EXT["exec_any()\nloop_bin (PATH search) → run_fork (fork + execve + waitpid)"]
+
+    BUILTIN --> REPL
+    EXT --> REPL
 
     style REPL fill:#e3f2fd,stroke:#1565c0,color:#000
 ```
