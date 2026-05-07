@@ -91,6 +91,9 @@ static char **process_expanded_command(char *expanded, main_t *stock_main)
     }
     if (convert_command_args(cmd_with_arg, stock_main) != 0)
         return NULL;
+    cmd_with_arg = apply_globbing_to_args(cmd_with_arg);
+    if (!cmd_with_arg)
+        return NULL;
     replace_env_vars(cmd_with_arg, stock_main);
     if (decode_command_args(cmd_with_arg) != 0)
         return NULL;

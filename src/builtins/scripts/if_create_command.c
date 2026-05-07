@@ -40,18 +40,23 @@ int is_valid_formating(char **arr)
 
 char *append_buffer(command_ctx_t *ctx, int *i)
 {
-    char *buffer = calloc(1, BUFFER_SIZE);
+    char *buffer = calloc(1, LINE_SIZE);
 
     if (!buffer)
         return NULL;
+    if (!ctx->argv[*i] || strcmp(ctx->argv[*i], "endif") == 0
+        || strcmp(ctx->argv[*i], "else") == 0)
+        return buffer;
     buffer = strcpy(buffer, ctx->argv[*i]);
-    for (; ctx->argv[*i + 1] && strcmp(ctx->argv[*i + 1], "else") &&
-        (!is_command(ctx->argv[*i]) &&
-            !is_command(ctx->argv[*i + 1])); *i += 1) {
+    for (; ctx->argv[*i + 1] && strcmp(ctx->argv[*i + 1], "else") != 0 &&
+        strcmp(ctx->argv[*i + 1], "endif") != 0; *i += 1) {
         buffer = strcat(buffer, " ");
         buffer = strcat(buffer, ctx->argv[*i + 1]);
     }
-    *i += 2;
+    if (ctx->argv[*i + 1] && strcmp(ctx->argv[*i + 1], "else") == 0)
+        *i += 2;
+    else
+        *i += 1;
     return buffer;
 }
 
@@ -73,18 +78,16 @@ static int is_else_condition(command_ctx_t *ctx)
 char *create_condition(main_t *main, command_ctx_t *ctx,
     char **else_cmd, char **to_exec)
 {
-    char *buffer = calloc(1, BUFFER_SIZE);
+    char *buffer = calloc(1, LINE_SIZE);
     int i = 1;
     int is_else = is_else_condition(ctx);
 
     if (!buffer)
         return NULL;
-    for (; ctx->argv[i + 1] &&
-        strcmp(ctx->argv[i + 1], "endif") != 0; i++) {
-        if (!is_command(ctx->argv[i]) && !is_command(ctx->argv[i + 1]))
-            break;
+    for (; ctx->argv[i] && strcmp(ctx->argv[i], "then") != 0; i++)
         buffer = strcat(buffer, verif_value(main, &ctx->argv[i]));
-    }
+    if (ctx->argv[i] && strcmp(ctx->argv[i], "then") == 0)
+        i++;
     *to_exec = append_buffer(ctx, &i);
     if (is_else)
         *else_cmd = append_buffer(ctx, &i);

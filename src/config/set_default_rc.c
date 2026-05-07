@@ -37,4 +37,5 @@ static void set_default_prompt(czshrc_t *rc)
 void set_default_rc(czshrc_t *rc)
 {
     set_default_prompt(rc);
+    rc->aliases = NULL;
 }
