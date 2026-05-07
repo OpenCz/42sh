@@ -2,9 +2,9 @@
 ** EPITECH PROJECT, 2026
 ** 42sh
 ** File description:
-** Full key name check: my_str_is_alphanum returns 1 if every
-** character is a letter, digit, or underscore, used by setenv
-** to validate the complete variable key name.
+** Variable name validator: my_str_is_alphanum returns 1 if any
+** character in the string is not in [a-z A-Z 0-9], used by setenv
+** and foreach to reject invalid environment variable names.
 ** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 
