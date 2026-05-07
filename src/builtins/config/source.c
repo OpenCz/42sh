@@ -2,9 +2,9 @@
 ** EPITECH PROJECT, 2026
 ** 42sh
 ** File description:
-** source / . builtin stub: currently only reloads the czshrc config
-** via update_rc(); file execution (open, split lines, run each via
-** exec_any) is not yet implemented — the builtin is registered but empty.
+** source / . builtin: reloads the shell config by calling update_rc()
+** with ctx->argv[1] as the target file path, immediately applying
+** RC settings to the running shell; command execution from file pending.
 ** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 
