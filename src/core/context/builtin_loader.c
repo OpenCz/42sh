@@ -73,7 +73,8 @@ int plugin_load(main_t *main_stock)
         full_name = malloc(sizeof(char) * (strlen(names[i]) + 1 + 8));
         full_name = strcpy(full_name, "plugins/");
         full_name = strcat(full_name, names[i]);
-        load_one_plugin(main_stock, full_name);
+        if (load_one_plugin(main_stock, full_name) == CZSH_PLUGIN_ERR)
+            printf("Can't load plugin: %s\n", full_name);
         free_alloc(full_name);
     }
     free_array(names);
