@@ -14,3 +14,4 @@ output
 vgcore*
 *.sh
 test_shell
+*.so

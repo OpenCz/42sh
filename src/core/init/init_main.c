@@ -10,6 +10,21 @@
 
 #include "../../../include/c_zsh.h"
 
+static int get_history_id(void)
+{
+    FILE *file = fopen(".c_zsh_history", "r");
+    int id = 0;
+    char *line = NULL;
+    size_t len = 0;
+
+    if (!file)
+        return id;
+    for (; getline(&line, &len, file) != -1; id++);
+    fclose(file);
+    free_alloc(line);
+    return id;
+}
+
 static history_t *init_history(main_t *main)
 {
     main->history = calloc(1, sizeof(history_t));
@@ -18,6 +33,7 @@ static history_t *init_history(main_t *main)
     main->history->curr = malloc(LINE_SIZE + 1);
     if (!main->history->curr)
         return NULL;
+    main->history->id = get_history_id();
     return main->history;
 }
 
@@ -66,12 +82,8 @@ static void initrc(main_t *main_node)
     init_alias_stock(main_node);
 }
 
-main_t *init_main(char **env)
+static void set_basic_shell(main_t *main_node, char **env)
 {
-    main_t *main_node = malloc(sizeof(main_t));
-
-    if (!main_node)
-        return NULL;
     main_node->stock_env = init_env(env);
     main_node->command = NULL;
     main_node->env = env;
@@ -81,9 +93,19 @@ main_t *init_main(char **env)
     main_node->old_path = NULL;
     main_node->path = my_str_to_word_array(get_path(main_node->stock_env), ":");
     main_node->home = get_home(main_node->stock_env);
+}
+
+main_t *init_main(char **env)
+{
+    main_t *main_node = malloc(sizeof(main_t));
+
+    if (!main_node)
+        return NULL;
+    set_basic_shell(main_node, env);
     main_node->alias_stock = NULL;
     init_history(main_node);
     initrc(main_node);
+    builtin_loader(main_node);
     main_node->controler = init_job_controler();
     main_node->signal = init_signal();
     main_node->stock_local_var = NULL;

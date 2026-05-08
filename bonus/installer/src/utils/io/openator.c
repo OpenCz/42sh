@@ -1,0 +1,86 @@
+/*
+** EPITECH PROJECT, 2026
+** 42sh
+** File description:
+** File reader: openator opens a file, allocates an exact buffer
+** with get_file_size_stat, reads the full content in one call.
+** check_open/check_read/check_buffer handle all error cases.
+** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
+*/
+
+#include <fcntl.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include "installer/install.h"
+
+int check_open(int fd)
+{
+    if (fd < 0) {
+        write(2, "FAILURE IN OPEN : FILE NOT FOUND OR DOESN'T EXIST\n",
+            50);
+        return 84;
+    }
+    return 0;
+}
+
+int check_read(char *buffer, int bytes_read)
+{
+    if (bytes_read < 0) {
+        write(2, "READ FAILURE\n", 13);
+        free_alloc(buffer);
+        return 84;
+    }
+    if (bytes_read == 0) {
+        write(2, "FILE IS EMPTY\n", 14);
+        free_alloc(buffer);
+        return 84;
+    }
+    return 0;
+}
+
+int check_buffer(char *buffer)
+{
+    if (!buffer) {
+        write(2, "BUFFER MEMORY ALLOCATION FAILURE\n", 34);
+        return 84;
+    }
+    return 0;
+}
+
+static char *read_content(int fd, int size)
+{
+    char *buffer;
+    int bytes_read;
+
+    buffer = malloc(sizeof(char) * (size + 1));
+    if (check_buffer(buffer) == 84) {
+        close(fd);
+        return NULL;
+    }
+    bytes_read = read(fd, buffer, size);
+    if (check_read(buffer, bytes_read) == 84) {
+        close(fd);
+        return NULL;
+    }
+    buffer[bytes_read] = '\0';
+    close(fd);
+    return buffer;
+}
+
+char *openator(char const *filepath)
+{
+    int fd;
+    int size;
+
+    if (filepath == NULL) {
+        write(2, "NULL FILEPATH\n", 14);
+        return NULL;
+    }
+    fd = open(filepath, O_RDONLY);
+    if (check_open(fd) == 84)
+        return NULL;
+    size = get_file_size_stat(filepath);
+    if (size < 0)
+        return NULL;
+    return read_content(fd, size);
+}

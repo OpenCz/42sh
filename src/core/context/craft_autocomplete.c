@@ -107,3 +107,11 @@ char **collect_file_names(char *directory_to_open, char *directory_name,
     merge_sort(names, 0, (len_array(names) - 1));
     return names;
 }
+
+bool is_special_token(char *word)
+{
+    if (!word)
+        return false;
+    return (strcmp(word, "&&") == 0 || strcmp(word, "|") == 0 ||
+        strcmp(word, "||") == 0);
+}
