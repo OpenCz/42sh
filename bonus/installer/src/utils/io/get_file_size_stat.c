@@ -10,7 +10,7 @@
 
 #include <sys/stat.h>
 #include <unistd.h>
-#include "../../../include/instaler.h"
+#include "installer/install.h"
 
 int get_file_size_stat(char const *filepath)
 {

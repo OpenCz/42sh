@@ -8,7 +8,7 @@
 ** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 
-#include "../../../include/instaler.h"
+#include "installer/install.h"
 
 static int separator_has_space(char *separator)
 {

@@ -5,7 +5,7 @@
 ** main
 */
 
-#include "../../include/instaler.h"
+#include "installer/install.h"
 
 int main(void)
 {

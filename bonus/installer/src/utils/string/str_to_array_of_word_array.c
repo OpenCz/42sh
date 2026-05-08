@@ -8,7 +8,7 @@
 ** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 
-#include "../../../include/instaler.h"
+#include "installer/install.h"
 
 static void write_error(char const *msg)
 {

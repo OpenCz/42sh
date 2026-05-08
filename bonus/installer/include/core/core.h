@@ -7,7 +7,6 @@
 
 #ifndef CORE_H
     #define CORE_H
-    #include "../instaler.h"
     #define NB_PROMPT 5
     #define NB_CYCLE_COLORS 15
     #define MAX_ALIASES 32

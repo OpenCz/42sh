@@ -167,7 +167,7 @@ TO_RM = *.gcda *.gcno unit_tests *.html *.css *.log $(LOGS_DIR)
 # ─── Per-file compilation ─────────────────────────────────────────────────
 %.o: %.c
 	@printf "$(H_CYAN)Compiling$(END) $(BOLD)$<$(END) ...\n"
-	@$(ECC) $(CFLAGS) -Wno-unused-command-line-argument -c $< -o $@ && \
+	@$(ECC) $(CFLAGS) -c $< -o $@ && \
 		printf "%b\n" "$(BOLD)$(H_GREEN)[ OK ]$(END)" || \
 		(printf "%b\n" "$(BOLD)$(H_RED)[ FAIL ]$(END)" && $(ECC) $(CFLAGS) -c $< -o $@ && exit 1)
 
@@ -197,9 +197,9 @@ $(NAME): $(OBJ)
 
 install: $(NAME)
 	$(call pretty_header, Building installer)
-	@$(MAKE) -C installer
+	@$(MAKE) -C bonus/installer
 	$(call pretty_header, Running installer)
-	@cd installer && ./install
+	@cd bonus/installer && ./install
 	$(call pretty_header, Installing 42sh to $(LOCAL_BIN))
 	@mkdir -p $(LOCAL_BIN)
 	@cp $(NAME) $(LOCAL_BIN)/$(NAME)

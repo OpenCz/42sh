@@ -5,7 +5,7 @@
 ** closup
 */
 
-#include "../../include/instaler.h"
+#include "installer/install.h"
 
 void closup(instaler_t *instaler)
 {

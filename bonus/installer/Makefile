@@ -35,7 +35,7 @@ OBJ = $(SRC:.c=.o)
 
 # ─── Flags ───────────────────────────────────────────────────────────────
 WFLAGS  = -Wall -Wextra 
-CFLAGS  = -Iinclude $(WFLAGS)
+CFLAGS  = -Iinclude -Ibonus/installer/include $(WFLAGS)
 LDFLAGS = -lncurses
 
 # ─── Tools ───────────────────────────────────────────────────────────────
@@ -64,7 +64,7 @@ all: $(NAME)
 $(NAME): $(OBJ)
 	@echo ""
 	$(call pretty_header, Creating binary of : $(PROJECT))
-	@$(ECC) $(CFLAGS) -Wno-unused-command-line-argument -o $(NAME) $(OBJ) $(LDFLAGS)
+	@$(ECC) $(CFLAGS) -o $(NAME) $(OBJ) $(LDFLAGS)
 	@printf "%b\n" "$(BOLD)$(WHITE) done$(END)"
 	$(call pretty_header, Successfully compiled $(PROJECT)!)
 	@echo ""

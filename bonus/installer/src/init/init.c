@@ -5,7 +5,7 @@
 ** init
 */
 
-#include "../../include/instaler.h"
+#include "installer/install.h"
 
 void init(instaler_t *instaler)
 {

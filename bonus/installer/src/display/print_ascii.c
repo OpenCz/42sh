@@ -5,7 +5,7 @@
 ** print_ascii
 */
 
-#include "../../include/instaler.h"
+#include "installer/install.h"
 
 void print_ascii(int y, int x, char **ascii)
 {

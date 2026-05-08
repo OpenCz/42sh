@@ -5,7 +5,7 @@
 ** loop
 */
 
-#include "../../../include/instaler.h"
+#include "installer/install.h"
 
 static void manage_step_1(instaler_t *instaler)
 {
