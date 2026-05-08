@@ -12,6 +12,7 @@ Logs
 test/
 output
 vgcore*
+install
 *.sh
 test_shell
 *.so
