@@ -29,7 +29,8 @@ SRC_CORE = \
 	src/core/context/cursor.c \
 	src/core/context/menu.c \
 	src/core/context/menu_handling.c \
-	src/core/context/craft_autocomplete.c
+	src/core/context/craft_autocomplete.c \
+	src/core/context/builtin_loader.c
 
 SRC_BUILTINS = \
 	src/builtins/env/my_env.c \
@@ -189,7 +190,7 @@ all: $(NAME)
 $(NAME): $(OBJ)
 	@echo ""
 	$(call pretty_header, Creating binary of : $(PROJECT))
-	@$(ECC) $(CFLAGS) -Wno-unused-command-line-argument -o $(NAME) $(OBJ)
+	@$(ECC) $(CFLAGS) -Wno-unused-command-line-argument -o $(NAME) $(OBJ) -ldl
 	@printf "%b\n" "$(BOLD)$(WHITE) done$(END)"
 	$(call pretty_header, Successfully compiled $(PROJECT)!)
 	@echo ""

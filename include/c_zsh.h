@@ -29,6 +29,7 @@
     #include <sys/stat.h>
     #include <sys/ioctl.h>
     #include <glob.h>
+    #include <dlfcn.h>
 
     #include "core/types.h"
     #include "core/core.h"

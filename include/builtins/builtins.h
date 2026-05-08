@@ -16,9 +16,16 @@
 
 typedef int (*builtin_handler_t)(main_t *main_stock, command_ctx_t *ctx);
 
-typedef struct builtin_command_s {
+typedef struct builtin_command_common_s {
     const char *name;
     builtin_handler_t func;
+} builtin_command_common_t;
+
+typedef struct builtin_command_s {
+    char *name;
+    builtin_handler_t func;
+    void *plugin;
+    struct builtin_command_s *next;
 } builtin_command_t;
 
 typedef struct handle_arg_s {
@@ -70,6 +77,9 @@ int builtin_set(main_t *main_stock, command_ctx_t *ctx);
 int builtin_unset(main_t *stock, command_ctx_t *ctx);
 int builtin_limit(main_t *main_stock, command_ctx_t *ctx);
 int builtin_unlimit(main_t *main_stock, command_ctx_t *ctx);
+int builtin_which(main_t *main_stock, command_ctx_t *ctx);
+int builtin_where(main_t *main_stock, command_ctx_t *ctx);
+int builtin_alias(main_t *main_stock, command_ctx_t *ctx);
 void verif_time(char *name, struct rlimit *rl);
 limit_t *get_good_limit(char *name);
 

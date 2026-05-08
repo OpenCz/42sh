@@ -12,6 +12,7 @@
     #define CORE_H
 
     #include "core/types.h"
+    #include "core/plugins.h"
     #define LINE_SIZE 4096
     #define ARROW_START '\x1b'
 
@@ -57,5 +58,7 @@ bool split_completion_path(char *word, char **directory_name,
 char **collect_file_names(char *directory_to_open, char *directory_name,
     char *prefix);
 bool should_complete_command(char *precedent, char *word);
+int builtin_loader(main_t *main_stock);
+bool is_special_token(char *word);
 
 #endif
