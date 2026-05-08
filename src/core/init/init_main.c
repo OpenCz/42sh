@@ -21,7 +21,7 @@ static int get_history_id(void)
         return id;
     for (; getline(&line, &len, file) != -1; id++);
     fclose(file);
-    free(line);
+    free_alloc(line);
     return id;
 }
 
