@@ -60,26 +60,22 @@ char **find_name_executables(char *buffer, char *path)
     return names;
 }
 
-static void delete_element(int i, int j, char ***names)
-{
-    if (strcmp((*names)[i], (*names)[j]) == 0) {
-        free_alloc((*names)[j]);
-        for (int k = j; (*names)[k] != NULL; k++)
-            (*names)[k] = (*names)[k + 1];
-        j--;
-    }
-}
-
 static void clean_multiple(char ***names)
 {
-    int i = 0;
-    int j = 0;
+    int read = 0;
+    int write = 0;
 
     if (!names || !*names)
         return;
-    for (i = 0; (*names)[i] != NULL; i++)
-        for (j = i + 1; (*names)[j] != NULL; j++)
-            delete_element(i, j, names);
+    for (read = 0; (*names)[read] != NULL; read++) {
+        if (write == 0 || strcmp((*names)[read], (*names)[write - 1]) != 0) {
+            (*names)[write] = (*names)[read];
+            write++;
+        } else {
+            free_alloc((*names)[read]);
+        }
+    }
+    (*names)[write] = NULL;
 }
 
 char **get_aliases(char *word, alias_stock_t *aliases)
