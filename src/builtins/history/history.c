@@ -2,9 +2,9 @@
 ** EPITECH PROJECT, 2026
 ** 42sh
 ** File description:
-** history builtin: iterates the history_cmd_t doubly-linked list
-** from oldest to newest and prints each entry as:
-**   ID  HH:MM  command
+** history builtin: opens .c_zsh_history and dispatches to write_history
+** (last N entries, oldest-first) or write_reverse_history (-r flag,
+** newest-first up to N); N defaults to the full file when omitted.
 ** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 

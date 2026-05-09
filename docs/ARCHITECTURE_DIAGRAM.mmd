@@ -18,7 +18,7 @@ flowchart TD
     subgraph REPL ["LOOP 1 — REPL  ·  while buffer ≠ 'exit'  ·  src/core/main.c"]
         direction TB
 
-        PROMPT_DRAW["write_print()\nstyled prompt: dir · git branch · user"]
+        PROMPT_DRAW["write_print() → display_prompt()\nfolder · user · git branch · time/date (ANSI colors)"]
         PROMPT_DRAW --> TTY_CHECK
 
         %% ─────────────────────────────────────────────────────────────
@@ -60,7 +60,7 @@ flowchart TD
 
         LINE_READY --> SERIALIZE["serialize()\ntrim leading/trailing whitespace"]
         GETLINE --> SERIALIZE
-        SERIALIZE --> ADD_HIST["add_to_history(buffer)\nappend to ~/.c_zsh_history"]
+        SERIALIZE --> ADD_HIST["manage_history(history, buffer)\nappend to ~/.c_zsh_history"]
         ADD_HIST --> EXEC_CMD["execute_command(buffer)"]
 
         %% ─────────────────────────────────────────────────────────────

@@ -2,9 +2,9 @@
 ** EPITECH PROJECT, 2026
 ** 42sh
 ** File description:
-** source / . builtin: opens the file with openator(), splits it
-** into lines with str_to_array_of_word_array(), then executes
-** each line via exec_any() in the current shell context.
+** source / . builtin: reloads the shell config by calling update_rc()
+** with ctx->argv[1] as the target file path, immediately applying
+** RC settings to the running shell; command execution from file pending.
 ** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 

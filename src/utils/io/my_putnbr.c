@@ -2,9 +2,9 @@
 ** EPITECH PROJECT, 2026
 ** 42sh
 ** File description:
-** Integer output: my_putnbr recursively decomposes an integer
-** into decimal digits (with INT_MIN handled separately) and
-** writes each digit to stdout with my_putchar.
+** Integer output: my_putnbr writes the sign if negative, then
+** recursively decomposes the absolute value into decimal digits
+** and writes each to stdout via write(1); INT_MIN is not handled.
 ** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 

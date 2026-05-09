@@ -2,9 +2,9 @@
 ** EPITECH PROJECT, 2026
 ** 42sh
 ** File description:
-** Working directory for the prompt: get_folder calls getcwd()
-** then shortens the path to its last two components
-** (e.g. 'project/src') for a compact prompt appearance.
+** Working directory for the prompt: get_folder calls getcwd(),
+** splits on '/' and returns a heap-allocated copy of the last
+** path component for compact display in the shell prompt.
 ** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 
