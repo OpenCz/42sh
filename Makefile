@@ -182,7 +182,7 @@ endef
 .PHONY: all re clean fclean \
         install uninstall \
         debug debug_build valgrind \
-        unit_tests tests_run coverage functional_tests \
+	unit_tests tests_run coverage functional_tests plugin \
         help
 
 all: $(NAME)
@@ -278,9 +278,23 @@ fclean: clean
 	$(call pretty_header, Full clean: objects binary tests coverage)
 	@$(RM) $(NAME) $(TO_RM)
 	@$(RM) $(LOGS_DIR)/functional_tests
+	@find ./plugins -type f -name 'lib*.so' -delete
 	@$(RM) /tmp/test.* /tmp/.shell.* /tmp/.refer.* /tmp/.tester.* /tmp/.runner.* /tmp/.tmp.* test/ dir;
 	@$(RM) "dir \"" "dir;" test output
 	@$(MAKE) fclean -C tests/
+
+plugin: all
+	$(call pretty_header, Building Plugins)
+	@set -e; \
+	for plugin_src in $$(find ./plugins -type d -name src | sort); do \
+		plugin_dir=$$(dirname "$$plugin_src"); \
+		plugin_name=$$(basename "$$plugin_dir"); \
+		printf "%b\n" "$(H_CYAN)Building plugin$(END) $(BOLD)$$plugin_name$(END) ..."; \
+		clang -fPIC -shared $(CFLAGS) \
+			-I"$$plugin_dir/include" -Iinclude -I"$$plugin_dir/src" \
+			-o "plugins/lib$$plugin_name.so" \
+			$$(find "$$plugin_src" -type f -name '*.c' | sort); \
+	done
 
 re: fclean all
 

@@ -5,8 +5,7 @@
 ** tic-tac-toe.c
 */
 
-#include "../../../include/core/plugins.h"
-#include "../../../include/c_zsh.h"
+#include "c_zsh.h"
 #include "../include/crocus.h"
 #include <stdio.h>
 
