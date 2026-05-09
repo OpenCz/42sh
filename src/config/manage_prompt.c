@@ -2,9 +2,9 @@
 ** EPITECH PROJECT, 2026
 ** 42sh
 ** File description:
-** Prompt configuration parser: get_color/get_b_color convert
-** color name strings to ANSI codes; manage_format, manage_time,
-** manage_date, manage_branche, manage_folder, manage_user fill
+** Prompt config parser: get_color/get_b_color map color name strings
+** to ANSI codes; manage_prompt dispatches [prompt] key=value pairs
+** to manage_user, manage_folder, manage_branche, manage_date, manage_time.
 ** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 

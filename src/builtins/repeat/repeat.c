@@ -2,9 +2,9 @@
 ** EPITECH PROJECT, 2026
 ** 42sh
 ** File description:
-** repeat builtin: builtin_repeat validates the count argument
-** with my_char_isnum; repeat() runs exec_any() in a for loop
-** 0..N-1 and returns the exit code of the last iteration.
+** repeat builtin: parses the count with atoi(), sets up a shifted
+** command_ctx_t pointing to the command after N, then runs exec_any()
+** in a loop 0..N-1 and returns the exit code of the last iteration.
 ** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 

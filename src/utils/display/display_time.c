@@ -2,9 +2,9 @@
 ** EPITECH PROJECT, 2026
 ** 42sh
 ** File description:
-** Time display: display_time prints current HH:MM right-aligned
-** using terminal column count from ioctl(TIOCGWINSZ).
-** check_null_win falls back to 80 columns when ioctl fails.
+** Time/date display: computes right-padding via ioctl(TIOCGWINSZ) and
+** calculate_limit, then prints HH:MM:SS via displauy_time() and the date
+** in LONG/EU/US/ISO format via display_date(), both with ANSI color support.
 ** Authors: @Celz-Pch @Lukas-sgx @ErwanTheKing @sacha-lma @Jessymgadd
 */
 
