@@ -5,8 +5,7 @@
 ** hello.c
 */
 
-#include "../include/core/plugins.h"
-#include "../include/c_zsh.h"
+#include "c_zsh.h"
 #include <stdio.h>
 
 static int hello_builtin(main_t *main_stock, command_ctx_t *ctx)
