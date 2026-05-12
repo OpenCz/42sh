@@ -36,17 +36,6 @@ static void init_alias_ctx(command_ctx_t *ctx, char **argv)
     ctx->arg_command = argv;
 }
 
-static char **make_single_arg_argv(const char *value)
-{
-    char **argv = malloc(sizeof(char *) * 2);
-
-    if (!argv)
-        return NULL;
-    argv[0] = strdup(value);
-    argv[1] = NULL;
-    return argv;
-}
-
 static char **make_alias_argv(const char *name, const char *command)
 {
     char **argv = malloc(sizeof(char *) * 3);

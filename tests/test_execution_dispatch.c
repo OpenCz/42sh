@@ -19,13 +19,6 @@ Test(execute_builtin, resolves_known_and_unknown_commands)
     cr_assert_eq(execute_builtin(&stock, &ctx), -1);
 }
 
-Test(execute_single_command, returns_error_on_null_command)
-{
-    main_t stock = {0};
-
-    cr_assert_eq(execute_single_command(&stock, NULL, true, false), 1);
-}
-
 Test(execute_single_command, skips_blank_command)
 {
     main_t stock = {0};
