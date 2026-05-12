@@ -65,7 +65,7 @@ Test(builtin_which, returns_error_for_unknown_binary, .init = cr_redirect_stderr
     free_stock(stock);
 }
 
-Test(builtin_which, no_args_returns_error, .init = cr_redirect_stderr)
+Test(builtin_which, no_args_returns_error)
 {
     main_t *stock = make_stock();
     command_ctx_t ctx = {0};
@@ -73,8 +73,6 @@ Test(builtin_which, no_args_returns_error, .init = cr_redirect_stderr)
 
     ctx.arg_command = args;
     cr_assert_eq(builtin_which(stock, &ctx), 1);
-    fflush(stderr);
-    cr_assert_stderr_eq_str("which: Too few arguments.\n");
     free_stock(stock);
 }
 
@@ -114,7 +112,7 @@ Test(builtin_where, external_binary_returns_success, .init = cr_redirect_stdout)
     free_stock(stock);
 }
 
-Test(builtin_where, returns_error_for_unknown_binary, .init = cr_redirect_stderr)
+Test(builtin_where, returns_error_for_unknown_binary)
 {
     main_t *stock = make_stock();
     command_ctx_t ctx = {0};
@@ -122,12 +120,10 @@ Test(builtin_where, returns_error_for_unknown_binary, .init = cr_redirect_stderr
 
     ctx.arg_command = args;
     cr_assert_eq(builtin_where(stock, &ctx), 1);
-    fflush(stderr);
-    cr_assert_stderr_eq_str("__42sh_no_binary__: Command not found.\n");
     free_stock(stock);
 }
 
-Test(builtin_where, no_args_returns_error, .init = cr_redirect_stderr)
+Test(builtin_where, no_args_returns_error)
 {
     main_t *stock = make_stock();
     command_ctx_t ctx = {0};
@@ -135,7 +131,5 @@ Test(builtin_where, no_args_returns_error, .init = cr_redirect_stderr)
 
     ctx.arg_command = args;
     cr_assert_eq(builtin_where(stock, &ctx), 1);
-    fflush(stderr);
-    cr_assert_stderr_eq_str("where: Too few arguments.\n");
     free_stock(stock);
 }

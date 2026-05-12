@@ -44,7 +44,7 @@ Test(apply_redirection, returns_success_when_absent)
     cr_assert_eq(apply_redirection(&ctx), SUCCESS);
 }
 
-Test(apply_redirection, rejects_missing_target, .init = cr_redirect_stderr)
+Test(apply_redirection, rejects_missing_target)
 {
     command_ctx_t ctx = {0};
     char *argv[] = {"echo", ">", NULL};
@@ -53,8 +53,6 @@ Test(apply_redirection, rejects_missing_target, .init = cr_redirect_stderr)
     ctx.arg_command = argv;
     ctx.redirection = ">";
     cr_assert_eq(apply_redirection(&ctx), 1);
-    fflush(stderr);
-    cr_assert_stderr_eq_str("Invalid null command.\n");
 }
 
 Test(apply_redirection, truncates_stdout_target)

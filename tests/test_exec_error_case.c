@@ -31,11 +31,6 @@ static char *create_temp_file(const char *content, mode_t mode)
     return path;
 }
 
-static int status_from_signal(int sig, int with_core)
-{
-    return sig | (with_core ? 0x80 : 0);
-}
-
 Test(child_exec, returns_126_for_enoexec)
 {
     command_ctx_t ctx = {0};

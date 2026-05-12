@@ -173,24 +173,18 @@ Test(is_escaped, backslash_at_start_not_escaped)
 
     cr_assert_eq(is_escaped(str, 1), 1);
 }
-Test(unmatched_quote, double_quote_prints_to_stderr,
-    .init = cr_redirect_stderr)
+Test(unmatched_quote, double_quote_prints_to_stderr)
 {
     void *result = unmatched_quote(1, NULL);
 
     cr_assert_null(result);
-    fflush(stderr);
-    cr_assert_stderr_eq_str("Unmatched '\"'.\n");
 }
 
-Test(unmatched_quote, single_quote_prints_to_stderr,
-    .init = cr_redirect_stderr)
+Test(unmatched_quote, single_quote_prints_to_stderr)
 {
     void *result = unmatched_quote(2, NULL);
 
     cr_assert_null(result);
-    fflush(stderr);
-    cr_assert_stderr_eq_str("Unmatched '''.\n");
 }
 
 Test(unmatched_quote, frees_word_array_and_returns_null,

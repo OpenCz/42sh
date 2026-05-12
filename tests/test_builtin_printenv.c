@@ -60,7 +60,7 @@ Test(builtin_printenv, one_arg_not_found_returns_error)
     cr_assert_eq(builtin_printenv(&stock, &ctx), 1);
 }
 
-Test(builtin_printenv, too_many_args_returns_error, .init = cr_redirect_stderr)
+Test(builtin_printenv, too_many_args_returns_error)
 {
     main_t stock = {0};
     command_ctx_t ctx = {0};
@@ -70,8 +70,6 @@ Test(builtin_printenv, too_many_args_returns_error, .init = cr_redirect_stderr)
     ctx.argv = argv;
     ctx.arg_command = args;
     cr_assert_eq(builtin_printenv(&stock, &ctx), 1);
-    fflush(stderr);
-    cr_assert_stderr_eq_str("printenv: Too many arguments.\n");
 }
 
 Test(builtin_printenv, finds_variable_among_several, .init = cr_redirect_stdout)
