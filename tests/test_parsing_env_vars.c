@@ -9,6 +9,13 @@
 #include <criterion/redirect.h>
 #include "../include/c_zsh.h"
 
+static void init_env_stock(main_t *stock)
+{
+    static job_controler_t controler = {0};
+
+    stock->controler = &controler;
+}
+
 Test(replace_env_vars, returns_null_for_null_args)
 {
     main_t stock = {0};
@@ -64,6 +71,7 @@ Test(replace_env_vars, hard_coded_dollar_zero)
     char **args = malloc(sizeof(char *) * 2);
 
     cr_assert_not_null(args);
+    init_env_stock(&stock);
     args[0] = strdup("$0");
     args[1] = NULL;
     replace_env_vars(args, &stock);
@@ -79,6 +87,7 @@ Test(replace_env_vars, hard_coded_double_dollar)
 
     cr_assert_not_null(args);
     cr_assert_not_null(expected);
+    init_env_stock(&stock);
     args[0] = strdup("$$");
     args[1] = NULL;
     replace_env_vars(args, &stock);
@@ -93,6 +102,7 @@ Test(replace_env_vars, hard_coded_last_exit)
     char **args = malloc(sizeof(char *) * 2);
 
     cr_assert_not_null(args);
+    init_env_stock(&stock);
     stock.last_exit = "42";
     args[0] = strdup("$?");
     args[1] = NULL;

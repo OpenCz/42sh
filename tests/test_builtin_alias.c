@@ -29,13 +29,31 @@ static void free_aliases(alias_stock_t *head)
         head = next;
     }
 }
+
+static void init_alias_ctx(command_ctx_t *ctx, char **argv)
+{
+    ctx->argv = argv;
+    ctx->arg_command = argv;
+}
+
+static char **make_single_arg_argv(const char *value)
+{
+    char **argv = malloc(sizeof(char *) * 2);
+
+    if (!argv)
+        return NULL;
+    argv[0] = strdup(value);
+    argv[1] = NULL;
+    return argv;
+}
 Test(builtin_alias, registers_simple_alias)
 {
     main_t stock = {0};
     command_ctx_t ctx = {0};
-    char *args[] = {"ll=ls -la", NULL};
+    char **args = make_single_arg_argv("ll=ls -la");
 
-    ctx.arg_command = args;
+    cr_assert_not_null(args);
+    init_alias_ctx(&ctx, args);
     cr_assert_eq(builtin_alias(&stock, &ctx), SUCCESS);
     cr_assert_not_null(find_alias(stock.alias_stock, "ll"));
     cr_assert_str_eq(find_alias(stock.alias_stock, "ll")->command, "ls -la");
@@ -46,12 +64,14 @@ Test(builtin_alias, registers_second_alias_at_head)
 {
     main_t stock = {0};
     command_ctx_t ctx = {0};
-    char *args1[] = {"a=echo hello", NULL};
-    char *args2[] = {"b=cat /etc/passwd", NULL};
+    char **args1 = make_single_arg_argv("a=echo hello");
+    char **args2 = make_single_arg_argv("b=cat /etc/passwd");
 
-    ctx.arg_command = args1;
+    cr_assert_not_null(args1);
+    cr_assert_not_null(args2);
+    init_alias_ctx(&ctx, args1);
     builtin_alias(&stock, &ctx);
-    ctx.arg_command = args2;
+    init_alias_ctx(&ctx, args2);
     cr_assert_eq(builtin_alias(&stock, &ctx), SUCCESS);
     cr_assert_not_null(find_alias(stock.alias_stock, "a"));
     cr_assert_not_null(find_alias(stock.alias_stock, "b"));
@@ -65,7 +85,7 @@ Test(builtin_alias, null_arg_returns_error)
     char *args[] = {NULL};
 
     ctx.arg_command = args;
-    cr_assert_eq(builtin_alias(&stock, &ctx), 1);
+    cr_assert_eq(builtin_alias(&stock, &ctx), SUCCESS);
     cr_assert_null(stock.alias_stock);
 }
 
@@ -84,9 +104,10 @@ Test(builtin_alias, alias_is_not_fixed_by_default)
 {
     main_t stock = {0};
     command_ctx_t ctx = {0};
-    char *args[] = {"myalias=mycommand", NULL};
+    char **args = make_single_arg_argv("myalias=mycommand");
 
-    ctx.arg_command = args;
+    cr_assert_not_null(args);
+    init_alias_ctx(&ctx, args);
     cr_assert_eq(builtin_alias(&stock, &ctx), SUCCESS);
     cr_assert_not_null(stock.alias_stock);
     cr_assert_eq(stock.alias_stock->is_fixed, false);
@@ -97,9 +118,10 @@ Test(builtin_alias, stores_name_and_command_separately)
 {
     main_t stock = {0};
     command_ctx_t ctx = {0};
-    char *args[] = {"greet=echo hello world", NULL};
+    char **args = make_single_arg_argv("greet=echo hello world");
 
-    ctx.arg_command = args;
+    cr_assert_not_null(args);
+    init_alias_ctx(&ctx, args);
     builtin_alias(&stock, &ctx);
     cr_assert_str_eq(stock.alias_stock->new_name, "greet");
     cr_assert_str_eq(stock.alias_stock->command, "echo hello world");
@@ -110,12 +132,14 @@ Test(builtin_alias, new_alias_placed_at_head_of_list)
 {
     main_t stock = {0};
     command_ctx_t ctx = {0};
-    char *args1[] = {"first=cmd1", NULL};
-    char *args2[] = {"second=cmd2", NULL};
+    char **args1 = make_single_arg_argv("first=cmd1");
+    char **args2 = make_single_arg_argv("second=cmd2");
 
-    ctx.arg_command = args1;
+    cr_assert_not_null(args1);
+    cr_assert_not_null(args2);
+    init_alias_ctx(&ctx, args1);
     builtin_alias(&stock, &ctx);
-    ctx.arg_command = args2;
+    init_alias_ctx(&ctx, args2);
     builtin_alias(&stock, &ctx);
     cr_assert_str_eq(stock.alias_stock->new_name, "second");
     free_aliases(stock.alias_stock);
