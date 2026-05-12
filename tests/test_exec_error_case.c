@@ -68,8 +68,10 @@ Test(child_exec, returns_126_for_eacces)
 
 Test(get_seg, handles_exit_signal_and_core_dump)
 {
-    cr_assert_eq(get_seg(W_EXITCODE(0, 0), NULL, 0, NULL), 0);
-    cr_assert_eq(normalize_status(status_from_signal(SIGFPE, 0), NULL, 0, NULL), 136);
-    cr_assert_eq(normalize_status(status_from_signal(SIGSEGV, 1), NULL, 0, NULL), 139);
+    char *cmd[] = {"cmd", NULL};
+
+    cr_assert_eq(get_seg(W_EXITCODE(0, 0), NULL, 0, cmd), 0);
+    cr_assert_eq(normalize_status(status_from_signal(SIGFPE, 0), NULL, 0, cmd[0]), 136);
+    cr_assert_eq(normalize_status(status_from_signal(SIGSEGV, 1), NULL, 0, cmd[0]), 139);
 }
 

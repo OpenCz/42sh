@@ -157,7 +157,7 @@ Test(is_escaped, triple_backslash_is_escaped)
 {
     char str[] = "a\\\\\\b";
 
-    cr_assert_eq(is_escaped(str, 5), 1);
+    cr_assert_eq(is_escaped(str, 4), 1);
 }
 
 Test(is_escaped, at_index_zero_not_escaped)
