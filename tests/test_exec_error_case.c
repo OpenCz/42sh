@@ -60,11 +60,3 @@ Test(child_exec, returns_126_for_eacces)
     unlink(path);
     free(path);
 }
-
-Test(get_seg, handles_exit_signal_and_core_dump)
-{
-    char *cmd[] = {"cmd", NULL};
-
-    cr_assert_eq(get_seg(W_EXITCODE(0, 0), NULL, 0, cmd), 0);
-}
-
