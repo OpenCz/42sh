@@ -65,7 +65,9 @@ Test(builtin_printenv, too_many_args_returns_error, .init = cr_redirect_stderr)
     main_t stock = {0};
     command_ctx_t ctx = {0};
     char *args[] = {"A", "B", NULL};
+    char *argv[] = {NULL};
 
+    ctx.argv = argv;
     ctx.arg_command = args;
     cr_assert_eq(builtin_printenv(&stock, &ctx), 1);
     fflush(stderr);

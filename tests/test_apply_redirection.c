@@ -50,6 +50,7 @@ Test(apply_redirection, rejects_missing_target, .init = cr_redirect_stderr)
     char *argv[] = {"echo", ">", NULL};
 
     ctx.argv = argv;
+    ctx.arg_command = argv;
     ctx.redirection = ">";
     cr_assert_eq(apply_redirection(&ctx), 1);
     fflush(stderr);
