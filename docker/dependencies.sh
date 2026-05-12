@@ -16,5 +16,8 @@ cd /app/Epifaster
 ln -s /usr/bin/clang-20 /usr/bin/clang
 ./setup.sh
 
+cd /app
+mv banana-check-repo.sh /github/home/.local/bin/banana-check-repo
+
 apk del git build-base meson ninja cargo
 rm -rf /app/Epifaster/.git /var/cache/apk/* /app/Criterion $HOME/.cargo $HOME/.rustup /root/.cargo /root/.rustup
