@@ -39,12 +39,35 @@ static void free_parsed_rc(char ***rc_parsed)
     free(rc_parsed);
 }
 
+static alias_stock_t *find_alias_by_name(alias_stock_t *stock, char *name)
+{
+    for (; stock; stock = stock->next)
+        if (strcmp(stock->new_name, name) == 0)
+            return stock;
+    return NULL;
+}
+
+int is_duplicate_alias(czshrc_t *rc, char **alias)
+{
+    alias_stock_t *stock = NULL;
+
+    if (!rc || !alias || !alias[0] || !alias[1])
+        return 0;
+    stock = find_alias_by_name(rc->aliases, alias[0]);
+    if (!stock)
+        return 0;
+    free_alloc(stock->command);
+    stock->command = strdup(alias[1]);
+    return 1;
+}
+
 void manage_alias(czshrc_t *rc, char ***rc_parsed, int i)
 {
     alias_stock_t *new_alias = NULL;
 
     for (int j = i + 1; rc_parsed[j] && rc_parsed[j][0][0] != '['; j++) {
-        if (!rc_parsed[j][0] || !rc_parsed[j][1])
+        if (!rc_parsed[j][0] || !rc_parsed[j][1] ||
+            is_duplicate_alias(rc, rc_parsed[j]))
             continue;
         new_alias = malloc(sizeof(alias_stock_t));
         if (!new_alias)
