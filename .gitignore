@@ -14,3 +14,4 @@ output
 vgcore*
 test_shell
 *.so
+install
