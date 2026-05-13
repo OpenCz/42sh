@@ -205,9 +205,7 @@ install: $(NAME)
 	@cp $(NAME) $(LOCAL_BIN)/$(NAME)
 	@chmod 755 $(LOCAL_BIN)/$(NAME)
 	@printf "%b\n" "$(BOLD)$(H_GREEN)Installed$(END) $(NAME) -> $(LOCAL_BIN)/$(NAME)"
-	@if [ -f "$$HOME/.czshrc" ]; then \
-		printf "$(BOLD)$(H_GREEN) .czshrc already in place$(END)\n"; \
-	elif [ -f "$$HOME/.config/42sh/.czshrc" ]; then \
+	@if [ -f "$$HOME/.config/42sh/.czshrc" ]; then \
 		cp "$$HOME/.config/42sh/.czshrc" "$$HOME/.czshrc" && \
 		printf "$(BOLD)$(H_GREEN) Placed .czshrc -> $$HOME/.czshrc$(END)\n"; \
 	else \
