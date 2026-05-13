@@ -37,13 +37,36 @@ static history_t *init_history(main_t *main)
     return main->history;
 }
 
-static czshrc_t *init_rc(void)
+static bool is_nixos(void)
 {
-    czshrc_t *rc = update_rc(".czshrc");
+    FILE *f = fopen("/etc/os-release", "r");
+    char line[256];
+    bool result = false;
 
-    if (!rc)
-        return NULL;
-    return rc;
+    if (!f)
+        return false;
+    while (fgets(line, sizeof(line), f)) {
+        if (strncmp(line, "ID=nixos", 8) == 0) {
+            result = true;
+            break;
+        }
+    }
+    fclose(f);
+    return result;
+}
+
+static czshrc_t *init_rc(const char *home)
+{
+    char path[512];
+
+    if (!home)
+        return update_rc(NULL);
+    if (is_nixos()) {
+        snprintf(path, sizeof(path), "%s/.config/42sh/.czshrc", home);
+    } else {
+        snprintf(path, sizeof(path), "%s/.czshrc", home);
+    }
+    return update_rc(path);
 }
 
 static void init_alias_stock(main_t *main_node)
@@ -78,7 +101,7 @@ static signal_t *init_signal(void)
 
 static void initrc(main_t *main_node)
 {
-    main_node->czshrc = init_rc();
+    main_node->czshrc = init_rc(main_node->home);
     init_alias_stock(main_node);
 }
 
