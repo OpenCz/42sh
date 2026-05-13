@@ -8,6 +8,27 @@
 #include <criterion/criterion.h>
 #include "c_zsh.h"
 
+static alias_stock_t *find_alias(alias_stock_t *head, const char *name)
+{
+    for (; head; head = head->next)
+        if (my_strcmp(head->new_name, (char *)name) == 0)
+            return head;
+    return NULL;
+}
+
+static void free_aliases(alias_stock_t *head)
+{
+    alias_stock_t *next;
+
+    while (head) {
+        next = head->next;
+        free(head->new_name);
+        free(head->command);
+        free(head);
+        head = next;
+    }
+}
+
 Test(init_env, injects_default_path_when_missing)
 {
     char *env[] = {
@@ -71,5 +92,27 @@ Test(init_main, initializes_fields_from_env)
     cr_assert_null(stock->redirection);
     cr_assert_null(stock->old_path);
     free_main(stock);
+}
+
+Test(update_rc, keeps_last_duplicate_alias_definition)
+{
+    char path[] = "/tmp/42sh_rc_XXXXXX";
+    const char *content = "[alias]\nfoo = echo first\nfoo = echo second\n";
+    czshrc_t *rc = NULL;
+    int fd = mkstemp(path);
+
+    cr_assert(fd >= 0);
+    cr_assert_eq(write(fd, content, strlen(content)), (ssize_t)strlen(content));
+    close(fd);
+    rc = update_rc(path);
+    unlink(path);
+    cr_assert_not_null(rc);
+    cr_assert_not_null(rc->aliases);
+    cr_assert_not_null(find_alias(rc->aliases, "foo"));
+    cr_assert_str_eq(find_alias(rc->aliases, "foo")->command, "echo second");
+    cr_assert_null(find_alias(rc->aliases, "foo")->next);
+    free_aliases(rc->aliases);
+    free_alloc(rc->prompt);
+    free(rc);
 }
 

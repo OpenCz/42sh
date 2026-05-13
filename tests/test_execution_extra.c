@@ -108,6 +108,7 @@ Test(exec_any_extra, absolute_path_true_succeeds)
     stock.stock_env = node_new("PATH", "/bin");
     ctx.command = argv[0];
     ctx.argv = argv;
+    ctx.arg_command = argv;
     cr_assert_eq(exec_any(&stock, &ctx, false), SUCCESS);
     free_linked_list(stock.stock_env);
 }
@@ -121,6 +122,7 @@ Test(exec_any_extra, absolute_path_false_returns_1)
     stock.stock_env = node_new("PATH", "/bin");
     ctx.command = argv[0];
     ctx.argv = argv;
+    ctx.arg_command = argv;
     cr_assert_eq(exec_any(&stock, &ctx, false), 1);
     free_linked_list(stock.stock_env);
 }
@@ -135,6 +137,7 @@ Test(exec_any_extra, command_in_path_resolves_and_runs)
     stock.path = paths;
     ctx.command = "true";
     ctx.argv = argv;
+    ctx.arg_command = argv;
     cr_assert_eq(exec_any(&stock, &ctx, false), SUCCESS);
 }
 Test(execute_builtin_extra, setenv_is_registered)

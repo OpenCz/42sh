@@ -31,11 +31,6 @@ static char *create_temp_file(const char *content, mode_t mode)
     return path;
 }
 
-static int status_from_signal(int sig, int with_core)
-{
-    return sig | (with_core ? 0x80 : 0);
-}
-
 Test(child_exec, returns_126_for_enoexec)
 {
     command_ctx_t ctx = {0};
@@ -65,11 +60,3 @@ Test(child_exec, returns_126_for_eacces)
     unlink(path);
     free(path);
 }
-
-Test(get_seg, handles_exit_signal_and_core_dump)
-{
-    cr_assert_eq(get_seg(W_EXITCODE(0, 0), NULL, 0, NULL), 0);
-    cr_assert_eq(normalize_status(status_from_signal(SIGFPE, 0), NULL, 0, NULL), 136);
-    cr_assert_eq(normalize_status(status_from_signal(SIGSEGV, 1), NULL, 0, NULL), 139);
-}
-

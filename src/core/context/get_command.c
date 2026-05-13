@@ -81,7 +81,7 @@ static int manage_ignoreeof(main_t *stock_main)
     char *new_value = NULL;
 
     for (env_t *tmp = stock_main->stock_local_var; tmp; tmp = tmp->next) {
-        if (my_strcmp(tmp->key, "ignoreeof") != 0)
+        if (my_strcmp(tmp->key, "ignoreof") != 0)
             continue;
         countdown = atoi(tmp->value);
         if (countdown <= 1)

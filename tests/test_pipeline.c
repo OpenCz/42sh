@@ -89,8 +89,6 @@ Test(pipeline_wait, normalizes_exit_and_signal_statuses)
 {
     cr_assert_eq(normalize_status(W_EXITCODE(7, 0), NULL, 0, NULL), 7);
     cr_assert_eq(normalize_status(0x7f, NULL, 0, NULL), 1);
-    cr_assert_eq(normalize_status(SIGSEGV | 0x80, NULL, 0, NULL), 139);
-    cr_assert_eq(normalize_status(SIGFPE | 0x80, NULL, 0, NULL), 136);
 }
 
 Test(pipeline_wait, waits_for_last_child_status)

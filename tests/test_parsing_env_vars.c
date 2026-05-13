@@ -9,9 +9,18 @@
 #include <criterion/redirect.h>
 #include "../include/c_zsh.h"
 
+static void init_env_stock(main_t *stock)
+{
+    static job_controler_t controler = {0};
+
+    stock->controler = &controler;
+}
+
 Test(replace_env_vars, returns_null_for_null_args)
 {
     main_t stock = {0};
+
+    init_env_stock(&stock);
 
     cr_assert_null(replace_env_vars(NULL, &stock));
 }
@@ -21,6 +30,7 @@ Test(replace_env_vars, no_dollar_args_unchanged)
     main_t stock = {0};
     char **args = my_str_to_word_array("hello world", " ");
 
+    init_env_stock(&stock);
     replace_env_vars(args, &stock);
     cr_assert_str_eq(args[0], "hello");
     cr_assert_str_eq(args[1], "world");
@@ -33,6 +43,7 @@ Test(replace_env_vars, replaces_found_env_variable)
     main_t stock = {0};
     char **args = malloc(sizeof(char *) * 2);
 
+    init_env_stock(&stock);
     stock.stock_env = &node;
     cr_assert_not_null(args);
     args[0] = strdup("$FOO");
@@ -49,6 +60,7 @@ Test(replace_env_vars, undefined_var_sets_error_string,
     char **args = malloc(sizeof(char *) * 2);
 
     cr_assert_not_null(args);
+    init_env_stock(&stock);
     args[0] = strdup("$UNDEFINED42SH");
     args[1] = NULL;
     replace_env_vars(args, &stock);
@@ -64,6 +76,7 @@ Test(replace_env_vars, hard_coded_dollar_zero)
     char **args = malloc(sizeof(char *) * 2);
 
     cr_assert_not_null(args);
+    init_env_stock(&stock);
     args[0] = strdup("$0");
     args[1] = NULL;
     replace_env_vars(args, &stock);
@@ -79,6 +92,7 @@ Test(replace_env_vars, hard_coded_double_dollar)
 
     cr_assert_not_null(args);
     cr_assert_not_null(expected);
+    init_env_stock(&stock);
     args[0] = strdup("$$");
     args[1] = NULL;
     replace_env_vars(args, &stock);
@@ -93,6 +107,7 @@ Test(replace_env_vars, hard_coded_last_exit)
     char **args = malloc(sizeof(char *) * 2);
 
     cr_assert_not_null(args);
+    init_env_stock(&stock);
     stock.last_exit = "42";
     args[0] = strdup("$?");
     args[1] = NULL;
@@ -107,6 +122,7 @@ Test(replace_env_vars, braced_var_syntax)
     main_t stock = {0};
     char **args = malloc(sizeof(char *) * 2);
 
+    init_env_stock(&stock);
     stock.stock_env = &node;
     cr_assert_not_null(args);
     args[0] = strdup("${BAR}");
